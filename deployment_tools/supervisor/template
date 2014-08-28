@@ -1,0 +1,5 @@
+[program:SITEURL]
+command = /srv/SITEURL/bin/USERNAME_gunicorn.sh
+user = USERNAME
+stdout_logfile = /srv/SITEURL/logs/gunicorn_supervisor.log
+redirect_stderr = true
