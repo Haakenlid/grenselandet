@@ -5,7 +5,7 @@ from os import environ, path
 
 
 PREFIX = 'DJANGO_'  # Environment variable prefix
-SETTINGS_PATH = 'universitas_no.settings'  # Name of app folder in project
+SETTINGS_PATH = 'settings'  # Name of app folder in project
 WEBSERVER_ROOT = '/srv'  # Location of each django project
 OVERRIDES = {
     'www.universitas.no': {
