@@ -18,12 +18,12 @@ def env_var(keyname):
     # To avoid commiting passwords and usernames to git and GitHub,
     # these settings are saved as environmental variables in a file called postactivate.
     # Postactivate is sourced when the virtual environment is activated.
-    return os.environ('DJANGO_{keyname}'.format(keyname=keyname.upper().replace(' ', '_')))
+    return os.environ.get('DJANGO_{keyname}'.format(keyname=keyname.upper().replace(' ', '_')))
 
 
-def join_path(**paths):
+def join_path(*paths):
     """ shortcut for joining paths. cross os compatible """
-    return os.path.normpath(os.path.join(**paths))
+    return os.path.normpath(os.path.join(*paths))
 
 
 # CORE CONFIG
@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 # THIRD PARTY APPS
 INSTALLED_APPS = [
-    'autocomplete_light',
+    # 'autocomplete_light',
     'django_extensions',
     'sorl.thumbnail',
 ] + INSTALLED_APPS
