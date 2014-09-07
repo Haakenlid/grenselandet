@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 # THIRD PARTY APPS
 INSTALLED_APPS = [
-    # 'autocomplete_light',
+    'autocomplete_light',
     'django_extensions',
     'sorl.thumbnail',
 ] + INSTALLED_APPS

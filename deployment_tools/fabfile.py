@@ -32,7 +32,7 @@ def local_put(*args, **kwargs):
     return local(command)
 
 
-def local_append(filename, text ):
+def local_append(filename, text):
     pass
 
 
