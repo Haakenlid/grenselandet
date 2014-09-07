@@ -32,40 +32,8 @@ def local_put(*args, **kwargs):
     return local(command)
 
 
-def local_append(filename, text, use_sudo=False, partial=False, escape=True, shell=False):
-
-    def _escape_for_regex(text):
-        """Escape ``text`` to allow literal matching using egrep"""
-        regex = re.escape(text)
-        # Seems like double escaping is needed for \
-        regex = regex.replace('\\\\', '\\\\\\')
-        # Triple-escaping seems to be required for $ signs
-        regex = regex.replace(r'\$', r'\\\$')
-        # Whereas single quotes should not be escaped
-        regex = regex.replace(r"\'", "'")
-        return regex
-
-    def _expand_path(path):
-        return '"$(echo %s)"' % path
-
-    def contains(filename, text, exact=False, ):
-        if escape:
-            text = _escape_for_regex(text)
-            if exact:
-                text = "^%s$" % text
-        with settings(hide('everything'), warn_only=True):
-            egrep_cmd = 'egrep "%s" %s' % (text, _expand_path(filename))
-            return env.run(egrep_cmd).succeeded
-
-    # Normalize non-list input to be a list
-    if isinstance(text, basestring):
-        text = [text]
-    for line in text:
-        regex = '^' + _escape_for_regex(line) + ('' if partial else '$')
-        if (env.exists(filename, ) and line and contains(filename, regex)):
-            continue
-        line = line.replace("'", r"'\\''") if escape else line
-        env.run("echo '%s' >> %s" % (line, _expand_path(filename)))
+def local_append(filename, text ):
+    pass
 
 
 @task(alias='local')
@@ -377,20 +345,15 @@ def _create_postgres_db(project_settings):
 def _get_latest_source(source_folder):
     """ Updates files on staging server with current git commit on dev branch. """
     if env.exists(source_folder + '/.git'):
-        # env.run('cd {source_folder} && git fetch'.format(source_folder=source_folder,))
-        pass
+        env.run('cd {source_folder} && git fetch'.format(source_folder=source_folder,))
     else:
-        # env.run('git clone {github_url} {source_folder}'.format(github_url=REPO_URL, source_folder=source_folder))
-        pass
+        env.run('git clone {github_url} {source_folder}'.format(github_url=REPO_URL, source_folder=source_folder))
     current_commit = local('git log -n 1 --format=%H', capture=True)
-    env.run(
-        'cd {source_folder} && git reset --hard {commit}'.format(source_folder=source_folder, commit=current_commit))
+    # env.run('cd {source_folder} && git reset --hard {commit}'.format(source_folder=source_folder, commit=current_commit))
 
 
 def _create_virtualenv(venv_folder, global_venv_folder):
     """ Create python virtual environment. """
-    import ipdb
-    ipdb.set_trace()
     if not env.exists(venv_folder + '/bin/pip'):
         env.run('{python_venv_version} {venv_folder}'.format(python_venv_version=PYVENV, venv_folder=venv_folder,))
         # link to global folder to enable virtualenvwrapper 'workon' command.
@@ -405,9 +368,9 @@ def _update_virtualenv(source_folder, venv_folder):
 
 def _update_static_files(venv_folder):
     """ Move images, js and css to staticfolder to be served directly by nginx. """
-    env.run('source {venv}/bin/activate && django-admin collectstatic --noinput'.format(venv=venv_folder,))
+    env.run('/bin/bash {venv}/bin/activate && django-admin collectstatic --noinput'.format(venv=venv_folder,))
 
 
 def _update_database(venv_folder):
     """ Run database migrations if required by changed apps. """
-    env.run('source {venv}/bin/activate && django-admin migrate --noinput'.format(venv=venv_folder,))
+    env.run('/bin/bash {venv}/bin/activate && django-admin migrate --noinput'.format(venv=venv_folder,))
