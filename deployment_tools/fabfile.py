@@ -1,10 +1,10 @@
 """ Deployment of Django website using pyvenv-3.4 and git """
+import os
+from os.path import join, dirname
 from fabric.contrib.files import append, exists, put
 from fabric.context_managers import shell_env
 from fabric.api import env, local, run, sudo, settings
-from generate_settings import make_postactivate_file
-from os.path import join, dirname
-import os
+from generate_postactivate import make_postactivate_file
 
 REPO_URL = 'https://github.com/user/reponame.git'  # github repo used for deploying the site
 PYVENV = 'pyvenv-3.4'  # using python 3.4

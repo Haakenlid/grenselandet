@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
+""" Create postactivate shell script file """
 import random
-import re
+from requests import request
 from os import environ, path
 
-
+SITE_DOMAIN = 'example.com'
 PREFIX = 'DJANGO_'  # Environment variable prefix
-SETTINGS_PATH = 'settings'  # Name of app folder in project
+SETTINGS_MODULE = 'settings'  # Python module path to settings folder
 WEBSERVER_ROOT = '/srv'  # Location of each django project
 OVERRIDES = {
-    'www.universitas.no': {
-        'settings module': '%s.production' % (SETTINGS_PATH,) ,
-        'allowed hosts': 'universitas.no',
+    'www.{}'.format(SITE_DOMAIN): {
+        'settings module': '{module}.production'.format(module=SETTINGS_MODULE)
     },
-    'staging.universitas.no': {
-        'settings module': '%s.production' % (SETTINGS_PATH,) ,
+    'staging.{}'.format(SITE_DOMAIN): {
+        'settings module': '{module}.production'.format(module=SETTINGS_MODULE)
     },
 }
 
@@ -21,7 +21,10 @@ OVERRIDES = {
 def make_postactivate_file(site_url, file_path=None):
     """ Make a postactivate file and return settings as a dictionary. """
     if file_path is None:
-        file_path = '%s/postactivate.%s' % (path.dirname(__file__), site_url)
+        file_path = '{this_folder}/postactivate.{url}'.format(
+            this_folder=path.dirname(__file__),
+            url=site_url,
+        )
     contents, settings = make_postactivate_text(site_url)
     with open(file_path, 'w') as f:
         f.write(contents)
@@ -33,6 +36,18 @@ def _make_random_sequence(length=50):
     """ Generate a random string for secret key or password """
     chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     return ''.join(random.SystemRandom().choice(chars) for n in range(length))
+
+
+def _find_my_ip_address():
+    """ find public ip of local computer """
+    try:
+        return request('get', 'http://ipecho.net/plain').text
+    except:
+        pass
+    try:
+        return request('get', 'http://canihazip.com/s').text
+    except:
+        return '127.0.0.1'
 
 
 def make_postactivate_text(site_url):
@@ -47,18 +62,17 @@ def make_postactivate_text(site_url):
             settings.update(new_item)
 
     settings.update({
-        'source folder': '%s/%s/source' % (WEBSERVER_ROOT, site_url, ),
+        'source folder': '{root}/{url}/source'.format(root=WEBSERVER_ROOT, url=site_url, ),
         'site url': site_url,
-        'settings module': '%s.%s' % (
-            SETTINGS_PATH,
-            site_url.split('.')[0],
+        'settings module': '{module}.{version}'.format(
+            module=SETTINGS_MODULE, version=site_url.split('.')[0],
         ),
         'secret key': _make_random_sequence(50),
         'db password': _make_random_sequence(50),
         'db user': site_url.replace('.', '_'),
         'db name': site_url.replace('.', '_'),
         'user': site_url.replace('.', '_'),
-        # "wsgi module": "%s.wsgi" % (DJANGO_APP_NAME,),
+        'debug toolbar internal ips': _find_my_ip_address(),
     })
 
     if site_url in OVERRIDES:
@@ -67,13 +81,13 @@ def make_postactivate_text(site_url):
     postactivate = (
         '#!/bin/bash\n'
         '# This hook is run after the virtualenv is activated.\n\n'
-        '# Environmental varibales for django projects.\n\n'
+        '# Environmental variables for django projects.\n\n'
     )
     for key in sorted(settings):
-        postactivate += 'export %s%s="%s"\n' % (
-            PREFIX,
-            key.replace(' ', '_').upper(),
-            settings[key],
+        postactivate += 'export {prefix}{key}="{value}"\n'.format(
+            prefix=PREFIX,
+            key=key.replace(' ', '_').upper(),
+            value=settings[key],
         )
     postactivate += (
         '\n'
@@ -84,4 +98,5 @@ def make_postactivate_text(site_url):
 
 
 if __name__ == '__main__':
-    make_postactivate_file('local.universitas.no', './postactivate')
+    # make a postactivate file for local dev server.
+    make_postactivate_file(site_url='local.{}'.format(SITE_DOMAIN),)
