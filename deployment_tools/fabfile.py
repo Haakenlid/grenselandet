@@ -1,29 +1,92 @@
 """ Deployment of Django website using pyvenv-3.4 and github """
 import os
+import re
 from os.path import join, dirname
 from fabric.contrib.files import append, exists, put
 from fabric.context_managers import shell_env
-from fabric.api import local, env, run, sudo, settings, task
+from fabric.api import local, env, run, sudo, settings, task, hide
 from generate_postactivate import make_postactivate_file
 
 REPO_URL = 'git@github.com:Haakenlid/django-skeleton.git'  # github repo used for deploying the site
 PYVENV = 'pyvenv-3.4'  # using python 3.4 for virtual environments
 LINUXGROUP = 'www-data'  # linux user group on the webserver
 WEBSERVER_ROOT = '/srv'  # root folder for all websites on the webserver
-SITE_DOMAIN = 'example.com'
+SITE_DOMAIN = 'grenselandet.net'
+
+
+def local_run(command, *args, **kwargs):
+    kwargs['capture'] = True
+    print(command)
+    return local(command, *args, **kwargs)
+
+
+def local_sudo(command, *args, **kwargs):
+    kwargs['capture'] = True
+    print(command)
+    command = 'sudo ' + command
+    return local(command, *args, **kwargs)
+
+
+def local_put(*args, **kwargs):
+    command = 'sudo cp {source} {to}'.format(source=args[0], to=args[1])
+    return local(command)
+
+
+def local_append(filename, text, use_sudo=False, partial=False, escape=True, shell=False):
+
+    def _escape_for_regex(text):
+        """Escape ``text`` to allow literal matching using egrep"""
+        regex = re.escape(text)
+        # Seems like double escaping is needed for \
+        regex = regex.replace('\\\\', '\\\\\\')
+        # Triple-escaping seems to be required for $ signs
+        regex = regex.replace(r'\$', r'\\\$')
+        # Whereas single quotes should not be escaped
+        regex = regex.replace(r"\'", "'")
+        return regex
+
+    def _expand_path(path):
+        return '"$(echo %s)"' % path
+
+    def contains(filename, text, exact=False, ):
+        if escape:
+            text = _escape_for_regex(text)
+            if exact:
+                text = "^%s$" % text
+        with settings(hide('everything'), warn_only=True):
+            egrep_cmd = 'egrep "%s" %s' % (text, _expand_path(filename))
+            return env.run(egrep_cmd).succeeded
+
+    # Normalize non-list input to be a list
+    if isinstance(text, basestring):
+        text = [text]
+    for line in text:
+        regex = '^' + _escape_for_regex(line) + ('' if partial else '$')
+        if (env.exists(filename, ) and line and contains(filename, regex)):
+            continue
+        line = line.replace("'", r"'\\''") if escape else line
+        env.run("echo '%s' >> %s" % (line, _expand_path(filename)))
 
 
 @task(alias='local')
 def localhost():
-    env.sudo = local
-    env.run = local
+    """ run task on localhost """
+    env.sudo = local_sudo
+    env.run = local_run
+    env.exists = os.path.exists
+    env.append = local_append
+    env.put = local_put
     env.hosts = ['local.{}'.format(SITE_DOMAIN)]
 
 
 @task(alias='dev')
 def development_server():
+    """ run task on development server """
     env.run = run
     env.sudo = sudo
+    env.exists = exists
+    env.append = append
+    env.put = put
     env.hosts = ['dev.{}'.format(SITE_DOMAIN)]
 
 
@@ -72,16 +135,16 @@ def _get_configs(site_url, user_name=None, bin_folder=None, config_folder=None,)
             'filename': '{user}_gunicorn.sh'.format(user=user_name,),
             'target folder': bin_folder,
             # make bash file executable by the supervisor user.
-            'install': 'sudo chmod 774 $FILENAME && env.sudo chown {user} $FILENAME'.format(user=user_name,),
-            'start': '',
-            'stop': '',
+            'install': 'sudo chmod 774 $FILENAME && sudo chown {user} $FILENAME'.format(user=user_name,),
+            'start': ':',
+            'stop': ':',
         },
         'supervisor': {  # keeps gunicorn env.running
             'template': '{config}/supervisor/template'.format(config=config_folder,),
             'filename': '{user}.conf'.format(user=user_name,),
             'target folder': '/etc/supervisor/conf.d',
             # read all config files in conf.d folder
-            'install': 'sudo supervisorctl reread && env.sudo supervisorctl update',
+            'install': 'sudo supervisorctl reread && sudo supervisorctl update',
             'start': 'sudo supervisorctl start {url}'.format(url=site_url,),
             'stop': 'sudo supervisorctl stop {url}'.format(url=site_url,),
         },
@@ -89,20 +152,20 @@ def _get_configs(site_url, user_name=None, bin_folder=None, config_folder=None,)
             'template': '{config}/nginx/template'.format(config=config_folder,),
             'filename': '{url}'.format(url=site_url,),
             'target folder': '/etc/nginx/sites-available',
-            'install': '',
+            'install': ':',
             'start': (
                 # create symbolic link from config file to sites-enabled
                 'sudo ln -sf /etc/nginx/sites-available/{url} /etc/nginx/sites-enabled/{url} '
                 # reload nginx service
                 '&& env.sudo nginx -s reload').format(url=site_url),
             # remove symbolic link
-            'stop': 'sudo rm /etc/nginx/sites-enabled/{url} && env.sudo nginx -s reload'.format(url=site_url,),
+            'stop': 'sudo rm /etc/nginx/sites-enabled/{url} && sudo nginx -s reload'.format(url=site_url,),
         },
     }
     return configs
 
 
-@task:
+@task
 def deploy():
     """ create database, make folders, install django, create linux user, make virtualenv. """
     # Folders are named something like www.example.com
@@ -122,7 +185,7 @@ def deploy():
     _update_deployment(site_url, folders)
 
 
-@task:
+@task
 def update():
     """ update repo from github, install pip reqirements, collect staticfiles and env.run database migrations. """
     site_url = env.host
@@ -172,10 +235,12 @@ def reboot():
     env.sudo('service nginx restart; service supervisorctl restart')
     _enable_site(site_url)
 
-# def make_local_config():
-#     """ Create configuration files for env.running the site on localhost """
-#     site_url = 'local.example.com'
-#     _deploy_configs(site_url, upload=False)
+
+@task
+def make_configs():
+    """ Create configuration files, but do not upload """
+    site_url = env.host
+    _deploy_configs(site_url, upload=False)
 
 
 @task
@@ -207,9 +272,9 @@ def _deploy_configs(site_url, user_name=None, user_group=None, upload=True):
             # use sed to change variable names that will differ between deployments and sites.
             local((
                 'cat "{template}" | '
-                'sed "s / SITEURL / {url} / g" | '
-                'sed "s / USERNAME / {user} / g" | '
-                'sed "s / USERGROUP / {group} / g" > '
+                'sed "s/SITEURL/{url}/g" | '
+                'sed "s/USERNAME/{user}/g" | '
+                'sed "s/USERGROUP/{group}/g" > '
                 '"{filename}"'
             ).format(
                 template=template,
@@ -220,7 +285,7 @@ def _deploy_configs(site_url, user_name=None, user_group=None, upload=True):
             ))
         if upload:
             # upload config file
-            put(target, destination, use_sudo=True)
+            env.put(target, destination, use_sudo=True)
             with shell_env(FILENAME=destination):
                 # env.run command to make service register new config and restart if needed.
                 env.run(config['install'])
@@ -245,15 +310,15 @@ def _upload_postactivate(postactivate_file, venv_folder, bin_folder):
     activate_path = '{venv}/bin/activate'.format(venv=venv_folder,)
     # add bash command to activate shellscript to source (run) postactivate
     # script when the virtualenvironment is activated.
-    append(activate_path, 'source {postactivate}'.format(postactivate=postactivate_path,))
+    env.append(activate_path, 'source {postactivate}'.format(postactivate=postactivate_path,))
     # upload file.
-    put(postactivate_file, postactivate_path)
+    env.put(postactivate_file, postactivate_path)
 
 
 def _create_directory_structure_if_necessary(folders):
     """ Ensure basic file structure in project. """
     site_folder = folders['site']
-    if not exists(site_folder):
+    if not env.exists(site_folder):
         # base deployment folder
         env.run('mkdir -p {site_folder}'.format(site_folder=site_folder,))
         # set linux user group.
@@ -274,7 +339,8 @@ def _create_linux_user(username, site_url, group):
     # Bash command id user returns error code 1 if user does not exist and code 0 if user exists.
     # To avoid Fabric raising an exception on an expected shell error,
     # return code ($?) is echoded to stdout and passed to python as a string.
-    user_exists = env.run('id {linux_user}; echo $?'.format(linux_user=username,)).split()[-1] == '0'
+    user_exists = env.run('id {linux_user}; echo $?'.format(linux_user=username,))
+    user_exists = user_exists.split()[-1] == '0'
     if not user_exists:
         # Create user and add to the default linux user group.
         env.sudo('useradd --shell /bin/bash -g {linux_group} -M -c "runs gunicorn for {site_url}" {linux_user}'.format(
@@ -285,7 +351,7 @@ def _create_linux_user(username, site_url, group):
 def _drop_postgres_db(db_name, backup=True):
     """ Delete database and user. Dumps the database to file before deleting """
     if backup:
-        env.run('pg_dump -Fc {db_name} > {db_name}_$(date +" % Y - %m - %d").sql'.format(db_name=db_name,))
+        env.run('pg_dump -Fc {db_name} > {db_name}_$(date +"%Y-%m-%d").sql'.format(db_name=db_name,))
     env.run('psql -c "DROP DATABASE {db_name}"'.format(db_name=db_name,))
     env.run('psql -c "DROP USER {db_user}"'.format(db_user=db_name,))
 
@@ -295,13 +361,14 @@ def _create_postgres_db(project_settings):
     username = project_settings['user']
     password = project_settings['db password']
     db_name = project_settings['db name']
-    databases = env.run(r'psql -l | grep --color=never -o " ^ \w\+ "').split()
+    databases = env.run(r'psql -l | grep --color=never -o "\w\+"').split()
     if db_name not in databases:
         print(db_name, databases)
         # create user
         env.run('psql -c "CREATE ROLE {user} NOSUPERUSER CREATEDB NOCREATEROLE LOGIN"'.format(user=username, ))
         # create database
-        env.run('psql -c "CREATE DATABASE {db} WITH OWNER={user}  ENCODING=\'utf-8\';"'.format(user=username, db=db_name, ))
+        env.run(
+            'psql -c "CREATE DATABASE {db} WITH OWNER={user}  ENCODING=\'utf-8\';"'.format(user=username, db=db_name, ))
     # change password. This will happen even if user already exists.
     # this is because a new password is created every time the postactivate file has to be changed.
     env.run('psql -c "ALTER ROLE {user} WITH PASSWORD \'{password}\';"'.format(user=username, password=password, ))
@@ -309,17 +376,22 @@ def _create_postgres_db(project_settings):
 
 def _get_latest_source(source_folder):
     """ Updates files on staging server with current git commit on dev branch. """
-    if exists(source_folder + '/.git'):
-        env.run('cd {source_folder} && git fetch'.format(source_folder=source_folder,))
+    if env.exists(source_folder + '/.git'):
+        # env.run('cd {source_folder} && git fetch'.format(source_folder=source_folder,))
+        pass
     else:
-        env.run('git clone {github_url} {source_folder}'.format(github_url=REPO_URL, source_folder=source_folder))
+        # env.run('git clone {github_url} {source_folder}'.format(github_url=REPO_URL, source_folder=source_folder))
+        pass
     current_commit = local('git log -n 1 --format=%H', capture=True)
-    env.run('cd {source_folder} && git reset --hard {commit}'.format(source_folder=source_folder, commit=current_commit))
+    env.run(
+        'cd {source_folder} && git reset --hard {commit}'.format(source_folder=source_folder, commit=current_commit))
 
 
 def _create_virtualenv(venv_folder, global_venv_folder):
     """ Create python virtual environment. """
-    if not exists(venv_folder + '/bin/pip'):
+    import ipdb
+    ipdb.set_trace()
+    if not env.exists(venv_folder + '/bin/pip'):
         env.run('{python_venv_version} {venv_folder}'.format(python_venv_version=PYVENV, venv_folder=venv_folder,))
         # link to global folder to enable virtualenvwrapper 'workon' command.
         env.run('ln -fs {venv_folder} {venvs}'.format(venv_folder=venv_folder, venvs=global_venv_folder))
@@ -327,8 +399,8 @@ def _create_virtualenv(venv_folder, global_venv_folder):
 
 def _update_virtualenv(source_folder, venv_folder):
     """ Install required python packages from pip requirements file. """
-    env.run('{venv}/bin/pip install -r {source}/requirements.txt'.format(venv=venv_folder, source=source_folder, )
-        )
+    env.run('{venv}/bin/pip install -r {source}/requirements.txt'.format(
+            venv=venv_folder, source=source_folder, ))
 
 
 def _update_static_files(venv_folder):
