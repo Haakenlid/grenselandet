@@ -1,4 +1,4 @@
-""" Deployment of Django website using pyvenv-3.4 and git """
+""" Deployment of Django website using pyvenv-3.4 and github """
 import os
 from os.path import join, dirname
 from fabric.contrib.files import append, exists, put
@@ -6,8 +6,8 @@ from fabric.context_managers import shell_env
 from fabric.api import local, env, run, sudo, settings, task
 from generate_postactivate import make_postactivate_file
 
-REPO_URL = 'https://github.com/user/reponame.git'  # github repo used for deploying the site
-PYVENV = 'pyvenv-3.4'  # using python 3.4
+REPO_URL = 'git@github.com:Haakenlid/django-skeleton.git'  # github repo used for deploying the site
+PYVENV = 'pyvenv-3.4'  # using python 3.4 for virtual environments
 LINUXGROUP = 'www-data'  # linux user group on the webserver
 WEBSERVER_ROOT = '/srv'  # root folder for all websites on the webserver
 SITE_DOMAIN = 'example.com'
