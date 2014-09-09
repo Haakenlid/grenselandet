@@ -49,6 +49,9 @@ EMAIL_USE_TLS = True
 INSTALLED_APPS = [
     'core',
     'functional_tests',
+    'applications.conventions',
+    'applications.mail',
+    'applications.tickets',
 ]
 
 # THIRD PARTY APPS

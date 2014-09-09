@@ -1,0 +1,49 @@
+{# Ticket review and payment button. #}
+{% extends "base_template.html" %}
+{% block title %}Payment Metamorfozes{% endblock %}
+{% block content %}
+<h1>Your ticket</h1>
+<table class="ticket-info">
+  <tr>
+    <th colspan=2>Ticket holder</th>
+  </tr>
+  <tr>
+    <td>Name:</td>
+    <td>{{ticket.get_full_name}}</td>
+  </tr>
+  <tr>
+    <td>Country:</td>
+    <td>{{ticket.get_nationality_display}}</td>
+  </tr>
+  <tr class="total">
+    <td>Total price:</td>
+    <td>{{ticket.ticket_type.price}} {{ticket.ticket_type.get_currency_display}}</td>
+  </tr>
+  <tr class="sum_paid">
+    <td>Sum paid:</td>
+    <td>{{ticket.sum_paid}} {{ticket.ticket_type.get_currency_display}}</td>
+  </tr>
+  <tr>
+    <th colspan=2>Priorities</th>
+  </tr>
+  {% for game in ticket.priorities.all %}
+  <tr>
+    <td>{{game.activity.title}}:</td>
+    <td>{{game.priority_stars}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{# TODO: Use template inheritance instead of template logic? #} {% if not ticket.activated %}
+<h2>Payment by credit card</h2>
+<p>Your signup is not complete before you have paid your ticket.</p>
+<div id="paypal-button">
+  {% if debug %}
+  <p>(DEBUG MODUS: knappen tar deg foreløpig til "paypal-sandbox", ikke den ekte paypal-siden)</p>
+  {% endif %}
+  {{ paypal_form.render }}
+</div>
+{% else %}
+<p>Your ticket is paid, and your registration is complete.</p>
+<p>If you want to change your ticket details, please contact us at admin@metamorfozes.net</p>
+{% endif %}
+{% endblock content %}

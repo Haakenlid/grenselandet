@@ -5,17 +5,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}universitas.no{% endblock %}</title>
+  <title>{% block title %}myapp.{% endblock %}</title>
   <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
   <link rel="icon" type="image/png" href="{% static 'images/favicon_128.png' %}" />
   <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}" />
   {% addtoblock "css" %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/foundation.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/universitas.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/style.css' %}" />
   {% endaddtoblock %}
   {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
+  {% addtoblock "js-head" %}
   <script src="{% static 'js/vendor/modernizr.js' %}"></script>
+  {% endaddtoblock %}
+  {% render_block "js-head" %}
 </head>
 
 <body>
@@ -23,13 +26,13 @@
     <div class="row">
         {% block header %}
         <div class="medium-4 small-12 columns">
-        <h1 id="logo"><a href="/">Universitas.no</a></h1>
+        <h1 id="logo"><a href="/">Grenselandet.net</a></h1>
         </div>
         <div class="medium-8 small-12 columns"
           <nav class="row" style="padding: 10px;">
-            <div class="small-4 columns" ><a href="/admin/stories/story/">Rediger saker</a></div>
-            <div class="small-4 columns" ><a href="/admin/frontpage/frontpagestory/">Rediger forsidetekst</a></div>
-            <div class="small-4 columns" ><a href="/admin/frontpage/contentblock/">Rediger forsideplassering</a></div>
+            <div class="small-4 columns" >meny</div>
+            <div class="small-4 columns" >meny</div>
+            <div class="small-4 columns" >meny</div>
           </nav>
         </div>
         {% endblock header %}
@@ -51,12 +54,9 @@
   <script src="{% static 'js/vendor/jquery.js' %}"></script>
   <script src="{% static 'js/foundation.min.js' %}"></script>
   {% include 'autocomplete_light/static.html' %}
-  {% endaddtoblock %}
-  {% comment %}
-    Autocomplete light - tror det innholder javascript. Kanskje det kan gjøres direkte, i stedet for å krølle det til på denne måten?
-  {% endcomment %}
-  {% render_block "js" postprocessor "compressor.contrib.sekizai.compress" %}
   <script> $(document).foundation(); </script>
+  {% endaddtoblock %}
+  {% render_block 'js' postprocessor 'compressor.contrib.sekizai.compress' %}
 
 </body>
 

@@ -1,0 +1,30 @@
+{# Ticket registration form. #}
+{% extends "base_template.html" %}
+{% block title %}Register for Metamorfozes{% endblock %}
+{% block content %}
+<h1>Game priorities for {{ticket.get_full_name}}</h1>
+<p>Please rate each game according to how much you would like to play it during the festival. Based on your rankings the system will make you a weighted lottery ticket and assign you spots in games based on this. 4 hearts = Top priority! 1 heart = I don't particularly care for playing this game...</p>
+<h2>Games will be run at the following times:</h2>
+<p> Session 1: Friday 18th, 12-16 </p>
+<p> Session 2: Friday 18th, 18-22 </p>
+<p> Session 3: Saturday 19th, 10-14 </p>
+<p> Session 4: Saturday 19th, 16-20 </p>
+<p> <a href="http://i1.wp.com/www.metamorfozes.com/wp-content/uploads/2014/07/festival.png">You can see the full game schedule here.</a> </p>
+<p> If you know you wont be able to participate in one of the game slots, send us an email at programme@metamorfozes.com, and we will make sure you don't get assigned a spot at a game you can't attend </p>
+<form action="" method="post">{% csrf_token %} {{ form.management_form }}
+  {% for game in form.forms %}
+  <div class="game">
+    <h2 class="game-title">{{ game.title }}</h2>
+    <h3 class="game-creators">by {{ game.creators }}</h3>
+    <div class="starbox">
+      {{ game.id }}
+      {% for radio in game.priority %}<span class="star"></span>{{ radio.tag }}{% endfor %}
+    </div>
+    <div class="game-description">{{ game.description }}</div>
+  </div>
+  {% empty %}
+  <h3>Registration for games will open Monday 14th of July.</h3>
+  {% endfor %}
+  <input type="submit" value="Continue" class="button">
+</form>
+{% endblock content%}

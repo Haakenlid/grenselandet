@@ -1,0 +1,10 @@
+{# Return view on successful payment of ticket. #}
+{% extends "base_template.html" %}
+
+{% block title %}Book a ticket{% endblock %}
+{% block content %}
+<h1>Thank you</h1>
+<p>Your payment has been registered</p>
+<p><a href="{% url 'ticket-pay' %}">View your ticket</a></p>
+
+{% endblock %}

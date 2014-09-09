@@ -1,0 +1,20 @@
+{# Ticket registration form. #}
+{% extends "base_template.html" %}
+{% block title %}Priorities{% endblock %}
+{% block content %}
+<h1>Priorities games</h1>
+{% for pr in priorities %}
+  {% ifchanged pr.activity %}
+    <h2>{{ pr.activity.title }}</h2>
+  {% endifchanged %}
+  <p><span class='stars'>{{ pr.priority_stars }}</span> {{ pr.ticket.get_full_name }}</p>
+{% endfor %}
+
+<h1>Priorities players</h1>
+{% for pr in priorities_by_player %}
+  {% ifchanged pr.ticket %}
+    <h2>{{ pr.ticket.get_full_name }}</h2>
+  {% endifchanged %}
+   <p><span class='stars'>{{ pr.priority_stars }}</span> {{ pr.activity.title }}</p>
+{% endfor %}
+{% endblock content%}

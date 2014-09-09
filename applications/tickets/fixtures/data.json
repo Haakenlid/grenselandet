@@ -1,0 +1,65 @@
+[
+{
+  "pk": 1,
+  "model": "signup.tickettype",
+  "fields": {
+    "currency": "EUR",
+    "price": 30,
+    "description": "Default ticket (*)",
+    "name": "International",
+    "nation_default": "*"
+  }
+},
+{
+  "pk": 2,
+  "model": "signup.tickettype",
+  "fields": {
+    "currency": "EUR",
+    "price": 0,
+    "description": "Free ticket if you pretend to be from Bouvet Island.",
+    "name": "Volunteer",
+    "nation_default": "BV"
+  }
+},
+{
+  "pk": 3,
+  "model": "signup.tickettype",
+  "fields": {
+    "currency": "EUR",
+    "price": 15,
+    "description": "Special price for Lithuanians (LI)",
+    "name": "Lithuanian",
+    "nation_default": "LI"
+  }
+},
+{
+  "pk": 1,
+  "model": "signup.activity",
+  "fields": {
+    "published": true,
+    "description": "Henry Bolingbroke, son of the great John of Gaunt, Duke of Lancaster, challenges Thomas Mowbray, Duke of Norfolk, accusing him of being involved in the recent death of the King\u2019s uncle, the Duke of Gloucester. The challenge is to be answered by a tournament at King Richar\u2019s court in Coventry, but the wayward and uncertain Richard stops the contest as it is about to begin. He banishes Mowbray for life and, responding to Lancaster\u2019s pleas, he commutes Bolingbroke\u2019s exile to six years.",
+    "max_participants": null,
+    "title": "Richard II"
+  }
+},
+{
+  "pk": 2,
+  "model": "signup.activity",
+  "fields": {
+    "published": true,
+    "description": "Alonso, the king of Naples, is returning from his daughter\u2019s wedding in Tunis. He is accompanied by his son, Ferdinand, his brother, Sebastain, and Antonio, the Duke of Milan. An old Milanese courtier, Gonzalo, is also on board. The ship is wrecked in a storm and all the passengers and crew are thrown into the furious sea.",
+    "max_participants": null,
+    "title": "The Tempest"
+  }
+},
+{
+  "pk": 3,
+  "model": "signup.activity",
+  "fields": {
+    "published": true,
+    "description": "Rome is in a mutinous mood. The citizens are protesting about their rulers\u2019 incompetence and the shortage of food. A popular senator, Menenius Agrippa, has just managed to calm them when the arrogant and fiery young general, Caius Martius, arouses their emotions again by confronting them. He tells them that tribunes, including Sicinius Velutus and Junius Brutus, have been appointed to speak on their behalf.",
+    "max_participants": null,
+    "title": "Coriolanus"
+  }
+}
+]

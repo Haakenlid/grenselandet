@@ -1,0 +1,18 @@
+{# Ticket registration form. #}
+{% extends "base_template.html" %}
+{% block title %}Register for Metamorfozes{% endblock %}
+{% block content %}
+<h1>Register for Metamorfozes</h1>
+<form  action="" method="post">{% csrf_token %}
+<table class="form profile_form">
+{% for field in form %}
+    <tr{% if field.errors %} class="error_row" {% endif %}>
+    <td>{{ field.label_tag }}</td>
+    <td>{{ field }}</td>
+    <td>{{ field.help_text }} {{ field.errors }}</td>
+    </tr>
+{% endfor %}
+</table>
+<input type="submit" value="Continue" class="button">
+</form>
+{% endblock content%}

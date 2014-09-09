@@ -6,6 +6,8 @@ django-extensions
 django-model-utils
 django-nose
 django-redis-cache
+django-sekizai
+django-compressor
 gunicorn
 hiredis
 ipdb
