@@ -8,6 +8,8 @@ django-nose
 django-redis-cache
 django-sekizai
 django-compressor
+django-countries
+hashids
 gunicorn
 hiredis
 ipdb

@@ -57,7 +57,6 @@ class TicketStartView(TemplateView):
         ticket_types = TicketType.objects.exclude(status=TicketType.SECRET).filter(ticket_pool__convention=self.convention)
         context.update(ticket_types=ticket_types)
         context.update(convention=self.convention)
-        import ipdb; ipdb.set_trace()
         return context
 
 

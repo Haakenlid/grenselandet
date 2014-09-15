@@ -7,12 +7,12 @@ from fabric.context_managers import shell_env
 from fabric.api import local, env, run, sudo, settings, task, hide
 from generate_postactivate import make_postactivate_file
 
-REPO_URL = 'git@github.com:Haakenlid/django-skeleton.git'  # github repo used for deploying the site
+REPO_URL = 'git@github.com:Haakenlid/grenselandet.git'  # github repo used for deploying the site
 PYVENV = 'pyvenv-3.4'  # using python 3.4 for virtual environments
 LINUXGROUP = 'www-data'  # linux user group on the webserver
 WEBSERVER_ROOT = '/srv'  # root folder for all websites on the webserver
 SITE_DOMAIN = 'grenselandet.net'
-
+env.forward_agent = True
 
 def local_run(command, *args, **kwargs):
     kwargs['capture'] = True
@@ -290,7 +290,7 @@ def _create_directory_structure_if_necessary(folders):
         # base deployment folder
         env.run('mkdir -p {site_folder}'.format(site_folder=site_folder,))
         # set linux user group.
-        env.run('chown :{group} {site_folder}'.format(group=LINUXGROUP, site_folder=site_folder))
+        env.sudo('chown :{group} {site_folder}'.format(group=LINUXGROUP, site_folder=site_folder))
         # set folder priveleges - 6*** means group and user sticky bits are set, and subfolders and files.
         # will inherit parent folder's group and user.
         # 770 means read, write and execute for folder is enabled for owner and group.
