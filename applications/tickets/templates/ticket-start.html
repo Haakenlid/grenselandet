@@ -1,0 +1,16 @@
+{% extends "base-template.html" %}
+{% block title %}Buy your ticket now{% endblock title %}
+{% block content %}
+  <div class="small-12 columns">
+    <h1>Ticket sales for {{ convention }}</h1>
+  </div>
+  <div class="small-6 columns">
+    Ticket sales opens at {{ convention.start_time }} and closes at {{ convention.end_time }} or when all tickets are sold out.
+  </div>
+  <div class="small-6 columns">
+    {% for tt in ticket_types %}
+    <a class="button" href="{{ tt.get_absolute_url }}">{{ tt.name }} {{ tt.get_price_display }}</a>
+    {% endfor %}
+  </div>
+
+{% endblock %}

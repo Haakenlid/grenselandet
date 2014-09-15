@@ -8,6 +8,7 @@ class Convention(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField()
+    mail_signature = models.TextField()
     # logo
     # TODO: logo som sorl-greie
     start_time = models.DateTimeField()

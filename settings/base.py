@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
 import os
-# import django.conf.global_settings as DEFAULT_SETTINGS
+from django.conf import global_settings
 
 
 def env_var(keyname):
@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'autocomplete_light',
     'django_extensions',
     'sorl.thumbnail',
+    'sekizai',
+    'compressor',
 ] + INSTALLED_APPS
 
 # CORE APPS
@@ -81,6 +83,10 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    'sekizai.context_processors.sekizai',
+    'django.core.context_processors.request',
+)
 # POSTGRESQL DATABASE
 DATABASES = {
     'default': {
@@ -147,7 +153,7 @@ STATICFILES_FINDERS = [
 ]
 
 # INTERNATIONALIZATION AND TRANSLATION
-LANGUAGE_CODE = 'nb_NO'  # Norwegian bokmål
+LANGUAGE_CODE = 'en_GB'  # English
 TIME_ZONE = 'Europe/Oslo'
 USE_I18N = True  # Internationalisation (string translation)
 USE_L10N = True  # Localisation (numbers and stuff)

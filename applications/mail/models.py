@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.template import Template, Context
 
 from applications.conventions.models import Convention
 
@@ -22,21 +23,33 @@ class MailTemplate(models.Model):
         verbose_name = _('mail template')
         verbose_name_plural = _('mail templates')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.subject
 
     # def get_absolute_url(self):
     #     return ('')
+    def trigger(self):
+        # TODO: sort by convention happening soon?
+        return self.mailtriggers.first()
 
-    def send_mail(self, recipient, convention):
+    def send_mail(self, recipient, convention=None):
+        if not convention:
+            convention = self.trigger().convention
 
-        context = {
+        context = Context({
             'recipient': recipient,
             'convention': convention,
-        }
-        email_body = render_to_string(self.template, context)
+        })
+        subject_template = Template(self.subject)
+        body_template = Template(
+            '{body}\n-- \n{signature}'.format(
+                body=self.body_text,
+                signature=convention.mail_signature,)
+        )
+        email_subject = subject_template.render(context)
+        email_body = body_template.render(context)
         send_mail(
-            subject=self.subject,
+            subject=email_subject,
             message=email_body,
             from_email='',
             recipient_list=[recipient.email],
@@ -74,13 +87,20 @@ class MailTrigger(models.Model):
     )
 
     class Meta:
-        unique_together = ('convention', 'template', 'trigger')
+        unique_together = ('convention', 'trigger')
 
-    @classmethod
-    def send_mail(cls, recipient, trigger):
-        convention = recipient.convention
-        try:
-            trigger = cls.objects.get(trigger=trigger, convention=convention)
-        except ObjectDoesNotExist:
-            raise NotImplementedError('no such mail template')
-        trigger.template.send_mail(recipient, convention)
+    def __str__(self):
+        return '{con}: {trigger}'.format(con=self.convention, trigger=self.get_trigger_display())
+
+    def send_mail(self, recipient):
+        convention = self.convention
+        self.template.send_mail(recipient, convention)
+
+    # @classmethod
+    # def send_mail(cls, recipient, trigger):
+    #     convention = recipient.convention
+    #     try:
+    #         trigger = cls.objects.get(trigger=trigger, convention=convention)
+    #     except ObjectDoesNotExist:
+    #         raise NotImplementedError('no such mail template')
+    #     trigger.template.send_mail(recipient, convention)

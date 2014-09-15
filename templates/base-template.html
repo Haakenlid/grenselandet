@@ -7,8 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}myapp.{% endblock %}</title>
   <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
-  <link rel="icon" type="image/png" href="{% static 'images/favicon_128.png' %}" />
-  <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}" />
   {% addtoblock "css" %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
@@ -22,39 +20,73 @@
 </head>
 
 <body>
-  <header>
-    <div class="row">
-        {% block header %}
-        <div class="medium-4 small-12 columns">
-        <h1 id="logo"><a href="/">Grenselandet.net</a></h1>
-        </div>
-        <div class="medium-8 small-12 columns"
-          <nav class="row" style="padding: 10px;">
-            <div class="small-4 columns" >meny</div>
-            <div class="small-4 columns" >meny</div>
-            <div class="small-4 columns" >meny</div>
-          </nav>
-        </div>
-        {% endblock header %}
-    </div>
-  </header>
-  <main>
+  {% block navigation %}
+    <nav class="top-bar" data-topbar role="navigation">
+      <ul class="title-area">
+        <li class="name">
+          <h1 id="logo1"><a href="/">Grenselandet International Chamber Larp Festival 2014</a></h1>
+        </li>
+         <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+      </ul>
+
+      <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+          <li class="active"><a href="#">tickets</a></li>
+          <li><a href="http://www.grenselandet.net/">news</a></li>
+          <li><a href="http://www.grenselandet.net/p/the-larps-2014.html">larps</a></li>
+          <li><a href="http://www.grenselandet.net/p/practical-information.html">practical information</a></li>
+        </ul>
+
+        <!-- Left Nav Section -->
+        <ul class="left">
+        </ul>
+      </section>
+    </nav>
+  {% endblock navigation %}
+  <main class="row">
     {% block content %}
-    <p>Some other content?</p>
+
     {% endblock content %}
   </main>
   {% block footer %}
-  <footer>
-    <div class="row">
-      <div class="col medium-9 small-12 large-4"></div>
+  <footer id="page-footer" class="row">
+    <div class="small-12 medium-4 columns">
+      <h3>Grenselandet 2014</h3>
+      <ul>
+        <li>Oslo International Chamber larp festival</li>
+        <li>dates: September 18th and 19th 2014</li>
+        <li>place: <a href="https://www.google.com/maps/place/Riksscenen/@59.9153185,10.7526835,15z/data=!4m5!1m2!2m1!1sriksscenen+oslo!3m1!1s0x46416e676ed41215:0x2ed16e71e86956ee">Riksscenen, Schouskvartalet, Oslo</a></li>
+      </ul>
+    </div>
+    <div class="small-12 medium-4 columns">
+      <h3>Contact us on</h3>
+      <ul>
+        <li>facebook event: <a href="https://www.facebook.com/events/1464332580448122/">Grenselandet 2014</a></li>
+        <li>email: admin@grenselandet.net</li>
+      </ul>
+    </div>
+    <div class="small-12 medium-4 columns">
+      <h3>Our organisation</h3>
+      <ul>
+        <li>Fantasiforbundet, c/o Åslaug Ullerud, Jens Bjelkes gate 7</li>
+        <li>Organisation number: 994 704 346</li>
+        <li>IBAN bank account: NO0417202585248</li>
+      </ul>
     </div>
   </footer>
   {% endblock footer %}
   {% addtoblock "js" %}
   <script src="{% static 'js/vendor/jquery.js' %}"></script>
-  <script src="{% static 'js/foundation.min.js' %}"></script>
+  <script src="{% static 'js/foundation/foundation.js' %}"></script>
+  <script src="{% static 'js/foundation/foundation.topbar.js' %}"></script>
+  <script src="{% static 'js/vendor/select2/select2.min.js' %}"></script>
   {% include 'autocomplete_light/static.html' %}
-  <script> $(document).foundation(); </script>
+  <script>
+  $(document).foundation();
+  $(document).ready(function() { $(".select2").select2(); });
+  </script>
   {% endaddtoblock %}
   {% render_block 'js' postprocessor 'compressor.contrib.sekizai.compress' %}
 

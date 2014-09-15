@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+main {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#logo1 {
+  background-image: url("/static/images/logo1.png");
+  height: 45px;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 0;
+  a {
+    color: transparent;
+    // display: none;
+  }
+}
+
+#page-footer {
+  background: #333;
+  padding: 10px 0;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+
+  h3, li {
+    color: #fff;
+    font-size: 80%;
+  }
+
+}

@@ -2,11 +2,21 @@
 Admin for signups.
 """
 from django.contrib import admin
-from .models import *
+from .models import Ticket, TicketType, TicketPool, Payment
 from datetime import datetime
-# from django.contrib.contenttypes import generic
+from django.utils.translation import ugettext_lazy as _
 
 CUTOFF_DATE = datetime(year=1986, month=10, day=25)  # Age cutoff TODO: don't hardcode this.
+
+
+class TicketTypeInline(admin.TabularInline):
+    model = TicketType
+    extra = 0
+
+
+class TicketPoolInline(admin.TabularInline):
+    model = TicketPool
+    extra = 0
 
 
 class Youth_filter(admin.SimpleListFilter):
@@ -45,6 +55,14 @@ class Youth_filter(admin.SimpleListFilter):
                 date_of_birth__gte=CUTOFF_DATE).order_by('-date_of_birth')
 
 
+def manual_payment(modeladmin, request, tickets):
+    paid_via = 'manually confirmed by {}'.format(request.user.get_full_name())
+    for ticket in tickets.filter(status=Ticket.ORDERED):
+        ticket.pay(paid_via=paid_via)
+
+manual_payment.short_description = _('register payment of this ticket.')
+
+
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
 
@@ -57,7 +75,6 @@ class TicketAdmin(admin.ModelAdmin):
         'age',
         'order_time',
         'status',
-        # 'nationality',
         'email',
         'sum_paid',
         'comments',
@@ -65,16 +82,41 @@ class TicketAdmin(admin.ModelAdmin):
     list_editable = (
         'status',
         'ticket_type',
-        )
+    )
     search_fields = (
-        # 'nationality',
+        'country',
         'first_name',
         'last_name',
     )
     list_filter = (
         Youth_filter,
-        # 'nationality',
-        )
+        'status',
+        'ticket_type',
+    )
+    actions = [
+        manual_payment,
+    ]
+
+
+@admin.register(TicketPool)
+class TicketPoolAdmin(admin.ModelAdmin):
+
+    """Backend settings for Ticket types."""
+
+    list_display = (
+        'id',
+        'name',
+        'description',
+        'sold_out',
+        'tickets_sold',
+        # 'nation_default',
+    )
+
+    list_editable = (
+        'name',
+        # 'nation_default',
+        'description',
+    )
 
 
 @admin.register(TicketType)
@@ -87,6 +129,9 @@ class TicketTypeAdmin(admin.ModelAdmin):
         'name',
         'price',
         'currency',
+        'tickets_sold',
+        'max',
+        'status',
         # 'nation_default',
         'description',
     )
@@ -95,9 +140,11 @@ class TicketTypeAdmin(admin.ModelAdmin):
         'name',
         'price',
         'currency',
+        'status',
         # 'nation_default',
         'description',
     )
+
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
@@ -107,4 +154,4 @@ class PaymentAdmin(admin.ModelAdmin):
         'sum_paid',
         'payment_time',
         'paid_via',
-        )
+    )
