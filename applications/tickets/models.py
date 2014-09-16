@@ -203,6 +203,7 @@ class Ticket(models.Model):
         """
         if self.status == self.ORDERED and self.ticket_type.price <= self.sum_paid:
             self.status = self.PAID
+            MailTrigger.objects.send_mail(recipient=self, trigger=MailTrigger.TICKET_PAID)
         if self.status == self.PAID and self.ticket_type.price > self.sum_paid:
             self.status = self.ORDERED
 
@@ -210,6 +211,7 @@ class Ticket(models.Model):
         if not self.hashid:
             self.hashid = self.hasher.encrypt(self.pk)
             super().save(*args, **kwargs)
+            MailTrigger.objects.send_mail(recipient=self, trigger=MailTrigger.TICKET_ORDERED)
 
 
 class TicketPool(models.Model):

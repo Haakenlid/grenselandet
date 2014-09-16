@@ -22,9 +22,9 @@ class TicketForm(forms.ModelForm):
             'date_of_birth',
             'email',
             'country',
+            'address',
             'city',
             'postal_code',
-            'address',
         ]
         widgets = {
             'first_name': forms.TextInput(attrs={

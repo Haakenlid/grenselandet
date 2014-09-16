@@ -56,7 +56,20 @@ class MailTemplate(models.Model):
         )
 
 
+class MailTriggerManager(models.Manager):
+
+    def send_mail(self, recipient, trigger):
+        convention = recipient.convention
+        try:
+            trigger = self.get(trigger=trigger, convention=convention)
+        except ObjectDoesNotExist:
+            raise NotImplementedError('no such mail template')
+        trigger.template.send_mail(recipient, convention)
+
+
 class MailTrigger(models.Model):
+
+    objects = MailTriggerManager()
 
     TICKET_ORDERED = 1
     TICKET_PAID = 2
@@ -95,12 +108,3 @@ class MailTrigger(models.Model):
     def send_mail(self, recipient):
         convention = self.convention
         self.template.send_mail(recipient, convention)
-
-    # @classmethod
-    # def send_mail(cls, recipient, trigger):
-    #     convention = recipient.convention
-    #     try:
-    #         trigger = cls.objects.get(trigger=trigger, convention=convention)
-    #     except ObjectDoesNotExist:
-    #         raise NotImplementedError('no such mail template')
-    #     trigger.template.send_mail(recipient, convention)
