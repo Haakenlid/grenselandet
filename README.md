@@ -1,4 +1,4 @@
-django-skeleton
+Grensenlandet.net
 ===============
 
-Skeleton Django deployment
+Ticket system and programme signup for Grenselandet festival.

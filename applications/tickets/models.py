@@ -98,6 +98,12 @@ class Ticket(models.Model):
     email = models.EmailField(
         null=True,
     )
+    city = models.CharField(
+        max_length=500,
+    )
+    postal_code = models.CharField(
+        max_length=500,
+    )
     address = models.CharField(
         max_length=500,
     )

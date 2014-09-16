@@ -22,6 +22,8 @@ class TicketForm(forms.ModelForm):
             'date_of_birth',
             'email',
             'country',
+            'city',
+            'postal_code',
             'address',
         ]
         widgets = {
@@ -35,6 +37,14 @@ class TicketForm(forms.ModelForm):
             }),
             'address': forms.TextInput(attrs={
                 'placeholder': 'Street address',
+                'required': 'true',
+            }),
+            'city': forms.TextInput(attrs={
+                'placeholder': 'City',
+                'required': 'true',
+            }),
+            'postal_code': forms.TextInput(attrs={
+                'placeholder': 'Postal Code',
                 'required': 'true',
             }),
             'email': forms.EmailInput(attrs={
