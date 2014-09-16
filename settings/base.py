@@ -150,6 +150,7 @@ TEMPLATE_DIRS = [join_path(BASE_DIR, 'templates'), ]
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.FileSystemFinder',
+    'compressor.finders.CompressorFinder',
 ]
 
 # INTERNATIONALIZATION AND TRANSLATION

@@ -4,12 +4,12 @@ import random
 from requests import request
 from os import environ, path
 
-SITE_DOMAIN = 'example.com'
+SITE_DOMAIN = 'grenselandet.net'
 PREFIX = 'DJANGO_'  # Environment variable prefix
 SETTINGS_MODULE = 'settings'  # Python module path to settings folder
 WEBSERVER_ROOT = '/srv'  # Location of each django project
 OVERRIDES = {
-    'www.{}'.format(SITE_DOMAIN): {
+    'tickets.{}'.format(SITE_DOMAIN): {
         'settings module': '{module}.production'.format(module=SETTINGS_MODULE)
     },
     'staging.{}'.format(SITE_DOMAIN): {
@@ -92,7 +92,6 @@ def make_postactivate_text(site_url):
     postactivate += (
         '\n'
         'export PYTHONPATH="$DJANGO_SOURCE_FOLDER:$PYTHONPATH:"\n'
-        'cd $DJANGO_SOURCE_FOLDER\n'
     )
     return postactivate, settings
 
