@@ -54,7 +54,7 @@ class TicketStartView(TemplateView):
     def get_context_data(self, **kwargs):
         """Adds sold_out to context"""
         context = super().get_context_data(**kwargs)
-        ticket_types = TicketType.objects.exclude(status=TicketType.SECRET).filter(ticket_pool__convention=self.convention)
+        ticket_types = TicketType.objects.filter(status=TicketType.FOR_SALE, ticket_pool__convention=self.convention)
         context.update(ticket_types=ticket_types)
         context.update(convention=self.convention)
         return context

@@ -154,10 +154,10 @@ STATICFILES_FINDERS = [
 ]
 
 # INTERNATIONALIZATION AND TRANSLATION
-LANGUAGE_CODE = 'en_GB'  # English
+LANGUAGE_CODE = 'en'  # English
 TIME_ZONE = 'Europe/Oslo'
 USE_I18N = True  # Internationalisation (string translation)
-# USE_L10N = True  # Localisation (numbers and stuff)
+USE_L10N = True  # Localisation (numbers and stuff)
 USE_TZ = True    # Use timezone
 LOCALE_PATHS = [join_path(BASE_DIR, 'translation'), ]  # Django puts generated translation files here.
 

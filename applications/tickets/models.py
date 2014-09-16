@@ -208,10 +208,15 @@ class Ticket(models.Model):
             self.status = self.ORDERED
 
         super().save(*args, **kwargs)
+
         if not self.hashid:
+            self.ticket_type.check_availability()
+            # import ipdb; ipdb.set_trace()
             self.hashid = self.hasher.encrypt(self.pk)
             super().save(*args, **kwargs)
             MailTrigger.objects.send_mail(recipient=self, trigger=MailTrigger.TICKET_ORDERED)
+
+
 
 
 class TicketPool(models.Model):

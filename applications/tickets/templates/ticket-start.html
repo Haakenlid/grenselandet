@@ -9,7 +9,9 @@
   </div>
   <div class="small-6 columns">
     {% for tt in ticket_types %}
-    <a class="button" href="{{ tt.get_absolute_url }}">{{ tt.name }} {{ tt.get_price_display }}</a>
+      <a class="button" href="{{ tt.get_absolute_url }}">{{ tt.name }} {{ tt.get_price_display }}</a>
+    {% empty %}
+      <p>There are no available tickets at this time.</p>
     {% endfor %}
   </div>
 
