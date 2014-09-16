@@ -100,13 +100,9 @@ class TicketMixin:
         )
 
 
-class TicketReceiptView(TicketMixin, DetailView):
-
-    """ Show receipt data for ticket """
-    template_name = 'ticket-receipt.html'
 
 
-class TicketPayView(TicketReceiptView):
+class TicketPayView(TicketMixin, DetailView):
 
     """ Participant pay their ticket. """
     template_name = 'ticket-pay.html'
@@ -139,3 +135,8 @@ class TicketPayView(TicketReceiptView):
     # def form_valid(self, form):
     #     # self.object = form.save(ticket_type=self.ticket_type)
     #     return HttpResponseRedirect(self.get_success_url())
+
+class TicketReceiptView(TicketPayView):
+
+    """ Show receipt data for ticket """
+    # template_name = 'ticket-pay.html'

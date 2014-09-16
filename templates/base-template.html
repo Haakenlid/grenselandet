@@ -23,11 +23,14 @@
   {% block navigation %}
     <nav class="top-bar" data-topbar role="navigation">
       <ul class="title-area">
-        <li class="name">
-          <h1 id="logo1"><a href="/">Grenselandet International Chamber Larp Festival 2014</a></h1>
+        <li id="logo">
+          <h1><span id="name"><a href="/">Grenselandet 2014</a></span>
+          <span id="description">International Chamber Larp Festival<br>
+            Oslo, October 17th and 18th, 2014
+          </span></h1>
         </li>
          <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
       </ul>
 
       <section class="top-bar-section">
@@ -45,35 +48,39 @@
       </section>
     </nav>
   {% endblock navigation %}
-  <main class="row">
+  <main>
+    <div class="row">
     {% block content %}
 
     {% endblock content %}
+    </div>
   </main>
   {% block footer %}
-  <footer id="page-footer" class="row">
-    <div class="small-12 medium-4 columns">
-      <h3>Grenselandet 2014</h3>
-      <ul>
-        <li>Oslo International Chamber larp festival</li>
-        <li>dates: September 18th and 19th 2014</li>
-        <li>place: <a href="https://www.google.com/maps/place/Riksscenen/@59.9153185,10.7526835,15z/data=!4m5!1m2!2m1!1sriksscenen+oslo!3m1!1s0x46416e676ed41215:0x2ed16e71e86956ee">Riksscenen, Schouskvartalet, Oslo</a></li>
-      </ul>
-    </div>
-    <div class="small-12 medium-4 columns">
-      <h3>Contact us on</h3>
-      <ul>
-        <li>facebook event: <a href="https://www.facebook.com/events/1464332580448122/">Grenselandet 2014</a></li>
-        <li>email: admin@grenselandet.net</li>
-      </ul>
-    </div>
-    <div class="small-12 medium-4 columns">
-      <h3>Our organisation</h3>
-      <ul>
-        <li>Fantasiforbundet, c/o Åslaug Ullerud, Jens Bjelkes gate 7</li>
-        <li>Organisation number: 994 704 346</li>
-        <li>IBAN bank account: NO0417202585248</li>
-      </ul>
+  <footer id="page-footer" >
+    <div class="row">
+      <div class="small-12 medium-4 columns">
+        <h3>Grenselandet 2014</h3>
+        <ul>
+          <li>Oslo International Chamber larp festival</li>
+          <li>dates: September 18th and 19th 2014</li>
+          <li>place: <a href="https://www.google.com/maps/place/Riksscenen/@59.9153185,10.7526835,15z/data=!4m5!1m2!2m1!1sriksscenen+oslo!3m1!1s0x46416e676ed41215:0x2ed16e71e86956ee">Riksscenen, Schouskvartalet, Oslo</a></li>
+        </ul>
+      </div>
+      <div class="small-12 medium-4 columns">
+        <h3>Contact us</h3>
+        <ul>
+          <li>facebook event: <a href="https://www.facebook.com/events/1464332580448122/">Grenselandet 2014</a></li>
+          <li>email: admin@grenselandet.net</li>
+        </ul>
+      </div>
+      <div class="small-12 medium-4 columns">
+        <h3>Our organisation</h3>
+        <ul>
+          <li>Fantasiforbundet, c/o Åslaug Ullerud, Jens Bjelkes gate 7</li>
+          <li>Organisation number: 994 704 346</li>
+          <li>IBAN bank account: NO0417202585248</li>
+        </ul>
+      </div>
     </div>
   </footer>
   {% endblock footer %}

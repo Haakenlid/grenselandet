@@ -1,26 +1,44 @@
 @charset "UTF-8";
 
-main {
-  padding-top: 20px;
-  padding-bottom: 20px;
+body {
+  background: #333;
 }
 
-#logo1 {
-  background-image: url("/static/images/logo1.png");
-  height: 45px;
-  width: 100%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: 0;
-  a {
-    color: transparent;
-    // display: none;
+main {
+  background: #FFF;
+  padding: 20px 0;
+}
+
+#logo {
+  span {
+    display: inline-block;
+  }
+  #description {
+    @extend .visible-for-large-up;
+    color: #FFF;
+    font-size: 50%;
+  }
+  #name {
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 0;
+    background-image: url("/static/images/banner_grenselandet_2014.png");
+    // height: 30px;
+    // width: 600px;
+    margin: 0 20px;
+    a {
+      font-size: 180%;
+      color: transparent;
+      @media #{$medium-up} {
+        line-height: 0;
+        font-size: 150%;
+      }
+    }
   }
 }
 
 #page-footer {
-  background: #333;
-  padding: 10px 0;
+  padding: 20px 0;
 
   ul {
     padding: 0;
@@ -31,6 +49,14 @@ main {
   h3, li {
     color: #fff;
     font-size: 80%;
+  }
+  @media #{$small-only} {
+    .columns:not(:first-child) {
+      border-top: 1px solid #666;
+      padding-top: 20px;
+      margin-top: 20px;
+
+    }
   }
 
 }

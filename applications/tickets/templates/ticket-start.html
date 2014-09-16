@@ -5,7 +5,7 @@
     <h1>Ticket sales for {{ convention }}</h1>
   </div>
   <div class="small-6 columns">
-    Ticket sales opens at {{ convention.start_time }} and closes at {{ convention.end_time }} or when all tickets are sold out.
+    Ticket sales opens at <strong>{{ convention.ticket_sales_opens }}</strong> and closes at <strong>{{ convention.ticket_sales_closes }}</strong> or when all tickets are sold out.
   </div>
   <div class="small-6 columns">
     {% for tt in ticket_types %}

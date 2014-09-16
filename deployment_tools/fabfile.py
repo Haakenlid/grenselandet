@@ -9,7 +9,7 @@ from generate_postactivate import make_postactivate_file
 
 REPO_URL = 'git@github.com:Haakenlid/grenselandet.git'  # github repo used for deploying the site
 PYVENV = 'pyvenv-3.4'  # using python 3.4 for virtual environments
-LINUXGROUP = 'www-data'  # linux user group on the webserver
+LINUXGROUP = 'www'  # linux user group on the webserver
 WEBSERVER_ROOT = '/srv'  # root folder for all websites on the webserver
 SITE_DOMAIN = 'grenselandet.net'
 env.forward_agent = True
@@ -125,7 +125,7 @@ def _get_configs(site_url, user_name=None, bin_folder=None, config_folder=None,)
                 # create symbolic link from config file to sites-enabled
                 'sudo ln -sf /etc/nginx/sites-available/{url} /etc/nginx/sites-enabled/{url} '
                 # reload nginx service
-                '&& env.sudo nginx -s reload').format(url=site_url),
+                '&& sudo nginx -s reload').format(url=site_url),
             # remove symbolic link
             'stop': 'sudo rm /etc/nginx/sites-enabled/{url} && sudo nginx -s reload'.format(url=site_url,),
         },
@@ -368,9 +368,9 @@ def _update_virtualenv(source_folder, venv_folder):
 
 def _update_static_files(venv_folder):
     """ Move images, js and css to staticfolder to be served directly by nginx. """
-    env.run('/bin/bash {venv}/bin/activate && django-admin collectstatic --noinput'.format(venv=venv_folder,))
+    env.run('source {venv}/bin/activate && django-admin collectstatic --noinput'.format(venv=venv_folder,))
 
 
 def _update_database(venv_folder):
     """ Run database migrations if required by changed apps. """
-    env.run('/bin/bash {venv}/bin/activate && django-admin migrate --noinput'.format(venv=venv_folder,))
+    env.run('source {venv}/bin/activate && django-admin migrate --noinput'.format(venv=venv_folder,))
