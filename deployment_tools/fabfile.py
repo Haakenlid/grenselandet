@@ -46,6 +46,15 @@ def localhost():
     env.put = local_put
     env.hosts = ['local.{}'.format(SITE_DOMAIN)]
 
+@task(alias='prod')
+def production_server():
+    """ run task on development server """
+    env.run = run
+    env.sudo = sudo
+    env.exists = exists
+    env.append = append
+    env.put = put
+    env.hosts = ['tickets.{}'.format(SITE_DOMAIN)]
 
 @task(alias='dev')
 def development_server():
@@ -329,7 +338,7 @@ def _create_postgres_db(project_settings):
     username = project_settings['user']
     password = project_settings['db password']
     db_name = project_settings['db name']
-    databases = env.run(r'psql -l | grep --color=never -o "\w\+"').split()
+    databases = env.run(r'psql -l | grep --color=never -o "^ \w\+"').split()
     if db_name not in databases:
         print(db_name, databases)
         # create user
