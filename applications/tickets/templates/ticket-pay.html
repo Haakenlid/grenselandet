@@ -14,21 +14,70 @@
 <div class="small-12 medium-6 columns">
     <h3>Ticket information</h3>
       <table class="profile_form small-12 columns">
-      {% for key, value in ticket_data %}
-          <tr>
-          <td>{{ key }}:</td>
-          <td>{{ value }}</td>
-          </tr>
-      {% endfor %}
+          <tr><td>Price:</td><td>{{ ticket.ticket_type.get_price_display }}</td></tr>
+          <tr><td>Ticket Type:</td><td>{{ ticket.ticket_type.name }}</td></tr>
+          <tr><td>Event:</td><td>{{ ticket.convention }}</td></tr>
+          <tr><td>Ticket Holder:</td><td>{{ ticket.get_full_name }}</td></tr>
+          <tr><td>E-mail:</td><td>{{ ticket.email }}</td></tr>
+          <tr><td>Address:</td><td>{{ ticket.get_address_display }}</td></tr>
       </table>
     </div>
 <div class="small-12 medium-6 columns">
-  <h3>About the ticket</h3>
-  <ul>
-    <li>A ticket to Grenselandet entitles you to access the festival areas, including access to the party.</li>
-    <li>As a ticket-holder you are entitled to sign up for the larps when this signup opens in early october.</li>
-    <li>Please note that this year the Grenselandet ticket does not include food or accommodation.</li>
-  </ul>
+  <h3>Credit Card information</h3>
+ <form id="payment-form" action="#" method="POST">{% csrf_token %}
+   <input class="card-amount-int" type="hidden" value="{{ ticket.ticket_type.price }}" />
+   <input class="card-currency" type="hidden" value="{{ ticket.ticket_type.currency }}" />
+  <table class="payment_form small-12 columns">
+    <tr>
+      <td><label>Card number</label></td>
+      <td><input class="card-number" type="text" size="20" /></td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>CVC</label>
+      </td>
+      <td>
+       <input class="card-cvc" type="text" size="4" /></div>
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>Name</label>
+      </td>
+      <td>
+       <input class="card-holdername" type="text" size="4" value="{{ ticket.get_full_name }}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <label>Expiry date (MM/YYYY)</label>
+      </td>
+      <td>
+        <div class="row">
+          <div class="small-4 columns">
+           <input class="card-expiry-month" type="text" size="2" />
+         </div>
+         <div class="small-8 columns">
+           <input class="card-expiry-year" type="text" size="4" />
+         </div>
+       </div>
+     </td>
+    </tr>
+
+
+    </table>
+   <button class="small-12 columns submit-button" type="submit">Submit</button>
+
+ </form>
 
 </div>
 {% endblock content%}
+{% block extrajs %}
+<script type="text/javascript">
+  var PAYMILL_PUBLIC_KEY = '{{ PAYMILL_PUBLIC_KEY }}';
+</script>
+<script type="text/javascript" src="https://bridge.paymill.com/"></script>
+{% endblock extrajs %}

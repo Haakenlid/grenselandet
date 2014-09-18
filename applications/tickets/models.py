@@ -185,6 +185,16 @@ class Ticket(models.Model):
         """Return full name of ticket holder."""
         return u'%s %s' % (self.first_name, self.last_name,)
 
+    def get_address_display(self):
+        """Return full name of ticket holder."""
+        res = '{address}, {postal_code} {city}, {country}'.format(
+            address=self.address,
+            postal_code=self.postal_code,
+            city=self.city,
+            country=self.country.name,
+        )
+        return res
+
     def get_absolute_url(self):
         """ Payment or receipt view. """
         kwargs = {'hashid': self.hashid, }
@@ -215,8 +225,6 @@ class Ticket(models.Model):
             self.hashid = self.hasher.encrypt(self.pk)
             super().save(*args, **kwargs)
             MailTrigger.objects.send_mail(recipient=self, trigger=MailTrigger.TICKET_ORDERED)
-
-
 
 
 class TicketPool(models.Model):

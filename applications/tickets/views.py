@@ -100,8 +100,6 @@ class TicketMixin:
         )
 
 
-
-
 class TicketPayView(TicketMixin, DetailView):
 
     """ Participant pay their ticket. """
@@ -117,26 +115,23 @@ class TicketPayView(TicketMixin, DetailView):
     def get_context_data(self, **kwargs):
         """Adds sold_out to context"""
         context = super().get_context_data(**kwargs)
-        context.update(ticket_type=self.ticket.ticket_type)
-        context.update(ticket=self.ticket)
-        context.update(ticket_data=(
-            ('ticket-id', self.ticket.hashid, ),
-            ('event', self.ticket.convention, ),
-            ('ticket type', self.ticket.ticket_type.name, ),
-            ('price', self.ticket.ticket_type.get_price_display(), ),
-            ('ticket holder', self.ticket.get_full_name(), ),
-            ('date of birth', self.ticket.date_of_birth, ),
-            ('email', self.ticket.email, ),
-            ('address', self.ticket.address, ),
-            ('country', self.ticket.country.name, ),
-            ), )
+        context.update(
+            ticket_type=self.ticket.ticket_type,
+            ticket=self.ticket,
+            PAYMILL_PUBLIC_KEY=settings.PAYMILL_PUBLIC_KEY,
+            PAYMILL_TEST_MODE='true' if settings.DEBUG else 'false',
+        )
         return context
 
     # def form_valid(self, form):
-    #     # self.object = form.save(ticket_type=self.ticket_type)
+    # self.object = form.save(ticket_type=self.ticket_type)
     #     return HttpResponseRedirect(self.get_success_url())
+
 
 class TicketReceiptView(TicketPayView):
 
     """ Show receipt data for ticket """
     # template_name = 'ticket-pay.html'
+
+class PayMillTestView(TicketPayView):
+    template_name = 'paymill-test.html'

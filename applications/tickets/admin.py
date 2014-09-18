@@ -109,13 +109,13 @@ class TicketPoolAdmin(admin.ModelAdmin):
         'description',
         'sold_out',
         'tickets_sold',
-        # 'nation_default',
+        'max_tickets',
     )
 
     list_editable = (
         'name',
-        # 'nation_default',
         'description',
+        'max_tickets',
     )
 
 
