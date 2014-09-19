@@ -78,9 +78,10 @@ class TicketAdmin(admin.ModelAdmin):
         'email',
         'sum_paid',
         'comments',
+        'country',
     )
     list_editable = (
-        'status',
+        # 'status',
         'ticket_type',
     )
     search_fields = (
@@ -154,4 +155,5 @@ class PaymentAdmin(admin.ModelAdmin):
         'sum_paid',
         'payment_time',
         'paid_via',
+        'transaction_id',
     )

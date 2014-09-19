@@ -37,6 +37,10 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = [env_var('SITE_URL'), ]
 
+# PAYMILL API KEYS
+PAYMILL_PUBLIC_KEY = env_var('PAYMILL_PUBLIC_KEY')
+PAYMILL_PRIVATE_KEY = env_var('PAYMILL_PRIVATE_KEY')
+
 # EMAIL CONFIGURATION
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

@@ -21,9 +21,14 @@ from django.contrib.sites.models import get_current_site
 from django.conf import settings
 # from django.contrib import messages
 
+import pymill
+
 from .models import Ticket, TicketType
 from applications.conventions.models import Convention
 from .forms import TicketForm
+
+import logging
+logger = logging.getLogger('debug')
 
 
 class DateCheckMixin(object):
@@ -100,10 +105,11 @@ class TicketMixin:
         )
 
 
-class TicketPayView(TicketMixin, DetailView):
+class TicketPayView(TicketMixin, TemplateView):
 
     """ Participant pay their ticket. """
     template_name = 'ticket-pay.html'
+    next_url_label = 'ticket-receipt'
 
     def dispatch(self, request, *args, **kwargs):
         self.ticket = get_object_or_404(
@@ -113,7 +119,6 @@ class TicketPayView(TicketMixin, DetailView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        """Adds sold_out to context"""
         context = super().get_context_data(**kwargs)
         context.update(
             ticket_type=self.ticket.ticket_type,
@@ -123,15 +128,45 @@ class TicketPayView(TicketMixin, DetailView):
         )
         return context
 
-    # def form_valid(self, form):
-    # self.object = form.save(ticket_type=self.ticket_type)
-    #     return HttpResponseRedirect(self.get_success_url())
+    def post(self, *args, **kwargs):
+        ticket = self.ticket
+        paymill_token = self.request.POST.get('paymill_token')
+        private_key = settings.PAYMILL_PRIVATE_KEY
+        paymill = pymill.Pymill(private_key)
+
+        credit_card = paymill.new_card(
+            token=paymill_token,
+        )
+        transaction = paymill.transact(
+            amount=ticket.ticket_type.price * 100,
+            currency=ticket.ticket_type.currency,
+            payment=credit_card,
+        )
+        logger.debug(r'\n{}\n{}'.format(ticket, transaction))
+
+        logger.debug(r'{}'.format(
+            paymill.response_code2text(transaction.response_code),
+        ))
+
+        if transaction.response_code == 20000:
+            import ipdb; ipdb.set_trace()
+            self.ticket.pay(
+                paid_via='PayMill',
+                transaction_id=transaction.id,
+            )
+        else:
+            logger.error('transaction failed: {}'.format(
+                paymill.response_code2text(transaction.response_code),
+            ))
+
+        return HttpResponseRedirect(self.ticket.get_absolute_url())
 
 
 class TicketReceiptView(TicketPayView):
 
     """ Show receipt data for ticket """
     # template_name = 'ticket-pay.html'
+
 
 class PayMillTestView(TicketPayView):
     template_name = 'paymill-test.html'

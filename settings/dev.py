@@ -15,5 +15,3 @@ DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 # http://django-debug-toolbar.readthedocs.org/en/latest/installation.html
 INTERNAL_IPS = env_var('DEBUG_TOOLBAR_INTERNAL_IPS').split(' ')
-
-PAYMILL_PUBLIC_KEY = '80711414564043477fab642827961bd5'
