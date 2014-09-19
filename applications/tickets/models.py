@@ -16,8 +16,6 @@ from applications.mail.models import MailTrigger
 class Person(models.Model):
     name = models.CharField(max_length=100)
 # from annoying.functions import get_object_or_None
-# import paypal.standard.ipn.signals as signals
-# from paypal.standard.ipn.models import PayPalIPN
 # from django.contrib.auth.models import User
 
 import logging
@@ -31,18 +29,24 @@ class Payment(models.Model):
     """ Transaction of payment for ticket. """
 
     ticket = models.ForeignKey('Ticket')
-    # paypal_ipn = models.ForeignKey(PayPalIPN, null=True)
     sum_paid = models.IntegerField()
-    transaction_id = models.IntegerField(
+    currency = models.CharField(
+        max_length=3
+    )
+    transaction_id = models.CharField(
+        help_text=_('payment provider transaction id'),
+        max_length=50,
         editable=False,
         null=True,
-        )
+    )
     paid_via = models.CharField(
+        max_length=50,
         help_text=_('How was the payment made?'),
-        max_length=50)
+    )
     payment_time = models.DateTimeField(
         auto_now=True,
-        verbose_name='Time the ticket was paid.')
+        help_text=_('Time the ticket was paid.'),
+    )
 
     class Meta:
         verbose_name = _('Payment')
@@ -160,7 +164,7 @@ class Ticket(models.Model):
             ticket=self,
             sum_paid=sum_paid,
             currency=currency,
-            )
+        )
         payment = Payment(**kwargs)
         payment.save()
         self.sum_paid += sum_paid
@@ -340,6 +344,3 @@ class TicketType(models.Model):
             ticket_type=self.name,
         ))[:50]
         super().save(*args, **kwargs)
-
-
-

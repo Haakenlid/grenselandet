@@ -17,7 +17,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 
 from django.contrib.sites.models import get_current_site
-
+from django.contrib import messages
 from django.conf import settings
 # from django.contrib import messages
 
@@ -108,6 +108,7 @@ class TicketMixin:
 class TicketPayView(TicketMixin, TemplateView):
 
     """ Participant pay their ticket. """
+
     template_name = 'ticket-pay.html'
     next_url_label = 'ticket-receipt'
 
@@ -129,36 +130,69 @@ class TicketPayView(TicketMixin, TemplateView):
         return context
 
     def post(self, *args, **kwargs):
-        ticket = self.ticket
+        """ Process payment from PayMill """
+        PAYMILL_SUCCESS_CODE = 20000
         paymill_token = self.request.POST.get('paymill_token')
         private_key = settings.PAYMILL_PRIVATE_KEY
+
         paymill = pymill.Pymill(private_key)
 
-        credit_card = paymill.new_card(
-            token=paymill_token,
-        )
+        credit_card = paymill.new_card(token=paymill_token,)
+        description = '{ticket} for {person}'.format(
+            ticket=self.ticket.ticket_type,
+            person=self.ticket.get_full_name,
+            )
+
         transaction = paymill.transact(
-            amount=ticket.ticket_type.price * 100,
-            currency=ticket.ticket_type.currency,
+            amount=self.ticket.ticket_type.price * 100,
+            currency=self.ticket.ticket_type.currency,
             payment=credit_card,
+            description=description,
         )
-        logger.debug(r'\n{}\n{}'.format(ticket, transaction))
 
-        logger.debug(r'{}'.format(
-            paymill.response_code2text(transaction.response_code),
-        ))
+        response_status = paymill.response_code2text(transaction.response_code)
 
-        if transaction.response_code == 20000:
-            import ipdb; ipdb.set_trace()
+        logger.debug(
+            '{time} {name} {response}'.format(
+                time=timezone.now(),
+                name=self.ticket.get_full_name(),
+                response=response_status,
+            )
+        )
+
+        if transaction.response_code == PAYMILL_SUCCESS_CODE:
             self.ticket.pay(
-                paid_via='PayMill',
+                paid_via='PayMill transaction',
                 transaction_id=transaction.id,
             )
-        else:
-            logger.error('transaction failed: {}'.format(
-                paymill.response_code2text(transaction.response_code),
-            ))
+            messages.success(
+                self.request,
+                'Your payment was successfull, you have been emailed a receipt.',
+            )
+            return self.form_valid()
 
+        else:
+            logger.error('transaction failed: {}'.format(response_status, ))
+            messages.error(
+                self.request,
+                'The transaction could not be completed due to the following error:'
+                ' {error_message}'.format(
+                    error_message=response_status
+                ),
+            )
+            return self.form_invalid()
+
+    def form_invalid(self):
+        """
+        If the form is invalid, re-render the context data with the
+        data-filled form and errors.
+        """
+        return self.render_to_response(self.get_context_data())
+
+    def form_valid(self):
+        """
+        If the form is valid, redirect to the supplied URL.
+        """
         return HttpResponseRedirect(self.ticket.get_absolute_url())
 
 
