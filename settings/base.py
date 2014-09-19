@@ -36,6 +36,7 @@ SITE_URL = env_var('SITE_URL')
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ALLOWED_HOSTS = [env_var('SITE_URL'), ]
+ADMINS = (('Håken Lid', 'haakenlid@gmail.com'),)
 
 # EMAIL CONFIGURATION
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
