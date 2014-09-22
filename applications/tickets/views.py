@@ -199,7 +199,7 @@ class TicketPayView(TicketMixin, TemplateView):
 class TicketReceiptView(TicketPayView):
 
     """ Show receipt data for ticket """
-    # template_name = 'ticket-pay.html'
+    template_name = 'ticket-receipt.html'
 
 
 class PayMillTestView(TicketPayView):

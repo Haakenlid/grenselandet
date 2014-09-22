@@ -1,27 +1,8 @@
 {# Ticket registration form. #}
 {% extends "base-template.html" %}
-{% load staticfiles %}
-{% load sekizai_tags %}
-
-
-
-{% block extrajs %}
-<script type="text/javascript">
-  var PAYMILL_PUBLIC_KEY = '{{ PAYMILL_PUBLIC_KEY }}';
-  var PAYMILL_TEST_MODE= '{{ PAYMILL_TEST_MODE }}';
-</script>
-<script type="text/javascript" src="https://bridge.paymill.com/"></script>
-<script src="{% static 'js/paymill.js' %}"></script>
-<script src="{% static 'js/cc-branddetection.js' %}"></script>
-{% endblock extrajs %}
-
 
 {% block title %}{{ ticket.convention }} ticket for {{ ticket.get_full_name}} {{ convention }}{% endblock %}
 {% block content %}
-
-{% addtoblock "css" %}
-  <link rel="stylesheet" type="text/css" href="{% static 'css/paymill.css' %}">
-{% endaddtoblock %}
 
 <div class="small-12 columns">
   <h1>Your ticket reservation</h1>
@@ -33,58 +14,9 @@
 </div>
 <hr>
 <div class="small-12 medium-6 columns">
-    <h3>Ticket information</h3>
-      <table class="form-table small-12 columns">
-          <tr><td>Price:</td><td>{{ ticket.ticket_type.get_price_display }}</td></tr>
-          <tr><td>Ticket Type:</td><td>{{ ticket.ticket_type.name }}</td></tr>
-          <tr><td>Event:</td><td>{{ ticket.convention }}</td></tr>
-          <tr><td>Ticket Holder:</td><td>{{ ticket.get_full_name }}</td></tr>
-          <tr><td>E-mail:</td><td>{{ ticket.email }}</td></tr>
-          <tr><td>Address:</td><td>{{ ticket.get_address_display }}</td></tr>
-      </table>
-    </div>
+  {% include '_ticket-details.html' %}
+</div>
 <div class="small-12 medium-6 columns">
-  <h3>Credit Card information</h3>
-  <form id="payment-form" action="" method="POST">
-  <table class="form-table small-12 columns">
-    <tr>
-      <td><label>Card number</label></td>
-      <td><input required class="card-number" type="text" size="20" value="4111111111111111" /></td>
-    </tr>
-
-    <tr>
-      <td> <label>CVC</label> </td>
-      <td> <input required class="card-cvc" type="text" size="4" value="123"/></div> </td>
-    </tr>
-
-    <tr>
-      <td> <label>Name</label> </td>
-      <td> <input required class="card-holdername" type="text" size="4" value="{{ ticket.get_full_name }}" /> </td>
-    </tr>
-
-    <tr>
-      <td> <label>Expiry date (MM/YYYY)</label> </td>
-      <td>
-        <div class="row">
-          <div class="small-4 columns">
-           <input required class="card-expiry-month" type="text" size="2" value="12"/>
-         </div>
-         <div class="small-8 columns">
-           <input required class="card-expiry-year" type="text" size="4" value="2015" />
-         </div>
-       </div>
-     </td>
-    </tr>
-    </table>
-    <input class="card-amount" type="hidden" value="{{ ticket.ticket_type.price }}" />
-    <input class="card-currency" type="hidden" value="{{ ticket.ticket_type.currency }}" />
-
-    {% csrf_token %}
-    <input name="ticket_hashid" type="hidden" value="{{ ticket.hashid }}" />
-
-    <button class="small-12 columns submit-button" type="submit">Submit</button>
-
-    <div style='display:none;' class="payment_errors">error text</div>
-  </form>
+  {% include '_paymill-form.html' %}
 </div>
 {% endblock content%}

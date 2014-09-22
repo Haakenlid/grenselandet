@@ -1,0 +1,9 @@
+<h3>Ticket information</h3>
+  <table class="form-table small-12 columns">
+      <tr><td>Price:</td><td>{{ ticket.ticket_type.get_price_display }}</td></tr>
+      <tr><td>Ticket Type:</td><td>{{ ticket.ticket_type.name }}</td></tr>
+      <tr><td>Event:</td><td>{{ ticket.convention }}</td></tr>
+      <tr><td>Ticket Holder:</td><td>{{ ticket.get_full_name }}</td></tr>
+      <tr><td>E-mail:</td><td>{{ ticket.email }}</td></tr>
+      <tr><td>Address:</td><td>{{ ticket.get_address_display }}</td></tr>
+  </table>

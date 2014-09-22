@@ -1,0 +1,8 @@
+<h3>Payment details</h3>
+  <table class="form-table small-12 columns">
+    {% for payment in ticket.payment_set.all %}
+      <tr><td>Sum:</td><td>{{ payment.sum_paid }} {{ payment.currency }}</td></tr>
+      <tr><td>Time:</td><td>{{ payment.payment_time }}</td></tr>
+      <tr><td>Details:</td><td>{{ payment.paid_via }}</td></tr>
+    {% endfor %}
+  </table>
