@@ -23,6 +23,10 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 	margin-bottom: 0;
 }
 
+.select2-hidden-accessible {
+	display: none;
+}
+
 .select2-container,
 .select2-drop,
 .select2-search,
