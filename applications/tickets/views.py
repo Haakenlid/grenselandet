@@ -21,7 +21,7 @@ from django.contrib import messages
 from django.conf import settings
 # from django.contrib import messages
 
-import pymill
+from pymill import pymill
 
 from .models import Ticket, TicketType
 from applications.conventions.models import Convention
