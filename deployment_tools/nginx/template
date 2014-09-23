@@ -10,12 +10,9 @@ upstream USERNAME {
 }
 
 server {
-
     listen               80;
     server_name          SITEURL;
-    location / {
-        rewrite ^https://$server_name$request_uri permanent;
-    }
+    rewrite              ^ https://$server_name$request_uri? permanent;
 }
 
 server {
