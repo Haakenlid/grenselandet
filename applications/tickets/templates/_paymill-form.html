@@ -6,7 +6,7 @@
   var PAYMILL_PUBLIC_KEY = '{{ PAYMILL_PUBLIC_KEY }}';
   var PAYMILL_TEST_MODE= '{{ PAYMILL_TEST_MODE }}';
 </script>
-<script type="text/javascript" src="https://bridge.paymill.com/"></script>
+<script src="https://bridge.paymill.com/"></script>
 <script src="{% static 'js/paymill.js' %}"></script>
 <script src="{% static 'js/cc-branddetection.js' %}"></script>
 {% endaddtoblock %}
@@ -20,28 +20,80 @@
 <table class="form-table small-12 columns">
   <tr>
     <td><label>Card number</label></td>
-    <td><input required class="card-number" type="text" size="20" value="4111111111111111" /></td>
+    <td>
+      <input
+      class="card-number"
+      required="true"
+      title=""
+      placeholder="XXXXXXXXXXXXXXXX"
+      type="text"
+      size="20"
+      value="4111111111111111"
+      />
+    </td>
   </tr>
 
   <tr>
     <td> <label>CVC</label> </td>
-    <td> <input required class="card-cvc" type="text" size="4" value="123"/></div> </td>
+    <td>
+      <input
+      class="card-cvc"
+      required="true"
+      title="MasterCard, Visa, Diners Club, Discover, and JCB credit and debit cards have a three-digit card security code.
+      The code is the final group of numbers printed on the back signature panel of the card.
+      American Express cards have a four-digit code printed on the front side of the card above the number."
+      placeholder="Card verification code"
+      type="text"
+      size="4"
+      value="123"
+      />
+    </td>
   </tr>
 
   <tr>
-    <td> <label>Name</label> </td>
-    <td> <input required class="card-holdername" type="text" size="4" value="{{ ticket.get_full_name }}" /> </td>
+    <td> <label>Card Holder</label> </td>
+    <td>
+      <input
+      class="card-holdername"
+      required="true"
+      title="Full name of card holder"
+      placeholder="Name of card holder"
+      type="text"
+      size="4"
+      value="{{ ticket.get_full_name }}"
+      />
+    </td>
   </tr>
 
   <tr>
-    <td> <label>Expiry date (MM/YYYY)</label> </td>
+    <td> <label>Expiration date</label> </td>
     <td>
       <div class="row">
         <div class="small-4 columns">
-         <input required class="card-expiry-month" type="text" size="2" value="12"/>
+         <input
+         class="card-expiry-month"
+         type="text"
+         size="2"
+         value="12"
+         pattern="^\d\d$"
+         placeholder="MM"
+         required="true"
+         title="Expiry Month (two digits)"
+         type="text"
+         />
        </div>
        <div class="small-8 columns">
-         <input required class="card-expiry-year" type="text" size="4" value="2015" />
+         <input
+         class="card-expiry-year"
+         type="text"
+         size="4"
+         value="2015"
+         pattern="^\d\d\d\d$"
+         placeholder="YYYY"
+         required="true"
+         title="Expiry Year (four digits)"
+         type="text"
+         />
        </div>
      </div>
    </td>
@@ -49,11 +101,8 @@
   </table>
   <input class="card-amount" type="hidden" value="{{ ticket.ticket_type.price }}" />
   <input class="card-currency" type="hidden" value="{{ ticket.ticket_type.currency }}" />
-
-  {% csrf_token %}
   <input name="ticket_hashid" type="hidden" value="{{ ticket.hashid }}" />
-
-  <button class="small-12 columns submit-button" type="submit">Submit</button>
-
+  {% csrf_token %}
+  <button id="payment-button" class="small-12 columns submit-button" type="submit">Submit</button>
   <div style='display:none;' class="payment_errors">error text</div>
 </form>

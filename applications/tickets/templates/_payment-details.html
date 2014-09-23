@@ -4,5 +4,7 @@
       <tr><td>Sum:</td><td>{{ payment.sum_paid }} {{ payment.currency }}</td></tr>
       <tr><td>Time:</td><td>{{ payment.payment_time }}</td></tr>
       <tr><td>Details:</td><td>{{ payment.paid_via }}</td></tr>
+    {% empty %}
+    <p>No payment details found for this ticket.</p>
     {% endfor %}
   </table>
