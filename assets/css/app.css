@@ -1890,7 +1890,7 @@ form .row textarea.columns {
   padding-left: 0.5rem; }
 
 /* Label Styles */
-label {
+label, .details-table tr td:first-child {
   font-size: 0.875rem;
   color: #4d4d4d;
   cursor: pointer;
@@ -1899,13 +1899,13 @@ label {
   line-height: 1.5;
   margin-bottom: 0;
   /* Styles for required inputs */ }
-  label.right {
+  label.right, .details-table tr td.right:first-child {
     float: none !important;
     text-align: right; }
-  label.inline {
+  label.inline, .details-table tr td.inline:first-child {
     margin: 0 0 1rem 0;
     padding: 0.5625rem 0; }
-  label small {
+  label small, .details-table tr td:first-child small {
     text-transform: capitalize;
     color: #676767; }
 
@@ -1969,22 +1969,22 @@ select::-ms-expand {
   border-top-right-radius: 1000px; }
 
 /* Separate prefix and postfix styles when on span or label so buttons keep their own */
-span.prefix, label.prefix {
+span.prefix, label.prefix, .details-table tr td.prefix:first-child {
   background: #f2f2f2;
   border-right: none;
   color: #333333;
   border-color: #cccccc; }
-  span.prefix.radius, label.prefix.radius {
+  span.prefix.radius, label.prefix.radius, .details-table tr td.prefix.radius:first-child {
     border-radius: 0;
     border-bottom-left-radius: 3px;
     border-top-left-radius: 3px; }
 
-span.postfix, label.postfix {
+span.postfix, label.postfix, .details-table tr td.postfix:first-child {
   background: #f2f2f2;
   border-left: none;
   color: #333333;
   border-color: #cccccc; }
-  span.postfix.radius, label.postfix.radius {
+  span.postfix.radius, label.postfix.radius, .details-table tr td.postfix.radius:first-child {
     border-radius: 0;
     border-bottom-right-radius: 3px;
     border-top-right-radius: 3px; }
@@ -2167,8 +2167,9 @@ input[type="radio"],
 select {
   margin: 0 0 1rem 0; }
 
-input[type="checkbox"] + label,
-input[type="radio"] + label {
+input[type="checkbox"] + label, .details-table tr input[type="checkbox"] + td:first-child,
+input[type="radio"] + label,
+.details-table tr input[type="radio"] + td:first-child {
   display: inline-block;
   margin-left: 0.5rem;
   margin-right: 1rem;
@@ -2224,8 +2225,10 @@ span.error, small.error {
 .error input[type="checkbox"],
 .error input[type="radio"] {
   margin-bottom: 1rem; }
-.error label,
-.error label.error {
+.error label, .error .details-table tr td:first-child, .details-table tr .error td:first-child,
+.error label.error,
+.error .details-table tr td.error:first-child,
+.details-table tr .error td.error:first-child {
   color: #f04124; }
 .error small.error {
   display: block;
@@ -2237,7 +2240,7 @@ span.error, small.error {
   font-style: italic;
   background: #f04124;
   color: white; }
-.error > label > small {
+.error > label > small, .details-table tr .error > td:first-child > small {
   color: #676767;
   background: transparent;
   padding: 0;
@@ -2254,7 +2257,7 @@ textarea.error,
 select.error {
   margin-bottom: 0; }
 
-label.error {
+label.error, .details-table tr td.error:first-child {
   color: #f04124; }
 
 meta.foundation-mq-topbar {
@@ -2547,7 +2550,7 @@ meta.foundation-mq-topbar {
         padding: 8px 15px; }
       .top-bar-section .dropdown li .button, .top-bar-section .dropdown li button {
         top: auto; }
-    .top-bar-section .dropdown label {
+    .top-bar-section .dropdown label, .top-bar-section .dropdown .details-table tr td:first-child, .details-table tr .top-bar-section .dropdown td:first-child {
       padding: 8px 15px 2px;
       margin-bottom: 0;
       text-transform: uppercase;
@@ -2671,7 +2674,7 @@ meta.foundation-mq-topbar {
         color: white;
         background-color: #555555;
         background: #272727; }
-      .top-bar-section .dropdown li label {
+      .top-bar-section .dropdown li label, .top-bar-section .dropdown li .details-table tr td:first-child, .details-table tr .top-bar-section .dropdown li td:first-child {
         white-space: nowrap;
         background: #333333; }
       .top-bar-section .dropdown li .dropdown {
@@ -3541,6 +3544,9 @@ main {
       border-top: 1px solid #666;
       padding-top: 20px;
       margin-top: 20px; } }
+
+.details-table tr td {
+  padding: 1rem 0 0 0; }
 
 /*
 Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013

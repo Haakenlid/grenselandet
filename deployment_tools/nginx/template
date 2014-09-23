@@ -10,8 +10,21 @@ upstream USERNAME {
 }
 
 server {
+
     listen               80;
     server_name          SITEURL;
+    location / {
+        rewrite ^https://$server_name$request_uri permanent;
+    }
+}
+
+server {
+    listen               443;
+    server_name          SITEURL;
+
+    ssl_certificate   /srv/ssl/SITEURL.crt;
+    ssl_certificate_key  /srv/ssl/SITEURL.key;
+    keepalive_timeout 70;
 
     client_max_body_size 4G;
 
