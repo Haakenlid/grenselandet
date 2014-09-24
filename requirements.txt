@@ -9,6 +9,7 @@ django-redis-cache
 django-sekizai
 django-compressor
 django-countries
+django-widget-tweaks
 hashids
 gunicorn
 hiredis
