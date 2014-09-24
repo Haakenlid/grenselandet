@@ -1,0 +1,18 @@
+{% load widget_tweaks %}
+{% for field in form %}
+<div class="row collapse">
+  <div class="small-4 columns">
+    <span class="prefix">{{ field.label }}</span>
+  </div>
+  <div class="small-8 columns">
+    {% if field.errors %}
+      {{ field | attr:"class:error" }}
+    {% else %}
+      {{ field }}
+    {% endif %}
+  </div>
+  {% for error in  field.errors %}
+    <small class="error">{{ error }}</small>
+  {% endfor %}
+</div>
+{% endfor %}

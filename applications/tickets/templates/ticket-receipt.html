@@ -6,16 +6,15 @@
 
 <div class="small-12 columns">
   <h1>Your ticket receipt</h1>
-</div>
-<div class="small-12 columns">
-    <p>Your ticket payment has been registered.</p>
-    <p>We are looking forward to seeing you at {{ ticket.convention }}!</p>
+  <p>We are looking forward to seeing you at {{ ticket.convention }}!</p>
 </div>
 <hr>
 <div class="small-12 medium-6 columns">
+  <h3>Ticket Details</h3>
   {% include '_ticket-details.html' %}
 </div>
 <div class="small-12 medium-6 columns">
+  <h3>Payment Details</h3>
   {% include '_payment-details.html' %}
 </div>
 {% endblock content%}

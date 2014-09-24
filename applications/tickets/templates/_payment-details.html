@@ -1,10 +1,21 @@
-<h3>Payment details</h3>
-  <table class="details-table small-12 columns">
-    {% for payment in ticket.payment_set.all %}
-      <tr><td>Sum:</td><td>{{ payment.sum_paid }} {{ payment.currency }}</td></tr>
-      <tr><td>Time:</td><td>{{ payment.payment_time }}</td></tr>
-      <tr><td>Details:</td><td>{{ payment.paid_via }}</td></tr>
-    {% empty %}
-    <p>No payment details found for this ticket.</p>
-    {% endfor %}
-  </table>
+<table class="details-table small-12 columns">
+  {% for payment in ticket.payment_set.all %}
+    <tr>
+      <th scope="row">Sum paid</th>
+      <td>{{ payment.sum_paid }} {{ payment.currency }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Time of payment</th>
+      <td>{{ payment.payment_time }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Payment method</th>
+      <td>{{ payment.paid_via }}</td>
+    </tr>
+  {% empty %}
+    <tr>
+      <th scope="row">Sum paid</th>
+      <td>0</td>
+    </tr>
+  {% endfor %}
+</table>

@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'sekizai',
     'compressor',
+    'widget_tweaks',
 ] + INSTALLED_APPS
 
 # CORE APPS

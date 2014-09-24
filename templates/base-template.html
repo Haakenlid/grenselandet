@@ -50,12 +50,16 @@
   {% endblock navigation %}
   <main>
     <div class="row">
-      {% for message in messages %}
-        <div data-alert class="alert-box {{ message.tags }} radius">
-          {{ message }}
-          <a href="#" class="close">&times;</a>
+      {% if messages %}
+        <div id="messages" class="small-12 columns">
+          {% for message in messages %}
+            <div data-alert class="alert-box {{ message.tags }} radius">
+              {{ message }}
+              <a href="#" class="close">&times;</a>
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      {% endif %}
     {% block content %}
 
     {% endblock content %}

@@ -60,14 +60,39 @@ main {
   }
 }
 
+small.error {
+  padding: 0.1rem 0.8rem;
+  margin: 0 0 1rem 0;
+}
+
 .details-table {
+  // border-collapse: separate;
+  // border-spacing: 0;
   tr {
-    // min-height: 1rem;
+    // border-collapse: separate;
+    // border-spacing: 0 1rem;
+    // margin-bottom: 1rem;
+    td, th {
+      // border-color: #cccccc;
+      line-height: 2.3125rem;
+      // border-style: solid;
+      // border-width: 1px;
+      font-size: 0.875rem;
+      margin: 0 0 1rem 0;
+      font-weight: normal;
+      padding: 0.5rem 0;
+      line-height: normal;
+      // background: #f2f2f2;
+    }
+    th {
+      text-align: left;
+      color: #777;
+      width: 33.3333%;
+    }
     td {
-      padding: 1rem 0 0 0;
-      &:first-child {
-        @extend label;
-      }
+      // font-style: italic;
+      color:  #333;
     }
   }
 }
+

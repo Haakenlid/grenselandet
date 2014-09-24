@@ -1,12 +1,13 @@
 $(function() {
   $('.card-number').keyup(function() {
     var detector = new BrandDetection();
-    var brand = detector.detect($('.card-number').val());
-    $(".card-number")[0].className = $(".card-number")[0].className.replace(/paymill-card-number-.*/g, '');
+    var cc_number = $('.card-number').val().replace(/\D/g, '')
+    var brand = detector.detect(cc_number);
+    $(".card-number")[0].className = "card-number";
     if (brand !== 'unknown') {
       $('.card-number').addClass("paymill-card-number-" + brand);
     }
-    if (!detector.validate($('.card-number').val())) {
+    if (!detector.validate(cc_number)) {
       $('.card-number').addClass("paymill-card-number-grayscale");
     }
     if (brand !== 'maestro') {
@@ -16,52 +17,26 @@ $(function() {
     }
   });
 
+  $('.card-expiry').keyup(function() {
+      if ( /^\d\d$/.test( $('.card-expiry').val() ) ) {
+          text = $('.card-expiry').val();
+          $('.card-expiry').val(text += "/");
+      }
+  });
+
   $('#payment-form').submit(function (event) {
+
     $('.submit-button').attr("disabled", "disabled");
 
-    // if (false === paymill.validateHolder($('.card-holdername').val())) {
-    //   $(".payment_errors").text("invalid-card-holdername");
-    //   $(".payment_errors").css("display","inline-block");
-    //   $(".submit-button").removeAttr("disabled");
-    //   return false;
-    // }
-
-    // if (false === paymill.validateCvc($('.card-cvc').val())) {
-    //   if(VALIDATE_CVC){
-    //     $(".payment_errors").text("invalid-card-cvc");
-    //     $(".payment_errors").css("display","inline-block");
-    //     $(".submit-button").removeAttr("disabled");
-    //     return false;
-    //   } else {
-    //     $('.card-cvc').val("000");
-    //   }
-    // }
-
-    // if (false === paymill.validateCardNumber($('.card-number').val())) {
-    //   // $(".payment_errors").text("invalid-card-number");
-    //   $('.card-number').setCustomValidity('invalid card number')
-    //   $(".submit-button").removeAttr("disabled");
-    //   return false;
-    // }
-
-    // var expiry_month = $('.card-expiry-month').val();
-    // var expiry_year = $('.card-expiry-year').val();
-    // if (expiry_year && (exp_year.length <= 2)){
-    //   expiry_year = '20' + expiry_year;
-    // }
-    // if (false === paymill.validateExpiry(expiry_month, expiry_year)) {
-    //   $(".payment_errors").text("invalid-card-expiry-date");
-    //   $(".payment_errors").css("display","inline-block");
-    //   $(".submit-button").removeAttr("disabled");
-    //   return false;
-    // }
+    var expiry = $('.card-expiry').val();
+    expiry = expiry.split("/");
 
     var params = {
-      amount_int:     parseInt($('.card-amount').val().replace(/[\.,]/, '.') * 100),  // E.g. "15" for 0.15 Eur
-      currency:       $('.card-currency').val(),    // ISO 4217 e.g. "EUR"
-      number:         $('.card-number').val(),
-      exp_month:      $('.card-expiry-month').val(),
-      exp_year:       $('.card-expiry-year').val(),
+      amount_int:     parseInt($('.card-amount').val().replace(/[\.,]/, '.') * 100),
+      currency:       $('.card-currency').val(),
+      number:         $('.card-number').val().replace(/\D/,''),
+      exp_month:      expiry[0],
+      exp_year:       expiry[1],
       cvc:            $('.card-cvc').val(),
       cardholder:     $('.card-holdername').val()
     };
@@ -78,7 +53,7 @@ $(function() {
           break;
 
         case 'field_invalid_card_exp':
-          InputError('.card-expiry-month', 'This expiration date or year seems to be invalid.');
+          InputError('.card-expiry', 'This expiration date seems to be invalid.');
           break;
 
         case 'field_invalid_card_cvc':
@@ -106,10 +81,10 @@ $(function() {
     input = $(inputclass)[0];
     input.setCustomValidity(message);
     input.oninput = function(){
-      this.setCustomValidity('')
+      this.setCustomValidity('');
     }
     $(".submit-button").removeAttr("disabled");
-    document.getElementById("payment-button").click()
+    $(".submit-button").click();
 
     // input.setCustomValidity('');
     // document.getElementById("payment-form").submit();

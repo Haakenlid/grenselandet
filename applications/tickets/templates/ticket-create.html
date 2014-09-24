@@ -16,31 +16,19 @@
   </ul>
 </div>
 <hr>
-<div class="small-12 medium-6 columns">
-    <h3>Ticket holder</h3>
-      <form  action="" method="post">{% csrf_token %}
-      <table class="profile_form small-12 columns">
-      {% for field in form %}
-          <tr{% if field.errors %} class="error_row" {% endif %}>
-          <td>{{ field.label_tag }}</td>
-          <td>{{ field }}</td>
-          <td>{{ field.help_text }} {{ field.errors }}</td>
-          </tr>
-      {% endfor %}
-      </table>
-      <input type="submit" value="Continue" class="button small-12 columns">
-      </form>
+<div class="small-12 columns">
+  <form id="registration-form" method="post">
+    {% csrf_token %}
+    <div class="row">
+      <div class="small-12 medium-6 columns">
+        <h3>Ticket holder</h3>
+        {% include '_ticket-form.html' %}
+      </div>
+      <div class="small-12 medium-6 columns">
+        {% include '_payment-info.html' %}
+      </div>
     </div>
-<div class="small-12 medium-6 columns">
-
-  <h3>Payment information</h3>
-  <p>If you have a Norwegian bank account, you can pay by bank transfer. Other particpants can book their tickets now, and we'll contact you with further payment instructions.</p>
-
-  <h3>Terms and conditions</h3>
-  <p>Tickets purchased are non-refundable, execpt for a situation where {{ convention }} is cancelled. In that case all tickets will be refunded in full. Tickets are personal and non-transferable.</p>
-
-  <h3>Privacy policy </h3>
-  <p>The information submitted when buying a ticket will not be shared with 3rd parties, but can be used for the promotion of future Grenselandet events and other events organized by Fantasiforbundet.</p>
-
+    <input type="submit" value="Continue" class="button expand">
+  </form>
 </div>
 {% endblock content%}
