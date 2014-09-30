@@ -1,0 +1,36 @@
+{% with ticket_type.ticket_pool.convention as convention %}
+<div class="panel radius ticket-panel">
+  <div class="row">
+    <div class="small-8 columns">
+      <h4 class="ticket-name">{{ ticket_type.name }}</h4>
+      <div class="ticket-description">
+        <table class="details-table">
+          {% if ticket %}
+          <tr>
+            <th scope="row">Ticket Holder</th>
+            <td>{{ ticket.get_full_name }}
+            </br>{{ ticket.email }}</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <th scope="row">Event</th>
+            <td>{{ convention }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Location</th>
+            <td>{{ convention.location }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Time</th>
+            <td>{{ convention.start_time|date }} to {{ convention.end_time|date }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="small-4 columns">
+      <h4>Full price</h4>
+      <p><strong>{{ ticket_type.get_price_display }}</strong></p>
+    </div>
+  </div>
+</div>
+{% endwith %}

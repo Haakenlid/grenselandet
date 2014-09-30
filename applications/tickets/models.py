@@ -290,9 +290,8 @@ class TicketType(models.Model):
         db_index=True,
     )
 
-    description = models.CharField(
+    description = models.TextField(
         help_text=_('Short description of the ticket type.'),
-        max_length=200,
         blank=True,
     )
     status = models.PositiveSmallIntegerField(

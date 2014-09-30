@@ -10,6 +10,7 @@
   {% addtoblock "css" %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'foundation-icons/foundation-icons.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/style.css' %}" />
   {% endaddtoblock %}
   {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
@@ -99,6 +100,7 @@
   <script src="{% static 'js/foundation/foundation.js' %}"></script>
   <script src="{% static 'js/foundation/foundation.topbar.js' %}"></script>
   <script src="{% static 'js/foundation/foundation.alert.js' %}"></script>
+  <script src="{% static 'js/foundation/foundation.accordion.js' %}"></script>
   <script src="{% static 'js/vendor/select2/select2.min.js' %}"></script>
   {% include 'autocomplete_light/static.html' %}
   <script>

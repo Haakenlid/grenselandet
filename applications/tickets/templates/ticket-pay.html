@@ -1,24 +1,13 @@
-{# Ticket registration form. #}
-{% extends "base-template.html" %}
+{% extends "base-ticket.html" %}
 
 {% block title %}{{ ticket.convention }} ticket for {{ ticket.get_full_name}} {{ convention }}{% endblock %}
-{% block content %}
 
-<div class="small-12 columns">
-  <h1>Your ticket reservation</h1>
-</div>
-<div class="small-12 columns">
-  <p>Your ticket reservation has been registered</p>
-  <p>Our card payment system is not quite ready yet. If you have a Norwegian bank account, please pay by bank transfer to 1720.25.85248. Mark your payment with the ticket id {{ ticket.hashid }}. If we have not received payment within 5 working days, we reserve the right to delete your signup.</p>
-  <p>If you don't have a Norwegian bank account, you may wait until our credit card solution is ready, and we'll send you an email with payment instructions.</p>
-</div>
-<hr>
-<div class="small-12 medium-6 columns">
-  <h3>Credit Card Details</h3>
+{% block info %}
+<h1>Your ticket reservation</h1>
+<p>Please enter your credit card information to complete the ticket purchase.</p>
+{% endblock info %}
+
+{% block form %}
+  <h3><i class="fi-credit-card icon"></i> Credit Card Details</h3>
   {% include '_paymill-form.html' %}
-</div>
-<div class="small-12 medium-6 columns">
-  <h3>Ticket information</h3>
-  {% include '_ticket-details.html' %}
-</div>
-{% endblock content%}
+{% endblock form %}

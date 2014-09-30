@@ -11,12 +11,11 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 # from django.template import loader, Context
 from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView
-from django.views.generic.detail import DetailView
+# from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 
-from django.contrib.sites.models import get_current_site
+# from django.contrib.sites.models import get_current_site
 from django.contrib import messages
 from django.conf import settings
 # from django.contrib import messages
@@ -91,26 +90,20 @@ class TicketCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class TicketMixin:
+class TicketDetailView(TemplateView):
+
     model = Ticket
     context_object_name = 'ticket'
     slug_field = 'hashid'
     slug_url_kwarg = 'hashid'
 
-    def get_success_url(self):
-        """ Send user to next part of the process. """
-        return reverse(
-            self.next_url_label,
-            kwargs={'hashid': self.object.hashid},
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            ticket_type=self.ticket.ticket_type,
+            ticket=self.ticket,
         )
-
-
-class TicketPayView(TicketMixin, TemplateView):
-
-    """ Participant pay their ticket. """
-
-    template_name = 'ticket-pay.html'
-    next_url_label = 'ticket-receipt'
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         self.ticket = get_object_or_404(
@@ -119,15 +112,27 @@ class TicketPayView(TicketMixin, TemplateView):
         )
         return super().dispatch(request, *args, **kwargs)
 
+
+class TicketPayView(TicketDetailView):
+
+    """ Show payment form """
+
+    template_name = 'ticket-pay.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(
-            ticket_type=self.ticket.ticket_type,
-            ticket=self.ticket,
             PAYMILL_PUBLIC_KEY=settings.PAYMILL_PUBLIC_KEY,
             PAYMILL_TEST_MODE='true' if settings.DEBUG else 'false',
         )
         return context
+
+    def render_to_response(self, context):
+        if self.ticket.status != Ticket.ORDERED:
+            return HttpResponseRedirect(self.ticket.get_absolute_url())
+
+        return super().render_to_response(context)
+
 
     def post(self, *args, **kwargs):
         """ Process payment from PayMill """
@@ -141,7 +146,7 @@ class TicketPayView(TicketMixin, TemplateView):
         description = '{ticket} for {person}'.format(
             ticket=self.ticket.ticket_type,
             person=self.ticket.get_full_name,
-            )
+        )
 
         transaction = paymill.transact(
             amount=self.ticket.ticket_type.price * 100,
@@ -196,7 +201,7 @@ class TicketPayView(TicketMixin, TemplateView):
         return HttpResponseRedirect(self.ticket.get_absolute_url())
 
 
-class TicketReceiptView(TicketPayView):
+class TicketReceiptView(TicketDetailView):
 
     """ Show receipt data for ticket """
     template_name = 'ticket-receipt.html'

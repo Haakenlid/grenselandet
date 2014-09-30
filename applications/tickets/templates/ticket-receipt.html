@@ -1,20 +1,16 @@
-{# Ticket registration form. #}
-{% extends "base-template.html" %}
+{% extends "base-ticket.html" %}
 
-{% block title %}{{ ticket.convention }} ticket for {{ ticket.get_full_name}} {{ convention }}{% endblock %}
-{% block content %}
-
-<div class="small-12 columns">
+{% block info %}
   <h1>Your ticket receipt</h1>
   <p>We are looking forward to seeing you at {{ ticket.convention }}!</p>
-</div>
-<hr>
-<div class="small-12 medium-6 columns">
-  <h3>Ticket Details</h3>
-  {% include '_ticket-details.html' %}
-</div>
-<div class="small-12 medium-6 columns">
-  <h3>Payment Details</h3>
+{% endblock info %}
+
+{% block ticket-info %}
+  <h3><i class="fi-torso icon"></i> Ticket information</h3>
+  {% include '_ticket-panel.html' %}
+{% endblock ticket-info %}
+
+{% block form %}
+  <h3><i class="fi-dollar-bill icon"></i> Payment details</h3>
   {% include '_payment-details.html' %}
-</div>
-{% endblock content%}
+{% endblock form %}

@@ -1670,6 +1670,34 @@ select {
     position: relative;
     right: 91.66667%;
     left: auto; } }
+.accordion {
+  margin-bottom: 0; }
+  .accordion:before, .accordion:after {
+    content: " ";
+    display: table; }
+  .accordion:after {
+    clear: both; }
+  .accordion .accordion-navigation, .accordion dd {
+    display: block;
+    margin-bottom: 0 !important; }
+    .accordion .accordion-navigation.active > a, .accordion dd.active > a {
+      background: #e8e8e8; }
+    .accordion .accordion-navigation > a, .accordion dd > a {
+      background: #efefef;
+      color: #222222;
+      padding: 1rem;
+      display: block;
+      font-family: "Roboto", sans-serif;
+      font-size: 1rem; }
+      .accordion .accordion-navigation > a:hover, .accordion dd > a:hover {
+        background: #e3e3e3; }
+    .accordion .accordion-navigation > .content, .accordion dd > .content {
+      display: none;
+      padding: 0.9375rem; }
+      .accordion .accordion-navigation > .content.active, .accordion dd > .content.active {
+        display: block;
+        background: white; }
+
 .alert-box {
   border-style: solid;
   border-width: 1px;
@@ -2256,6 +2284,48 @@ select.error {
 
 label.error {
   color: #f04124; }
+
+/* Panels */
+.panel {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #d8d8d8;
+  margin-bottom: 1.25rem;
+  padding: 1.25rem;
+  background: #f2f2f2; }
+  .panel > :first-child {
+    margin-top: 0; }
+  .panel > :last-child {
+    margin-bottom: 0; }
+  .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6, .panel p, .panel li, .panel dl {
+    color: #333333; }
+  .panel h1, .panel h2, .panel h3, .panel h4, .panel h5, .panel h6 {
+    line-height: 1;
+    margin-bottom: 0.625rem; }
+    .panel h1.subheader, .panel h2.subheader, .panel h3.subheader, .panel h4.subheader, .panel h5.subheader, .panel h6.subheader {
+      line-height: 1.4; }
+  .panel.callout {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #f4e0c4;
+    margin-bottom: 1.25rem;
+    padding: 1.25rem;
+    background: #fdf8f2; }
+    .panel.callout > :first-child {
+      margin-top: 0; }
+    .panel.callout > :last-child {
+      margin-bottom: 0; }
+    .panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6, .panel.callout p, .panel.callout li, .panel.callout dl {
+      color: #333333; }
+    .panel.callout h1, .panel.callout h2, .panel.callout h3, .panel.callout h4, .panel.callout h5, .panel.callout h6 {
+      line-height: 1;
+      margin-bottom: 0.625rem; }
+      .panel.callout h1.subheader, .panel.callout h2.subheader, .panel.callout h3.subheader, .panel.callout h4.subheader, .panel.callout h5.subheader, .panel.callout h6.subheader {
+        line-height: 1.4; }
+    .panel.callout a:not(.button) {
+      color: #d78f29; }
+  .panel.radius {
+    border-radius: 5px; }
 
 meta.foundation-mq-topbar {
   font-family: "/only screen and (min-width:40.063em)/";
@@ -3520,7 +3590,7 @@ main {
   background-image: url("/static/images/banner_grenselandet_2014.png");
   margin: 0 20px; }
   #logo #name a {
-    font-size: 180%;
+    font-size: 150%;
     color: transparent; }
     @media only screen and (min-width: 40.063em) {
       #logo #name a {
@@ -3546,19 +3616,58 @@ small.error {
   padding: 0.1rem 0.8rem;
   margin: 0 0 1rem 0; }
 
-.details-table tr td, .details-table tr th {
-  line-height: 2.3125rem;
-  font-size: 0.875rem;
-  margin: 0 0 1rem 0;
-  font-weight: normal;
-  padding: 0.5rem 0;
-  line-height: normal; }
-.details-table tr th {
-  text-align: left;
-  color: #777;
-  width: 33.3333%; }
-.details-table tr td {
-  color: #333; }
+.details-table {
+  width: 100%; }
+  .details-table tr td, .details-table tr th {
+    line-height: 2.3125rem;
+    margin: 0 0 1rem 0;
+    font-weight: normal;
+    padding: 0.5rem 0;
+    line-height: normal; }
+  .details-table tr th {
+    text-align: left;
+    color: #777;
+    width: 33.3333%; }
+  .details-table tr td {
+    color: #333; }
+
+.icon {
+  color: #d78f29;
+  font-size: 120%;
+  padding-right: 0.5rem; }
+
+.trekkspill {
+  margin-bottom: 0; }
+  .trekkspill:before, .trekkspill:after {
+    content: " ";
+    display: table; }
+  .trekkspill:after {
+    clear: both; }
+  .trekkspill .navigation {
+    display: block;
+    margin-bottom: 0 !important; }
+    .trekkspill .navigation.active > a {
+      background: #e8e8e8; }
+    .trekkspill .navigation > a {
+      background: #efefef;
+      color: #222222;
+      padding: 1rem;
+      display: block;
+      font-family: "Roboto", sans-serif;
+      font-size: 1rem; }
+      .trekkspill .navigation > a:hover {
+        background: #e3e3e3; }
+  .trekkspill .content {
+    display: none;
+    padding: 0.9375rem; }
+    .trekkspill .content.active {
+      display: block;
+      background: white; }
+    .trekkspill .content p {
+      font-size: smaller; }
+
+.ticket-panel td, .ticket-panel th {
+  font-size: smaller; }
 
 /*
 Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013

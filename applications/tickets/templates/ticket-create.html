@@ -1,34 +1,16 @@
-{# Ticket registration form. #}
-{% extends "base-template.html" %}
-{% block title %}Register for {{ convention }}{% endblock %}
-{% block content %}
-<div class="small-12 columns">
-  <h1>Order {{ ticket_type.name }} {{ convention }}</h1>
-</div>
-<div class="small-12 medium-6 columns">
-  <p>price: {{ ticket_type.get_price_display }} </p>
-</div>
-<div class="small-12 medium-6 columns">
-  <ul>
-    <li>A ticket to Grenselandet entitles you to access the festival areas, including access to the party.</li>
-    <li>As a ticket-holder you are entitled to sign up for the larps when this signup opens in early october.</li>
-    <li>Please note that this year the Grenselandet ticket does not include food or accommodation.</li>
-  </ul>
-</div>
-<hr>
-<div class="small-12 columns">
+{% extends "base-ticket.html" %}
+{% block title %}Book a ticket for {{ convention }}{% endblock %}
+
+{% block info %}
+  <h1>Book your ticket</h1>
+  <p>Please enter the required information about yourself before proceeding to the checkout page.</p>
+{% endblock info %}
+
+{% block form %}
+  <h3><i class="fi-torso icon"></i> Ticket holder</h3>
   <form id="registration-form" method="post">
+    {% include '_ticket-form.html' %}
     {% csrf_token %}
-    <div class="row">
-      <div class="small-12 medium-6 columns">
-        <h3>Ticket holder</h3>
-        {% include '_ticket-form.html' %}
-      </div>
-      <div class="small-12 medium-6 columns">
-        {% include '_payment-info.html' %}
-      </div>
-    </div>
-    <input type="submit" value="Continue" class="button expand">
+    <input type="submit" value="Proceed to checkout" class="radius button expand">
   </form>
-</div>
-{% endblock content%}
+{% endblock form %}

@@ -38,7 +38,6 @@ $(function() {
       exp_month:      expiry[0],
       exp_year:       expiry[1],
       cvc:            $('.card-cvc').val(),
-      cardholder:     $('.card-holdername').val()
     };
 
     paymill.createToken(params, PaymillResponseHandler);
@@ -58,10 +57,6 @@ $(function() {
 
         case 'field_invalid_card_cvc':
           InputError('.card-cvc', 'This verficiation code seems to be invalid.');
-          break;
-
-        case 'field_invalid_card_holder':
-          InputError('.card-holdername', 'The name of the credit card holder seems to be invalid.');
           break;
 
         default:

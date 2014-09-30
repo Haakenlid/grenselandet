@@ -1,0 +1,26 @@
+{% extends "base-template.html" %}
+
+{% block title %}{{ ticket.convention }} ticket for {{ ticket.get_full_name}} {{ convention }}{% endblock %}
+
+{% block content %}
+<div class="small-12 columns">
+  {% block info %}
+  <h1>Title</h1>
+  <p>Text.</p>
+  {% endblock info %}
+  <hr>
+</div>
+
+<div class="medium-6 columns">
+  {% block ticket-info %}
+    <h3><i class="fi-shopping-cart icon"></i> Purchase summary</h3>
+    {% include '_ticket-panel.html' %}
+    {% include '_payment-info.html' %}
+  {% endblock ticket-info %}
+</div>
+<div class="medium-6 columns">
+  {% block form %}
+    No form.
+  {% endblock form %}
+</div>
+{% endblock content%}
