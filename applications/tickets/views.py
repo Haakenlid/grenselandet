@@ -150,7 +150,7 @@ class TicketPayView(TicketDetailView):
         credit_card = paymill.new_card(token=paymill_token,)
         description = '{ticket} for {person}'.format(
             ticket=self.ticket.ticket_type,
-            person=self.ticket.get_full_name,
+            person=self.ticket.get_full_name(),
         )
 
         transaction = paymill.transact(
