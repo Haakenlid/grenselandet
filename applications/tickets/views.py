@@ -81,8 +81,11 @@ class TicketCreateView(CreateView):
     def get_context_data(self, **kwargs):
         """Adds sold_out to context"""
         context = super().get_context_data(**kwargs)
-        context.update(ticket_type=self.ticket_type)
-        context.update(convention=self.ticket_type.ticket_pool.convention)
+        context.update(
+            ticket_type=self.ticket_type,
+            convention=self.ticket_type.ticket_pool.convention,
+            paymill_live=settings.PAYMILL_LIVE,
+            )
         return context
 
     def form_valid(self, form):
@@ -102,6 +105,8 @@ class TicketDetailView(TemplateView):
         context.update(
             ticket_type=self.ticket.ticket_type,
             ticket=self.ticket,
+            convention=self.ticket.convention,
+            paymill_live=settings.PAYMILL_LIVE,
         )
         return context
 

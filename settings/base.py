@@ -41,6 +41,7 @@ ADMINS = (('Håken Lid', 'haakenlid@gmail.com'),)
 # PAYMILL API KEYS
 PAYMILL_PUBLIC_KEY = env_var('PAYMILL_PUBLIC_KEY')
 PAYMILL_PRIVATE_KEY = env_var('PAYMILL_PRIVATE_KEY')
+PAYMILL_LIVE = False
 
 # EMAIL CONFIGURATION
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

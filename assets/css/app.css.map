@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAEQ,qKAA6J;ACArK,KAAM;EACJ,gBAAgB,EAAE,iDAAiD;EACnE,MAAM,EAAE,IAAI;EACZ,KAAK,EAAE,KAAK",
-"sources": ["../scss/includes/_googlefonts.scss","../scss/includes/_grenselandet.scss"],
-"names": [],
-"file": "app.css"
-}

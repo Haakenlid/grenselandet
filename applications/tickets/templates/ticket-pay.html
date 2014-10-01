@@ -8,6 +8,12 @@
 {% endblock info %}
 
 {% block form %}
-  <h3><i class="fi-credit-card icon"></i> Credit Card Details</h3>
-  {% include '_paymill-form.html' %}
+  {% if paymill_live %}
+    <h3><i class="fi-credit-card icon"></i> Credit Card Details</h3>
+    {% include '_paymill-form.html' %}
+  {% else %}
+    <h3><i class="fi-credit-card icon"></i> Payment information</h3>
+    <p>Thank you for booking your ticket.</p>
+    {% include '_paymill_not_activated.html' %}
+  {% endif %}
 {% endblock form %}
