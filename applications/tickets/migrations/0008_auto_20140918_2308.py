@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='transaction_id',
-            field=models.IntegerField(unique=True),
+            field=models.IntegerField(),
         ),
     ]
