@@ -2,7 +2,6 @@
 """
 Models and signals for the activity_priority app.
 """
-import logging
 from datetime import datetime
 from hashids import Hashids
 from django.utils.translation import ugettext_lazy as _
@@ -17,11 +16,10 @@ from applications.mail.models import MailTrigger
 class Person(models.Model):
     name = models.CharField(max_length=100)
 # from annoying.functions import get_object_or_None
-# import paypal.standard.ipn.signals as signals
-# from paypal.standard.ipn.models import PayPalIPN
 # from django.contrib.auth.models import User
 
-# logger = logging.getLogger('metamorfozes')
+import logging
+logger = logging.getLogger('debug')
 BOOL_CHOICES = ((True, 'Yes'), (False, 'No'))
 CURRENCY_CHOICES = (('EUR', '€'), ('NOK', 'NOK'), ('USD', 'US $'), ('LTL', 'LTL'),)
 
@@ -31,14 +29,24 @@ class Payment(models.Model):
     """ Transaction of payment for ticket. """
 
     ticket = models.ForeignKey('Ticket')
-    # paypal_ipn = models.ForeignKey(PayPalIPN, null=True)
     sum_paid = models.IntegerField()
+    currency = models.CharField(
+        max_length=3
+    )
+    transaction_id = models.CharField(
+        help_text=_('payment provider transaction id'),
+        max_length=50,
+        editable=False,
+        null=True,
+    )
     paid_via = models.CharField(
+        max_length=50,
         help_text=_('How was the payment made?'),
-        max_length=50)
+    )
     payment_time = models.DateTimeField(
         auto_now=True,
-        verbose_name='Time the ticket was paid.')
+        help_text=_('Time the ticket was paid.'),
+    )
 
     class Meta:
         verbose_name = _('Payment')
@@ -141,10 +149,9 @@ class Ticket(models.Model):
 
     def pay(self, **kwargs):
         """ Make payment on ticket. """
+
         sum_paid = kwargs.pop('sum_paid', self.ticket_type.price)
         currency = kwargs.pop('currency', self.ticket_type.currency)
-        ticket = self
-        paid_via = kwargs.pop('paid_via')
 
         if self.ticket_type.currency != currency is not None:
             raise ValueError(
@@ -152,11 +159,13 @@ class Ticket(models.Model):
                     self.ticket_type.currency,
                     currency,
                 ))
-        payment = Payment(
+
+        kwargs.update(
+            ticket=self,
             sum_paid=sum_paid,
-            ticket=ticket,
-            paid_via=paid_via,
+            currency=currency,
         )
+        payment = Payment(**kwargs)
         payment.save()
         self.sum_paid += sum_paid
         self.save()
@@ -184,6 +193,16 @@ class Ticket(models.Model):
     def get_full_name(self):
         """Return full name of ticket holder."""
         return u'%s %s' % (self.first_name, self.last_name,)
+
+    def get_address_display(self):
+        """Return full name of ticket holder."""
+        res = '{address}, {postal_code} {city}, {country}'.format(
+            address=self.address,
+            postal_code=self.postal_code,
+            city=self.city,
+            country=self.country.name,
+        )
+        return res
 
     def get_absolute_url(self):
         """ Payment or receipt view. """
@@ -215,8 +234,6 @@ class Ticket(models.Model):
             self.hashid = self.hasher.encrypt(self.pk)
             super().save(*args, **kwargs)
             MailTrigger.objects.send_mail(recipient=self, trigger=MailTrigger.TICKET_ORDERED)
-
-
 
 
 class TicketPool(models.Model):
@@ -273,9 +290,8 @@ class TicketType(models.Model):
         db_index=True,
     )
 
-    description = models.CharField(
+    description = models.TextField(
         help_text=_('Short description of the ticket type.'),
-        max_length=200,
         blank=True,
     )
     status = models.PositiveSmallIntegerField(
@@ -316,7 +332,6 @@ class TicketType(models.Model):
         )
 
     def get_absolute_url(self):
-        """ Payment or receipt view. """
         return reverse(
             viewname='ticket-booking',
             kwargs={'ticket_type_slug': self.slug},
@@ -328,43 +343,3 @@ class TicketType(models.Model):
             ticket_type=self.name,
         ))[:50]
         super().save(*args, **kwargs)
-
-
-def payment_success(sender, **kwargs):
-    """
-    Trigger on signal from PayPal when payment is successful.
-    """
-    myTicket = Ticket.objects.get(uuid=sender.invoice)
-    myTicket.pay(sum_paid=sender.mc_gross, currency=sender.mc_currency, paypal_ipn=sender, paid_via=u'paypal')
-    MailTrigger.send_mail(recipient=self, trigger=MailTrigger.TICKET_PAID)
-
-
-# signals.payment_was_successful.connect(payment_success)
-
-
-def payment_fail(sender, **kwargs):
-    """
-    Trigger on signal from PayPal when payment is not successful.
-    """
-    myTicket = Ticket.objects.get(uuid=sender.invoice)
-    logger.debug(u'payment was flagged\r %s\r%s' % (sender, myTicket, ))
-
-# signals.payment_was_flagged.connect(payment_fail)
-
-
-def send_ticket_email(ticket, template, subject):
-    """ Send a payment receipt to the ticket buyer. """
-    from django.template.loader import render_to_string
-    from django.core.mail import send_mail
-
-    context = {
-        'ticket': ticket,
-        'priorities': ticket.priorities.all().order_by('-priority'),
-    }
-    email_body = render_to_string(template, context)
-    send_mail(
-        subject=subject,
-        message=email_body,
-        from_email='',
-        recipient_list=[ticket.email],
-    )

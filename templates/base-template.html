@@ -10,6 +10,7 @@
   {% addtoblock "css" %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'foundation-icons/foundation-icons.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'autocomplete_light/style.css' %}" />
   {% endaddtoblock %}
   {% render_block "css" postprocessor "compressor.contrib.sekizai.compress" %}
@@ -36,7 +37,7 @@
       <section class="top-bar-section">
         <!-- Right Nav Section -->
         <ul class="right">
-          <li class="active"><a href="#">tickets</a></li>
+          <li class="active"><a href="{% url 'ticket-start' %}">tickets</a></li>
           <li><a href="http://www.grenselandet.net/">news</a></li>
           <li><a href="http://www.grenselandet.net/p/the-larps-2014.html">larps</a></li>
           <li><a href="http://www.grenselandet.net/p/practical-information.html">practical information</a></li>
@@ -50,6 +51,16 @@
   {% endblock navigation %}
   <main>
     <div class="row">
+      {% if messages %}
+        <div id="messages" class="small-12 columns">
+          {% for message in messages %}
+            <div data-alert class="alert-box {{ message.tags }} radius">
+              {{ message }}
+              <a href="#" class="close">&times;</a>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
     {% block content %}
 
     {% endblock content %}
@@ -84,19 +95,21 @@
     </div>
   </footer>
   {% endblock footer %}
-  {% addtoblock "js" %}
+  {% addtoblock 'js' %}
   <script src="{% static 'js/vendor/jquery.js' %}"></script>
   <script src="{% static 'js/foundation/foundation.js' %}"></script>
   <script src="{% static 'js/foundation/foundation.topbar.js' %}"></script>
+  <script src="{% static 'js/foundation/foundation.alert.js' %}"></script>
+  <script src="{% static 'js/foundation/foundation.accordion.js' %}"></script>
   <script src="{% static 'js/vendor/select2/select2.min.js' %}"></script>
   {% include 'autocomplete_light/static.html' %}
   <script>
   $(document).foundation();
-  $(document).ready(function() { $(".select2").select2(); });
+  $(document).ready(function() { $('.select2').select2(); });
   </script>
   {% endaddtoblock %}
   {% render_block 'js' postprocessor 'compressor.contrib.sekizai.compress' %}
-
+  {% render_block 'extrajs' postprocessor 'compressor.contrib.sekizai.compress' %}
 </body>
 
 </html>

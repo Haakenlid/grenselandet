@@ -1,0 +1,78 @@
+{% load staticfiles %}
+{% load sekizai_tags %}
+
+{% addtoblock 'extrajs' %}
+<script type="text/javascript">
+  var PAYMILL_PUBLIC_KEY = '{{ PAYMILL_PUBLIC_KEY }}';
+  var PAYMILL_TEST_MODE= '{{ PAYMILL_TEST_MODE }}';
+</script>
+<script src="https://bridge.paymill.com/"></script>
+<script src="{% static 'js/paymill.js' %}"></script>
+<script src="{% static 'js/cc-branddetection.js' %}"></script>
+{% endaddtoblock %}
+
+{% addtoblock 'css' %}
+  <link rel='stylesheet' type='text/css' href='{% static 'css/paymill.css' %}'>
+{% endaddtoblock %}
+<form id="payment-form" method="post">
+
+  <div class="row collapse">
+    <div class="small-4 columns"><span class="prefix">
+      Card number
+    </span></div>
+    <div class="small-8 columns">
+      <input
+      class="card-number"
+      required="true"
+      title=""
+      placeholder="0000 0000 0000 0000"
+      type="text"
+      size="20"
+      />
+    </div>
+  </div>
+
+  <div class="row collapse">
+    <div class="small-4 columns"><span class="prefix">
+      CVC
+    </span></div>
+    <div class="small-8 columns">
+      <input
+      class="card-cvc"
+      required="true"
+      title="MasterCard, Visa, Diners Club, Discover, and JCB credit and debit cards have a three-digit card security code.
+      The code is the final group of numbers printed on the back signature panel of the card.
+      American Express cards have a four-digit code printed on the front side of the card above the number."
+      placeholder="Card verification code"
+      type="text"
+      size="4"
+      />
+    </div>
+  </div>
+
+  <div class="row collapse">
+    <div class="small-4 columns"><span class="prefix">
+      Expiration
+    </span></div>
+    <div class="small-8 columns">
+      <input
+         class="card-expiry"
+         type="text"
+         size="2"
+         pattern="^\d\d/\d\d\d\d$"
+         placeholder="MM/YYYY"
+         required="true"
+         title="Expiration date Month/Year"
+         type="text"
+         />
+    </div>
+  </div>
+
+  <input class="card-amount" type="hidden" value="{{ ticket.ticket_type.price }}" />
+  <input class="card-currency" type="hidden" value="{{ ticket.ticket_type.currency }}" />
+  <input name="ticket_hashid" type="hidden" value="{{ ticket.hashid }}" />
+  {% csrf_token %}
+  {# <button id="payment-button" class="small-12 columns submit-button" type="submit">Submit</button> #}
+  <input type="submit" value="Confirm purchase" class="submit-button button expand radius">
+
+</form>

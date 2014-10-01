@@ -78,9 +78,10 @@ class TicketAdmin(admin.ModelAdmin):
         'email',
         'sum_paid',
         'comments',
+        'country',
     )
     list_editable = (
-        'status',
+        # 'status',
         'ticket_type',
     )
     search_fields = (
@@ -109,13 +110,13 @@ class TicketPoolAdmin(admin.ModelAdmin):
         'description',
         'sold_out',
         'tickets_sold',
-        # 'nation_default',
+        'max_tickets',
     )
 
     list_editable = (
         'name',
-        # 'nation_default',
         'description',
+        'max_tickets',
     )
 
 
@@ -154,4 +155,5 @@ class PaymentAdmin(admin.ModelAdmin):
         'sum_paid',
         'payment_time',
         'paid_via',
+        'transaction_id',
     )

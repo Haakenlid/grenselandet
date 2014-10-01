@@ -2,7 +2,7 @@
 """
 Urls for signup.
 """
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
 from .views import TicketCreateView, TicketPayView, TicketReceiptView, TicketStartView
 
 

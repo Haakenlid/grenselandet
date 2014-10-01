@@ -1,46 +1,16 @@
-{# Ticket registration form. #}
-{% extends "base-template.html" %}
-{% block title %}Register for {{ convention }}{% endblock %}
-{% block content %}
-<div class="small-12 columns">
-  <h1>Order {{ ticket_type.name }} {{ convention }}</h1>
-</div>
-<div class="small-12 medium-6 columns">
-  <p>price: {{ ticket_type.get_price_display }} </p>
-</div>
-<div class="small-12 medium-6 columns">
-  <ul>
-    <li>A ticket to Grenselandet entitles you to access the festival areas, including access to the party.</li>
-    <li>As a ticket-holder you are entitled to sign up for the larps when this signup opens in early october.</li>
-    <li>Please note that this year the Grenselandet ticket does not include food or accommodation.</li>
-  </ul>
-</div>
-<hr>
-<div class="small-12 medium-6 columns">
-    <h3>Ticket holder</h3>
-      <form  action="" method="post">{% csrf_token %}
-      <table class="profile_form small-12 columns">
-      {% for field in form %}
-          <tr{% if field.errors %} class="error_row" {% endif %}>
-          <td>{{ field.label_tag }}</td>
-          <td>{{ field }}</td>
-          <td>{{ field.help_text }} {{ field.errors }}</td>
-          </tr>
-      {% endfor %}
-      </table>
-      <input type="submit" value="Continue" class="button small-12 columns">
-      </form>
-    </div>
-<div class="small-12 medium-6 columns">
+{% extends "base-ticket.html" %}
+{% block title %}Book a ticket for {{ convention }}{% endblock %}
 
-  <h3>Payment information</h3>
-  <p>If you have a Norwegian bank account, you can pay by bank transfer. Other particpants can book their tickets now, and we'll contact you with further payment instructions.</p>
+{% block info %}
+  <h1>Book your ticket</h1>
+  <p>Please enter the required information about yourself before proceeding to the checkout page.</p>
+{% endblock info %}
 
-  <h3>Terms and conditions</h3>
-  <p>Tickets purchased are non-refundable, execpt for a situation where {{ convention }} is cancelled. In that case all tickets will be refunded in full. Tickets are personal and non-transferable.</p>
-
-  <h3>Privacy policy </h3>
-  <p>The information submitted when buying a ticket will not be shared with 3rd parties, but can be used for the promotion of future Grenselandet events and other events organized by Fantasiforbundet.</p>
-
-</div>
-{% endblock content%}
+{% block form %}
+  <h3><i class="fi-torso icon"></i> Ticket holder</h3>
+  <form id="registration-form" method="post">
+    {% include '_ticket-form.html' %}
+    {% csrf_token %}
+    <input type="submit" value="Proceed to checkout" class="radius button expand">
+  </form>
+{% endblock form %}

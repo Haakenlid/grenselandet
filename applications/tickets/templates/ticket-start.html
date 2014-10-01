@@ -2,14 +2,29 @@
 {% block title %}Buy your ticket now{% endblock title %}
 {% block content %}
   <div class="small-12 columns">
-    <h1>Ticket sales for {{ convention }}</h1>
+    <h1>Order a ticket for {{ convention }}</h1>
   </div>
-  <div class="small-6 columns">
-    Ticket sales opens at <strong>{{ convention.ticket_sales_opens }}</strong> and closes at <strong>{{ convention.ticket_sales_closes }}</strong> or when all tickets are sold out.
+  <div class="medium-6 columns">
+    {{ convention.description|linebreaks }}
+    <hr>
+    <p>
+      {% if convention.ticket_sales_has_ended %}
+        The ticket sales is closed.
+      {% elif convention.ticket_sales_has_started %}
+        Ticket sales closes at <strong>{{ convention.ticket_sales_closes }}</strong> or when all tickets are sold out.
+      {% else %}
+        Ticket sales opens at <strong>{{ convention.ticket_sales_opens }}</strong> and closes at <strong>{{ convention.ticket_sales_closes }}</strong> or when all tickets are sold out.
+      {% endif %}
+    </p>
   </div>
-  <div class="small-6 columns">
+  <div class="medium-6 columns">
     {% for tt in ticket_types %}
-      <a class="button" href="{{ tt.get_absolute_url }}">{{ tt.name }} {{ tt.get_price_display }}</a>
+    <div class="panel">
+      <h3>Buy a {{ tt.name }}</h3>
+      {{ tt.description|linebreaks }}
+      <a class="button radius expand" href="{{ tt.get_absolute_url }}"><i class="fi-shopping-cart"></i> {{ tt.get_price_display }}
+      </a>
+    </div>
     {% empty %}
       <p>There are no available tickets at this time.</p>
     {% endfor %}

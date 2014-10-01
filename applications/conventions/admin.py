@@ -10,6 +10,7 @@ class ConventionAdmin(admin.ModelAdmin):
     list_display = [
         'name',
         'description',
+        'location',
         'start_time',
         'end_time',
         'ticket_sales_opens',
@@ -30,6 +31,7 @@ class ConventionAdmin(admin.ModelAdmin):
                 'name',
                 'description',
                 'mail_signature',
+                'location',
                 ('start_time', 'end_time'),
                 ('ticket_sales_opens', 'ticket_sales_closes'),
                 ('program_signup_opens', 'program_signup_closes'),

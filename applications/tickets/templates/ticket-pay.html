@@ -1,34 +1,13 @@
-{# Ticket registration form. #}
-{% extends "base-template.html" %}
-{% block title %}{{ ticket.convention }} ticket for {{ ticket.get_full_name}} {{ convention }}{% endblock %}
-{% block content %}
-<div class="small-12 columns">
-  <h1>Your ticket reservation</h1>
-</div>
-<div class="small-12 columns">
-  <p>Your ticket reservation has been registered</p>
-  <p>Our card payment system is not quite ready yet. If you have a Norwegian bank account, please pay by bank transfer to 1720.25.85248. Mark your payment with the ticket id {{ ticket.hashid }}. If we have not received payment within 5 working days, we reserve the right to delete your signup.</p>
-  <p>If you don't have a Norwegian bank account, you may wait until our credit card solution is ready, and we'll send you an email with payment instructions.</p>
-</div>
-<hr>
-<div class="small-12 medium-6 columns">
-    <h3>Ticket information</h3>
-      <table class="profile_form small-12 columns">
-      {% for key, value in ticket_data %}
-          <tr>
-          <td>{{ key }}:</td>
-          <td>{{ value }}</td>
-          </tr>
-      {% endfor %}
-      </table>
-    </div>
-<div class="small-12 medium-6 columns">
-  <h3>About the ticket</h3>
-  <ul>
-    <li>A ticket to Grenselandet entitles you to access the festival areas, including access to the party.</li>
-    <li>As a ticket-holder you are entitled to sign up for the larps when this signup opens in early october.</li>
-    <li>Please note that this year the Grenselandet ticket does not include food or accommodation.</li>
-  </ul>
+{% extends "base-ticket.html" %}
 
-</div>
-{% endblock content%}
+{% block title %}{{ ticket.convention }} ticket for {{ ticket.get_full_name}} {{ convention }}{% endblock %}
+
+{% block info %}
+<h1>Your ticket reservation</h1>
+<p>Please enter your credit card information to complete the ticket purchase.</p>
+{% endblock info %}
+
+{% block form %}
+  <h3><i class="fi-credit-card icon"></i> Credit Card Details</h3>
+  {% include '_paymill-form.html' %}
+{% endblock form %}

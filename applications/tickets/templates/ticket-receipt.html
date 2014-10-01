@@ -1,34 +1,16 @@
-{# Ticket review and payment button. #}
-{% extends "base-template.html" %}
-{% block title %}Payment Metamorfozes{% endblock %}
-{% block content %}
-    <h1>Your ticket</h1>
-    <p>name: {{user.get_full_name}}</p>
-    <p>country: {{user.ticket.get_nationality_display}}</p>
-    <table>
-    <tr class = "total">
-        <td>Total price</td>
-        <td align="right">{{user.ticket.ticket_type.price}} {{user.ticket.ticket_type.currency}}</td>
-    </tr>
-    <tr class = "sum_paid">
-        <td>Sum paid</td>
-        <td align="right">{{user.ticket.sum_paid}} {{user.ticket.ticket_type.currency}}</td>
-    </tr>
-    </table>
-    {# TODO: Use template inheritance instead of template logic? #}
-    {% if not user.ticket.is_paid %}
-        <h2>Payment by credit card</h2>
-        <p>Your signup is not complete before you have paid your ticket.</p>
-        <div id="paypal-button">
-            {% if debug %}
-            {{ paypal_form.sandbox }}
-            <p>(DEBUG MODUS: knappen tar deg foreløpig til "paypal-sandbox", ikke den ekte paypal-siden)</p>
-            {% else %}
-            {{ paypal_form.render }}
-            {% endif %}
-        </div>
-    {% else %}
-        <p>Your ticket is paid, and your registration is complete.</p>
-        <p>If you want to change your ticket details, please contact us at admin@metamorfozes.net</p>
-    {% endif %}
-{% endblock content %}
+{% extends "base-ticket.html" %}
+
+{% block info %}
+  <h1>Your ticket receipt</h1>
+  <p>We are looking forward to seeing you at {{ ticket.convention }}!</p>
+{% endblock info %}
+
+{% block ticket-info %}
+  <h3><i class="fi-torso icon"></i> Ticket information</h3>
+  {% include '_ticket-panel.html' %}
+{% endblock ticket-info %}
+
+{% block form %}
+  <h3><i class="fi-dollar-bill icon"></i> Payment details</h3>
+  {% include '_payment-details.html' %}
+{% endblock form %}

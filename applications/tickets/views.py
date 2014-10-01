@@ -11,19 +11,23 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 # from django.template import loader, Context
 from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import CreateView
-from django.views.generic.detail import DetailView
+# from django.views.generic.detail import DetailView
 from django.views.generic.base import TemplateView
 
-from django.contrib.sites.models import get_current_site
-
+# from django.contrib.sites.models import get_current_site
+from django.contrib import messages
 from django.conf import settings
 # from django.contrib import messages
+
+from pymill import pymill
 
 from .models import Ticket, TicketType
 from applications.conventions.models import Convention
 from .forms import TicketForm
+
+import logging
+logger = logging.getLogger('debug')
 
 
 class DateCheckMixin(object):
@@ -86,26 +90,20 @@ class TicketCreateView(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class TicketMixin:
+class TicketDetailView(TemplateView):
+
     model = Ticket
     context_object_name = 'ticket'
     slug_field = 'hashid'
     slug_url_kwarg = 'hashid'
 
-    def get_success_url(self):
-        """ Send user to next part of the process. """
-        return reverse(
-            self.next_url_label,
-            kwargs={'hashid': self.object.hashid},
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            ticket_type=self.ticket.ticket_type,
+            ticket=self.ticket,
         )
-
-
-
-
-class TicketPayView(TicketMixin, DetailView):
-
-    """ Participant pay their ticket. """
-    template_name = 'ticket-pay.html'
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         self.ticket = get_object_or_404(
@@ -114,29 +112,100 @@ class TicketPayView(TicketMixin, DetailView):
         )
         return super().dispatch(request, *args, **kwargs)
 
+
+class TicketPayView(TicketDetailView):
+
+    """ Show payment form """
+
+    template_name = 'ticket-pay.html'
+
     def get_context_data(self, **kwargs):
-        """Adds sold_out to context"""
         context = super().get_context_data(**kwargs)
-        context.update(ticket_type=self.ticket.ticket_type)
-        context.update(ticket=self.ticket)
-        context.update(ticket_data=(
-            ('ticket-id', self.ticket.hashid, ),
-            ('event', self.ticket.convention, ),
-            ('ticket type', self.ticket.ticket_type.name, ),
-            ('price', self.ticket.ticket_type.get_price_display(), ),
-            ('ticket holder', self.ticket.get_full_name(), ),
-            ('date of birth', self.ticket.date_of_birth, ),
-            ('email', self.ticket.email, ),
-            ('address', self.ticket.address, ),
-            ('country', self.ticket.country.name, ),
-            ), )
+        context.update(
+            PAYMILL_PUBLIC_KEY=settings.PAYMILL_PUBLIC_KEY,
+            PAYMILL_TEST_MODE='true' if settings.DEBUG else 'false',
+        )
         return context
 
-    # def form_valid(self, form):
-    #     # self.object = form.save(ticket_type=self.ticket_type)
-    #     return HttpResponseRedirect(self.get_success_url())
+    def render_to_response(self, context):
+        if self.ticket.status != Ticket.ORDERED:
+            return HttpResponseRedirect(self.ticket.get_absolute_url())
 
-class TicketReceiptView(TicketPayView):
+        return super().render_to_response(context)
+
+
+    def post(self, *args, **kwargs):
+        """ Process payment from PayMill """
+        PAYMILL_SUCCESS_CODE = 20000
+        paymill_token = self.request.POST.get('paymill_token')
+        private_key = settings.PAYMILL_PRIVATE_KEY
+
+        paymill = pymill.Pymill(private_key)
+
+        credit_card = paymill.new_card(token=paymill_token,)
+        description = '{ticket} for {person}'.format(
+            ticket=self.ticket.ticket_type,
+            person=self.ticket.get_full_name,
+        )
+
+        transaction = paymill.transact(
+            amount=self.ticket.ticket_type.price * 100,
+            currency=self.ticket.ticket_type.currency,
+            payment=credit_card,
+            description=description,
+        )
+
+        response_status = paymill.response_code2text(transaction.response_code)
+
+        logger.debug(
+            '{time} {name} {response}'.format(
+                time=timezone.now(),
+                name=self.ticket.get_full_name(),
+                response=response_status,
+            )
+        )
+
+        if transaction.response_code == PAYMILL_SUCCESS_CODE:
+            self.ticket.pay(
+                paid_via='PayMill transaction',
+                transaction_id=transaction.id,
+            )
+            messages.success(
+                self.request,
+                'Your payment was successfull, you have been emailed a receipt.',
+            )
+            return self.form_valid()
+
+        else:
+            logger.error('transaction failed: {}'.format(response_status, ))
+            messages.error(
+                self.request,
+                'The transaction could not be completed due to the following error:'
+                ' {error_message}'.format(
+                    error_message=response_status
+                ),
+            )
+            return self.form_invalid()
+
+    def form_invalid(self):
+        """
+        If the form is invalid, re-render the context data with the
+        data-filled form and errors.
+        """
+        return self.render_to_response(self.get_context_data())
+
+    def form_valid(self):
+        """
+        If the form is valid, redirect to the supplied URL.
+        """
+        return HttpResponseRedirect(self.ticket.get_absolute_url())
+
+
+class TicketReceiptView(TicketDetailView):
 
     """ Show receipt data for ticket """
-    # template_name = 'ticket-pay.html'
+    template_name = 'ticket-receipt.html'
+
+
+class PayMillTestView(TicketPayView):
+    template_name = 'paymill-test.html'

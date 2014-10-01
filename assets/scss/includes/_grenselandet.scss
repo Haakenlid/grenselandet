@@ -27,7 +27,7 @@ main {
     // width: 600px;
     margin: 0 20px;
     a {
-      font-size: 180%;
+      font-size: 150%;
       color: transparent;
       @media #{$medium-up} {
         line-height: 0;
@@ -57,6 +57,64 @@ main {
       margin-top: 20px;
 
     }
+  }
+}
+
+small.error {
+  padding: 0.1rem 0.8rem;
+  margin: 0 0 1rem 0;
+}
+
+.details-table {
+  width: 100%;
+  tr {
+    td, th {
+      line-height: 2.3125rem;
+      margin: 0 0 1rem 0;
+      font-weight: normal;
+      padding: 0.5rem 0;
+      line-height: normal;
+    }
+    th {
+      text-align: left;
+      color: #777;
+      width: 33.3333%;
+    }
+    td {
+      color:  #333;
+    }
+  }
+}
+
+.icon {
+  color: $primary-color;
+  font-size: 120%;
+  padding-right: 0.5rem;
+}
+
+.trekkspill {
+  @include accordion-container;
+
+  .navigation  {
+    @include accordion-navigation;
+    // a {
+    //   font-family: $serif;
+    //   font-weight: bold;
+    //   color: $primary-color;
+    // }
+  }
+
+  .content  {
+    @include accordion-content;
+    p {
+      font-size: smaller;
+    }
+  }
+}
+
+.ticket-panel {
+  td, th {
+    font-size: smaller;
   }
 
 }

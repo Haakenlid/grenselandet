@@ -9,9 +9,20 @@ upstream USERNAME {
   server unix:/tmp/SITEURL.socket fail_timeout=0;
 }
 
+# server {
+#    listen               80;
+#    server_name          SITEURL;
+#    rewrite              ^ https://$server_name$request_uri? permanent;
+#}
+
 server {
-    listen               80;
+    listen               80 default_server;
+    listen               443 ssl;
     server_name          SITEURL;
+
+    ssl_certificate      /srv/ssl/SITEURL.crt;
+    ssl_certificate_key  /srv/ssl/SITEURL.key;
+    keepalive_timeout    70;
 
     client_max_body_size 4G;
 

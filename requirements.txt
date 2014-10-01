@@ -9,6 +9,7 @@ django-redis-cache
 django-sekizai
 django-compressor
 django-countries
+django-widget-tweaks
 hashids
 gunicorn
 hiredis
@@ -22,3 +23,4 @@ requests
 selenium
 -e git+git@github.com:mariocesar/sorl-thumbnail.git@33763bfc0514f7724c9e9fc1eb8c909fd8aa131c#egg=sorl_thumbnail
 -e git+git@github.com:Haakenlid/django-autocomplete-light.git@80b1d689f482c85764909d2908f3bcb0bbc32237#egg=django_autocomplete_light
+-e git+git@github.com:Haakenlid/pymill.git#egg=pymill
