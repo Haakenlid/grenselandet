@@ -10,6 +10,7 @@ django-sekizai
 django-compressor
 django-countries
 django-widget-tweaks
+django-allauth
 hashids
 gunicorn
 hiredis

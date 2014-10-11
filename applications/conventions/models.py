@@ -5,7 +5,17 @@ from django.utils import timezone
 
 # Create your models here.
 
+
+class ConventionManager(models.Manager):
+
+    def next(self):
+        """ The upcoming event """
+        next_convention = self.exclude(end_time__lt=timezone.now()).order_by('start_time').first()
+        return next_convention
+
+
 class Convention(models.Model):
+
     """ A con, festival or event """
 
     name = models.CharField(max_length=100)
@@ -20,6 +30,8 @@ class Convention(models.Model):
     ticket_sales_closes = models.DateTimeField()
     program_signup_opens = models.DateTimeField()
     program_signup_closes = models.DateTimeField()
+
+    objects = ConventionManager()
 
     class Meta:
         verbose_name = _('Convention')
@@ -40,4 +52,5 @@ class Convention(models.Model):
             description=self.description,
             start=formats.date_format(self.start_time, 'SHORT_DATE_FORMAT'),
             end=formats.date_format(self.end_time, 'SHORT_DATE_FORMAT'),
-            )
+        )
+

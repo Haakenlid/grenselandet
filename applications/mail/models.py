@@ -77,6 +77,7 @@ class MailTrigger(models.Model):
     SIGNUP_OPEN = 4
     SIGNUP_CLOSED = 5
     PROGRAMME_ASSIGNED = 6
+    INFORMATION = 7
 
     TRIGGER_CHOICES = (
         (TICKET_ORDERED, _('ticket ordered'),),
@@ -85,6 +86,7 @@ class MailTrigger(models.Model):
         (SIGNUP_OPEN, _('signup open'),),
         (SIGNUP_CLOSED, _('signup closed'),),
         (PROGRAMME_ASSIGNED, _('programme assigned'),),
+        (INFORMATION, _('information'),),
     )
 
     convention = models.ForeignKey(

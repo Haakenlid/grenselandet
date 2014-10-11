@@ -53,7 +53,7 @@ class ClosedView(TemplateView):
 
 class TicketStartView(TemplateView):
     template_name = 'ticket-start.html'
-    convention = Convention.objects.exclude(end_time__lt=timezone.now()).order_by('start_time').first()
+    convention = Convention.objects.next()
 
     def get_context_data(self, **kwargs):
         """Adds sold_out to context"""
