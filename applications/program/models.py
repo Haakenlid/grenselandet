@@ -133,6 +133,7 @@ class ProgramItem(models.Model):
     )
     duration = models.PositiveSmallIntegerField(
         default=DEFAULT_LENGTH,
+        help_text='Length in minutes',
     )
     location = models.ManyToManyField(
         Location,

@@ -87,8 +87,8 @@ class ProgramItemAdmin(admin.ModelAdmin):
     def pri3(obj):
         return obj.signup_set.filter(priority=3).count()
 
-    list_display = ("name", "language", "start_time", "end_time", "max_participants", signups, pri1, pri2, pri3)
-    #list_editable = ("max_participants", "start_time", "end_time",)
+    list_display = ("name", "language", "start_time", "duration", "end_time", "max_participants", signups, pri1, pri2, pri3)
+    list_editable = ("max_participants", "start_time", "duration",)
     filter_horizontal = ("organisers",)
 
 
