@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'applications.conventions',
     'applications.mail',
     'applications.tickets',
-    'applications.prog',
+    'applications.program',
 ]
 
 # THIRD PARTY APPS

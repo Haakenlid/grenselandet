@@ -2,6 +2,7 @@ from django.contrib.auth.models import User, Group
 from django.db import models
 from datetime import timedelta
 from applications.conventions.models import Convention
+from applications.tickets.models import Ticket
 
 
 def next_convention():
@@ -38,7 +39,6 @@ class Participant(models.Model):
         self.user.save()
         organisers.user_set.add(self.user)
 
-    # @staticmethod
     @classmethod
     def create(cls, ticket):
         first_name = ticket.first_name.title()
@@ -65,6 +65,11 @@ class Participant(models.Model):
         )
         participant.send_welcome_message(new_password)
         return participant
+
+    @classmethod
+    def activate_all_tickets(cls):
+        for ticket in Ticket.objects.all():
+            cls.create(ticket)
 
 
 class Location(models.Model):
