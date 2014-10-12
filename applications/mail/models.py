@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
-from django.template.loader import render_to_string
-from django.core.mail import send_mail
+# from django.template.loader import render_to_string
+# from django.core.mail import send_mail
 from django.template import Template, Context
 
 from applications.conventions.models import Convention
@@ -48,12 +48,21 @@ class MailTemplate(models.Model):
         )
         email_subject = subject_template.render(context)
         email_body = body_template.render(context)
-        send_mail(
-            subject=email_subject,
-            message=email_body,
-            from_email='',
-            recipient_list=[recipient.email],
-        )
+
+        from mailqueue.models import MailerMessage
+
+        new_message = MailerMessage()
+        new_message.subject = email_subject
+        new_message.to_address = recipient.email
+        new_message.content = email_body
+        new_message.app = "ticket system"
+        new_message.save()
+        # send_mail(
+        #     subject=email_subject,
+        #     message=email_body,
+        #     from_email='',
+        #     recipient_list=[recipient.email],
+        # )
 
 
 class MailTriggerManager(models.Manager):

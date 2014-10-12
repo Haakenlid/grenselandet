@@ -50,6 +50,7 @@ EMAIL_HOST_USER = env_var('GMAIL_USER')
 EMAIL_HOST_PASSWORD = env_var('GMAIL_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+MAILQUEUE_QUEUE_UP = True
 
 # CUSTOM APPS
 INSTALLED_APPS = [
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
     'applications.conventions',
     'applications.mail',
     'applications.tickets',
+    'applications.prog',
 ]
 
 # THIRD PARTY APPS
@@ -68,6 +70,7 @@ INSTALLED_APPS = [
     'sekizai',
     'compressor',
     'widget_tweaks',
+    'mailqueue',
 ] + INSTALLED_APPS
 
 # CORE APPS

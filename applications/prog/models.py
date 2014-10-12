@@ -3,7 +3,17 @@ from django.db import models
 from datetime import timedelta
 from applications.conventions.models import Convention
 
-NEXT_CONVENTION = Convention.objects.next()
+
+def next_convention():
+    return Convention.objects.next().pk or None
+
+
+def next_convention_start_time():
+    convention = Convention.objects.next()
+    if convention:
+        return convention.start_time
+    else:
+        return None
 
 
 class Participant(models.Model):
@@ -28,21 +38,24 @@ class Participant(models.Model):
         self.user.save()
         organisers.user_set.add(self.user)
 
-    @staticmethod
-    def create(cls, first_name, last_name, email, convention,):
-        first_name = first_name.capitalise()
-        last_name = last_name.capitalise()
-        email = email.lowercase()
+    # @staticmethod
+    @classmethod
+    def create(cls, ticket):
+        first_name = ticket.first_name.title()
+        last_name = ticket.last_name.title()
+        email = ticket.email.lower()
+        convention = ticket.convention
         new_password = None
 
-        is_new, user = User.objects.get_or_create(
-            first_name=first_name,
-            last_name=last_name,
+        user, is_new = User.objects.get_or_create(
             email=email,
         )
 
         if is_new:
             new_password = User.objects.make_random_password()
+            user.first_name = first_name
+            user.last_name = last_name
+            user.username = user.email.split('@')[0]
             user.set_password(new_password)
             user.save()
 
@@ -57,14 +70,22 @@ class Participant(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(blank=True, max_length=5000)
-    max_capacity = models.IntegerField(blank=True)
+    max_capacity = models.IntegerField(
+        blank=True, null=True,
+    )
     convention = models.ForeignKey(
         Convention,
-        default=NEXT_CONVENTION,
+        related_name='event',
+        default=next_convention,
     )
 
     def __str__(self):
         return self.name
+
+    # def save(self):
+    #     if not self.convention:
+    #         self.convention = Convention.objects.next()
+    #     self.super().save()
 
 
 class ProgramItem(models.Model):
@@ -83,15 +104,13 @@ class ProgramItem(models.Model):
     )
     convention = models.ForeignKey(
         Convention,
-        default=NEXT_CONVENTION,
+        default=next_convention,
     )
     name = models.CharField(
         max_length=100,
         help_text='The name of this programme item',
     )
-    description = models.CharField(
-        null=True,
-        max_length=5000,
+    description = models.TextField(
         help_text='Description of the event',
     )
     itemtype = models.CharField(
@@ -105,7 +124,10 @@ class ProgramItem(models.Model):
         default=LANGUAGES[0][0],
     )
     start_time = models.DateTimeField(
-        default=NEXT_CONVENTION.start_time,
+        default=next_convention_start_time
+    )
+    duration = models.PositiveSmallIntegerField(
+        default=DEFAULT_LENGTH,
     )
     location = models.ManyToManyField(
         Location,
@@ -122,17 +144,24 @@ class ProgramItem(models.Model):
         through='Signup',
     )
     max_participants = models.IntegerField(
-        blank=True,
+        blank=True, null=True,
     )
 
     @property
     def end_time(self):
         return self.start_time + timedelta(
-            minutes=self.DEFAULT_LENGTH,
+            minutes=self.duration,
         )
 
     def __str__(self):
         return self.name
+
+    # def save(self):
+    #     if not self.convention:
+    #         self.convention = Convention.objects.next()
+    #     if not self.start_time:
+    #         self.start_time = self.convention.start_time
+    #     self.super().save()
 
 
 class Signup(models.Model):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from signup.models import Participant, Location, ProgramItem, Signup
+from .models import Participant, Location, ProgramItem, Signup
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import SimpleListFilter
@@ -18,9 +18,9 @@ class nonzero_filter(SimpleListFilter):
             ('no', _('No')),
         )
 
-        def queryset(self, request, queryset):
-            if self.value() == 'yes':
-                return queryset.exclude(priority=0)
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.exclude(priority=0)
         if self.value() == 'no':
             return queryset.filter(priority=0)
 
@@ -68,7 +68,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     def email(obj):
         return obj.user.email
-    list_display = ('__unicode__', 'user', email, signups)
+    list_display = ('__str__', 'user', email, signups)
     search_fields = ['user__first_name', 'user__last_name']
     list_filter = (signed_up_filter,)
 
@@ -93,8 +93,8 @@ class ProgramItemAdmin(admin.ModelAdmin):
 
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("name", "description", "max_capacity")
-    list_editable = ("description", "max_capacity",)
+    list_display = ("id", "name", "description", "max_capacity", "convention")
+    list_editable = ("name", "description", "max_capacity",)
 
 
 class SignupAdmin(admin.ModelAdmin):

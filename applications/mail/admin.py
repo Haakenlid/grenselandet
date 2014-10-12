@@ -25,7 +25,7 @@ def test_mail_trigger(modeladmin, request, queryset):
 test_mail_trigger.short_description = _('send this mail to yourself.')
 
 def send_to_everyone(modeladmin, request, queryset):
-    recipients = Ticket.objects.all()[17:]
+    recipients = Ticket.objects.all()
     for trigger in queryset:
         for recipient in recipients:
             trigger.send_mail(recipient)

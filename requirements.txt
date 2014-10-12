@@ -11,6 +11,7 @@ django-compressor
 django-countries
 django-widget-tweaks
 django-allauth
+django-mail-queue
 hashids
 gunicorn
 hiredis

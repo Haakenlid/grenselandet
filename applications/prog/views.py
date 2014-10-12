@@ -4,12 +4,12 @@ import random
 from django.shortcuts import render_to_response
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
-from applications.programme.models import Location, ProgramItem, Signup, Participant
 from django.contrib.auth.models import User
 
 from django.core.mail import send_mail
 from random import choice
 from django.http import HttpResponseRedirect
+from .models import Location, ProgramItem, Signup, Participant
 
 
 def spill_liste(request):
