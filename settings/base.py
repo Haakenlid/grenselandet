@@ -162,7 +162,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'compressor.finders.CompressorFinder',
-    # 'dajaxice.finders.DajaxiceFinder',
+    'dajaxice.finders.DajaxiceFinder',
 ]
 
 # INTERNATIONALIZATION AND TRANSLATION
