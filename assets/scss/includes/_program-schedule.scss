@@ -8,8 +8,8 @@ table.schedule {
     background: #0C4966;
     font-size: 150%;
   }
-  td:first-child, th:first-child {
-    width: 75px;
+  .time {
+    width: 100px;
   }
   td {
     background: white;
@@ -17,16 +17,13 @@ table.schedule {
     margin: 0px;
     height: 21px;
   }
-  tr td {
-    &.location, &.time {
-      text-align: center;
-      background: #BBB;
-      padding: 4px;
-      font-size: 80%;
-    }
+  .location, .time {
+    text-align: center;
+    background: #BBB;
+    padding: 4px;
+    font-size: 80%;
   }
 }
-
 .wrapper_fix {
   height: 100%;
   position: relative;

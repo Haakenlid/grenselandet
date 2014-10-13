@@ -3678,14 +3678,14 @@ table.schedule {
     padding: 10px;
     background: #0C4966;
     font-size: 150%; }
-  table.schedule td:first-child, table.schedule th:first-child {
-    width: 75px; }
+  table.schedule .time {
+    width: 100px; }
   table.schedule td {
     background: white;
     padding: 0px;
     margin: 0px;
     height: 21px; }
-  table.schedule tr td.location, table.schedule tr td.time {
+  table.schedule .location, table.schedule .time {
     text-align: center;
     background: #BBB;
     padding: 4px;
