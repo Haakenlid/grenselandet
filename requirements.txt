@@ -12,7 +12,6 @@ django-countries
 django-widget-tweaks
 django-allauth
 django-mail-queue
-django-dajaxice
 hashids
 gunicorn
 hiredis
