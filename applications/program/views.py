@@ -33,7 +33,7 @@ def schedule(request):
         #     volunteer = True
         updatelist = []
         for s in sessions.exclude(participants=u):
-            updatelist += [Signup(programsession=s, participant=u)]
+            updatelist += [Signup(session=s, participant=u)]
 
         if updatelist:
             Signup.objects.bulk_create(updatelist)
