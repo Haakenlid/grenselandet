@@ -23,7 +23,7 @@ exec    $virtualenvfolder/bin/gunicorn \
         $wsgi:application \
         --name $name \
         --workers $num_workers \
-        --timout $timeout \
+        --timeout $timeout \
         --bind=unix:$socket \
         --user=$user --group=$group \
         --log-level=debug \
