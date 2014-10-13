@@ -40,59 +40,59 @@ class ItemType(models.Model):
         ordering = ["ordering", "name", ]
 
 
-class Participant(models.Model):
-    user = models.ForeignKey(User)
-    convention = models.ForeignKey(Convention)
+# class Participant(models.Model):
+#     user = models.ForeignKey(User)
+#     convention = models.ForeignKey(Convention)
 
-    def __str__(self):
-        return '{user}: {convention}'.format(
-            user=self.user.get_full_name(),
-            convention=self.convention.name,
-        )
+#     def __str__(self):
+#         return '{user}: {convention}'.format(
+#             user=self.user.get_full_name(),
+#             convention=self.convention.name,
+#         )
 
-    def send_welcome_message(self, password=None):
-        print('welcome, %s, %s' % (self, password))
+#     def send_welcome_message(self, password=None):
+#         print('welcome, %s, %s' % (self, password))
 
-    def make_organiser(self):
-        organisers = Group.objects.get_or_create(
-            name='{event} organisers'.format(
-                event=self.convention.name)
-        )
-        self.user.is_staff = True
-        self.user.save()
-        organisers.user_set.add(self.user)
+#     def make_organiser(self):
+#         organisers = Group.objects.get_or_create(
+#             name='{event} organisers'.format(
+#                 event=self.convention.name)
+#         )
+#         self.user.is_staff = True
+#         self.user.save()
+#         organisers.user_set.add(self.user)
 
-    @classmethod
-    def create(cls, ticket):
-        first_name = ticket.first_name.title()
-        last_name = ticket.last_name.title()
-        email = ticket.email.lower()
-        convention = ticket.convention
-        new_password = None
+#     @classmethod
+#     def create(cls, ticket):
+#         first_name = ticket.first_name.title()
+#         last_name = ticket.last_name.title()
+#         email = ticket.email.lower()
+#         convention = ticket.convention
+#         new_password = None
 
-        user, is_new = User.objects.get_or_create(
-            email=email,
-        )
+#         user, is_new = User.objects.get_or_create(
+#             email=email,
+#         )
 
-        if is_new:
-            new_password = User.objects.make_random_password()
-            user.first_name = first_name
-            user.last_name = last_name
-            user.username = user.email.split('@')[0]
-            user.set_password(new_password)
-            user.save()
+#         if is_new:
+#             new_password = User.objects.make_random_password()
+#             user.first_name = first_name
+#             user.last_name = last_name
+#             user.username = user.email.split('@')[0]
+#             user.set_password(new_password)
+#             user.save()
 
-        participant = cls.objects.create(
-            user=user,
-            convention=convention,
-        )
-        participant.send_welcome_message(new_password)
-        return participant
+#         participant = cls.objects.create(
+#             user=user,
+#             convention=convention,
+#         )
+#         participant.send_welcome_message(new_password)
+#         return participant
 
-    @classmethod
-    def activate_all_tickets(cls):
-        for ticket in Ticket.objects.all():
-            cls.create(ticket)
+#     @classmethod
+#     def activate_all_tickets(cls):
+#         for ticket in Ticket.objects.all():
+#             cls.create(ticket)
 
 
 class Location(models.Model):

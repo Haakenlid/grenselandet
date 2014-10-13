@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Participant, Location, ProgramItem, Signup, ProgramSession, ItemType
+from .models import Location, ProgramItem, Signup, ProgramSession, ItemType
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import SimpleListFilter
 
-from django.db.models import Max
+# from django.db.models import Max
 
 from django.utils.safestring import mark_safe
 from django.core.urlresolvers import reverse
@@ -28,40 +28,40 @@ class nonzero_filter(SimpleListFilter):
             return queryset.filter(priority=0)
 
 
-class signed_up_filter(SimpleListFilter):
-    # Human-readable title which will be displayed in the
-    # right admin sidebar just above the filter options.
+# class signed_up_filter(SimpleListFilter):
+#     # Human-readable title which will be displayed in the
+#     # right admin sidebar just above the filter options.
 
-    title = _('signed up')
+#     title = _('signed up')
 
-    # Parameter for the filter that will be used in the URL query.
-    parameter_name = 'signedup'
+#     # Parameter for the filter that will be used in the URL query.
+#     parameter_name = 'signedup'
 
-    def lookups(self, request, model_admin):
-        """
-        Returns a list of tuples. The first element in each
-        tuple is the coded value for the option that will
-        appear in the URL query. The second element is the
-        human-readable name for the option that will appear
-        in the right sidebar.
-        """
-        return (
-            ('yes', _('Yes')),
-            ('no', _('No')),
-        )
+#     def lookups(self, request, model_admin):
+#         """
+#         Returns a list of tuples. The first element in each
+#         tuple is the coded value for the option that will
+#         appear in the URL query. The second element is the
+#         human-readable name for the option that will appear
+#         in the right sidebar.
+#         """
+#         return (
+#             ('yes', _('Yes')),
+#             ('no', _('No')),
+#         )
 
-    def queryset(self, request, queryset):
-        """
-        Returns the filtered queryset based on the value
-        provided in the query string and retrievable via
-        `self.value()`.
-        """
-        queryset = queryset.annotate(number_of_signups=Max('signup__priority'))
+#     def queryset(self, request, queryset):
+#         """
+#         Returns the filtered queryset based on the value
+#         provided in the query string and retrievable via
+#         `self.value()`.
+#         """
+#         queryset = queryset.annotate(number_of_signups=Max('signup__priority'))
 
-        if self.value() == 'yes':
-            return queryset.exclude(number_of_signups=0)
-        if self.value() == 'no':
-            return queryset.filter(number_of_signups=0)
+#         if self.value() == 'yes':
+#             return queryset.exclude(number_of_signups=0)
+#         if self.value() == 'no':
+#             return queryset.filter(number_of_signups=0)
 
 
 class SignupInline(admin.TabularInline):
@@ -86,17 +86,17 @@ class SessionInline(admin.TabularInline):
     readonly_fields = ('admin_link', 'participants_signed_up', 'game_masters')
 
 
-@admin.register(Participant)
-class ParticipantAdmin(admin.ModelAdmin):
+# @admin.register(Participant)
+# class ParticipantAdmin(admin.ModelAdmin):
 
-    def signups(obj):
-        return obj.signup_set.filter(priority__gt=0).count()
+#     # def signups(obj):
+#         # return obj.signup_set.filter(priority__gt=0).count()
 
-    def email(obj):
-        return obj.user.email
-    list_display = ('__str__', 'user', email, signups)
-    search_fields = ['user__first_name', 'user__last_name']
-    list_filter = (signed_up_filter,)
+#     def email(obj):
+#         return obj.user.email
+#     list_display = ('__str__', 'user', email, )
+#     search_fields = ['user__first_name', 'user__last_name']
+#     # list_filter = (signed_up_filter,)
 
 
 @admin.register(ProgramItem)
