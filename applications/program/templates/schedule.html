@@ -85,7 +85,7 @@
                     {{cell.session.programitem.name}}</div>
                 {% if perms.program.change_item %}
                 <div class="edit_program" title="edit item">
-                    <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">&#xf044;</a>
+                    <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">edit</a>
                 </div>
                 {% endif %}
 
