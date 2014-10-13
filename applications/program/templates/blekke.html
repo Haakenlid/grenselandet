@@ -1,0 +1,23 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <h2> Program </h2>
+        {% for p in programitems %}
+        <p><strong>{{ p.itemtype }}:{{p.name}}</strong></p>
+        <p>{% for user in p.organisers.all %} {{ user.get_full_name }}{% if not forloop.last %},{% endif %}{% endfor %}</p> 
+        <p>{{p.start_time|date:"D, H:i"}}&mdash;{{p.end_time|date:"H:i"}},
+        {{ p.location }}
+        <p>
+        {% if p.description %}{{ p.description }}
+        {% else %}&nbsp;{% endif %}
+        </p>
+        {% endfor %}
+        <h2> Schedule </h2>
+        {% for p in schedule %}
+        {% ifchanged %}<h3>{{p.start_time|date:"l"}}</h3>{% endifchanged %}
+        {% ifchanged %}<h4>{{p.location}}</h4>{% endifchanged %}
+        <p>{{ p.name }};;{{ p.itemtype }};;{{p.start_time|date:"H:i"}}&mdash;{{p.end_time|date:"H:i"}},
+        {% endfor %}
+    </body>
+</html>

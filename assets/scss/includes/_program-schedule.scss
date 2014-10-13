@@ -1,0 +1,131 @@
+table.schedule {
+  width: 100%;
+  table-layout: fixed;
+  caption {
+    font-weight: bold;
+    color: #FFF;
+    padding: 10px;
+    background: #0C4966;
+    font-size: 150%;
+  }
+  td:first-child, th:first-child {
+    width: 75px;
+  }
+  td {
+    background: white;
+    padding: 0px;
+    margin: 0px;
+    height: 21px;
+  }
+  tr td {
+    &.location, &.time {
+      text-align: center;
+      background: #BBB;
+      padding: 4px;
+      font-size: 80%;
+    }
+  }
+}
+
+.wrapper_fix {
+  height: 100%;
+  position: relative;
+}
+
+.program_item {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+  overflow: hidden;
+  width: 100%;
+  //border: 1px solid black;
+  background: white;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: help;
+  > div {
+    margin: 3px 2px;
+  }
+}
+
+.description {
+  font-size: 80%;
+  word-wrap: break-word;
+}
+
+.program_blackboxlarp, .program_blackboxchamberlarp {
+  background-color: #666;
+}
+
+.program_freeform {
+  background-color: #77b;
+}
+
+.program_larp, .program_chamberlarp, .program_fullscenographychamberlarp, .program_studiochamberlarp {
+  background-color: #ea2;
+}
+
+.program_social {
+  background-color: #f44;
+}
+
+.program_work {
+  background-color: #d22;
+}
+
+div {
+  &.sessionwrapper {
+    padding: 2px;
+    height: 100%;
+  }
+  &.edit_program {
+    font-size: 14px;
+    font-family: FontAwesome;
+    font-weight: normal;
+    font-style: normal;
+    width: 15px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    a {
+      color: rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      &:hover {
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+}
+
+table.tbl_program {
+  font-size: 70%;
+}
+
+tr.rooms {
+  font-weight: bold;
+}
+
+td {
+  &.day {
+    font-size: 120%;
+    font-weight: bold;
+  }
+  &.nor {
+    background-color: yellow;
+  }
+  &.eng {
+    background-color: #93F500;
+  }
+  &.common {
+    background-color: #827CFF;
+  }
+}
+
+tr.ledig td {
+  background-color: yellow;
+}

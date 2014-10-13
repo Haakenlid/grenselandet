@@ -1,0 +1,35 @@
+{% extends "program-template.html" %}
+
+{% block title %}List of games and participants{% endblock %}
+
+{% block content %}
+<h1>List of games and participants</h1>
+<p>Check in for all larps open 30 minutes before it starts and closes 20 minutes before it starts. If you are too late, the spot might be given to someone else.</p>
+<p>If you're playing a blackbox larp, wear black, neutral clothes.</p>
+<a href="/program/">View program schedule</a>
+{% for mySession in sessions %}
+
+	<table class="overview">
+	<caption>{{mySession.programitem.name}} {{mySession.programitem.start_time}}</caption>
+	<tr><th>Starts at:</td><td>{{mySession.start_time}}</td></tr>
+	<tr><th>Ends at:</td><td>{{mySession.end_time}}</td></tr>
+	<tr><th>Organisers:</td><td>{% for organiser in mySession.programitem.organisers.all %} {{organiser}},{% endfor %}</td></tr>
+	<tr><th>Description:</td><td>{{mySession.programitem.description}}</td></tr>
+	{% if mySession.max_participants > 0 %}<tr><th>Max Participants:</td><td>{{mySession.max_participants}}</td></tr> {% endif %}
+	</table>
+
+	<table class="overview">
+	<tr><th>#</th><th>name</th></tr>
+	{% for signup in mySession.assigned_participants %}
+		<tr>
+		<td>{% if signup.importance = 2 %}GM{% else %}{% endif %}</td>
+		<td>{{ signup.participant }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endfor %}
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

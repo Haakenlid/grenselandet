@@ -1,0 +1,16 @@
+<html><head></head>
+    <body>
+        {% for p in programitems %}
+        <p>tit:{{p.name}}
+        </br>Max: {{p.max_participants}}
+        </br>Time: {{p.start_time|date:"D H:i"}}&ndash;{{p.end_time|date:"D H:i"}}
+        </br>Location: {{p.location}}
+        </br>Type: {{p.itemtype}}
+        <p>{{ p.description }}</p> 
+        </br>Participants: 
+            {% for n in p.list %}
+            </br> {{ n.participant.get_full_name }}
+            {% endfor %}
+        {% endfor %} 
+    </body>
+</html>

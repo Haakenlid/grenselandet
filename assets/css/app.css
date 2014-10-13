@@ -3669,6 +3669,167 @@ small.error {
 .ticket-panel td, .ticket-panel th {
   font-size: smaller; }
 
+table.schedule {
+  width: 100%;
+  table-layout: fixed; }
+  table.schedule caption {
+    font-weight: bold;
+    color: #FFF;
+    padding: 10px;
+    background: #0C4966;
+    font-size: 150%; }
+  table.schedule td:first-child, table.schedule th:first-child {
+    width: 75px; }
+  table.schedule td {
+    background: white;
+    padding: 0px;
+    margin: 0px;
+    height: 21px; }
+  table.schedule tr td.location, table.schedule tr td.time {
+    text-align: center;
+    background: #BBB;
+    padding: 4px;
+    font-size: 80%; }
+
+.wrapper_fix {
+  height: 100%;
+  position: relative; }
+
+.program_item {
+  -webkit-box-sizing: border-box;
+  /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;
+  /* Firefox, other Gecko */
+  box-sizing: border-box;
+  /* Opera/IE 8+ */
+  overflow: hidden;
+  width: 100%;
+  background: white;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: help; }
+  .program_item > div {
+    margin: 3px 2px; }
+
+.description {
+  font-size: 80%;
+  word-wrap: break-word; }
+
+.program_blackboxlarp, .program_blackboxchamberlarp {
+  background-color: #666; }
+
+.program_freeform {
+  background-color: #77b; }
+
+.program_larp, .program_chamberlarp, .program_fullscenographychamberlarp, .program_studiochamberlarp {
+  background-color: #ea2; }
+
+.program_social {
+  background-color: #f44; }
+
+.program_work {
+  background-color: #d22; }
+
+div.sessionwrapper {
+  padding: 2px;
+  height: 100%; }
+div.edit_program {
+  font-size: 14px;
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  width: 15px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px; }
+  div.edit_program a {
+    color: rgba(0, 0, 0, 0.3);
+    text-decoration: none; }
+    div.edit_program a:hover {
+      color: black; }
+
+table.tbl_program {
+  font-size: 70%; }
+
+tr.rooms {
+  font-weight: bold; }
+
+td.day {
+  font-size: 120%;
+  font-weight: bold; }
+td.nor {
+  background-color: yellow; }
+td.eng {
+  background-color: #93F500; }
+td.common {
+  background-color: #827CFF; }
+
+tr.ledig td {
+  background-color: yellow; }
+
+div.starcontainer {
+  white-space: nowrap; }
+
+span.data {
+  display: none; }
+
+.jquery-ratings-organiser, .jquery-ratings-star {
+  font-size: 14px;
+  font-family: "foundation-icons";
+  font-weight: normal;
+  font-style: normal;
+  width: 15px;
+  margin: 1px;
+  display: inline-table;
+  background-repeat: no-repeat;
+  position: relative; }
+
+.jquery-ratings-organiser:before {
+  content: "\f1ee"; }
+
+.jquery-ratings-star:hover {
+  cursor: pointer; }
+
+.jquery-ratings-spin {
+  -moz-animation: spin 1.5s infinite linear;
+  -o-animation: spin 1.5s infinite linear;
+  -webkit-animation: spin 1.5s infinite linear;
+  animation: spin 1.5s infinite linear; }
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg); } }
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg); } }
+.jquery-ratings-star:before {
+  content: "\f159";
+  color: rgba(0, 0, 0, 0.2); }
+
+.jquery-ratings-organiser:before, .jquery-ratings-full:before {
+  text-shadow: none;
+  color: black; }
+
+.jquery-hover-full:before {
+  text-shadow: none;
+  content: "\f159";
+  color: white; }
+
+.jquery-ratings-spin:before {
+  content: "\f16b"; }
+
 /*
 Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 */

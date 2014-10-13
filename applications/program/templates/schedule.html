@@ -1,0 +1,107 @@
+{% extends "program-template.html" %}
+{% load dajaxice_templatetags %}
+{% load staticfiles %}
+{% load sekizai_tags %}
+
+
+
+{% block title %}Program Schedule{% endblock title %}
+
+{% block content %}
+{% addtoblock 'extrajs' %}
+{% dajaxice_js_import %}
+<script src="{{ STATIC_URL }}js/ratings.js"></script>
+{% endaddtoblock %}
+{% if not registration_open %}
+<h1>Registration is closed</h2>
+<a href="/program/games/">See which games you have been assigned</a>
+{% else %}
+<h1>Sign up for the Program</h1>
+{% if user.is_authenticated %}
+    <p>Please choose which events you want to attend. You can sign up for as many events that you want. A few days before Grenselandet we will distribute the spots in all the games. You will receive an email with with games you have been assigned to.</p>
+    <p>We will make sure no-one is assigned to play more than one game at a time, and that you will not be assigned to two sessions of the same game.</p>
+    <h2>Game masters</h2>
+    <p>If you are assigned as a game master in a game, you will not be assigned as a player in any game that happens at that time. Feel free to put priorities in those games anyway, in case there are any program changes.</p>
+    <h2>Meals</h2>
+    <p>There will be common meals served at Grenselandet. Please sign up for the meals you want to take part in. The food will be cheap and vegeterian. There are also several restaurants nearby Grenselandet if you want to eat something else</p>
+    {% if volunteer %}
+        <h2>Volunteers</h2>
+        <p>You have been registered as a volunteer at Grenselandet. Please choose which times you could be available for working.</p>
+    {% endif %}
+{% else %}
+    <p>Please <a href="{%url 'login'%}">log in</a> to sign up for program items</p>
+{% endif %}
+{% endif %}
+{% for day in schedule %}
+<table class="schedule">
+    <caption>
+        {{ day.day| date:"l F dS"}}
+    </caption>
+    <tr>
+        <td class="time">
+            time / place
+        </td>
+        {% for room in day.rooms %}
+        <td class="location">
+            {{room.name}}
+        </td>
+        {% endfor room %}
+    </tr>
+    {% for hour in day.timetable %}
+    <tr>
+        {% for cell in hour %}
+        {% if forloop.first %}
+        <td class="time">
+            {{cell.0| date:"H:i"}}&ndash;{{cell.1| date:"H:i"}}
+        </td>
+        {% else %}
+        <td class="timeslot">
+            {% if cell %}
+            <div class = "wrapper_fix">
+            <div class = "program_item {{ cell.session.programitem.item_type.css_class }}" style="height:{{ cell.session.pixelheight }}px"
+            title="{{cell.session.programitem.name}} - {{cell.session.programitem.itemtype.name}}&#10;&#10;{{cell.session.programitem.description}}">
+
+                <div class="rating">
+                    {% if cell.signup.status = 2 %}
+                    <span class="data">99</span>
+                    <div class="starcontainer">
+                        <div class="jquery-ratings-organiser"
+                        title="You are a game master"></div>
+                    </div>
+                    {% else %}
+                    <span class="data">
+                        {{ cell.signup.priority }}
+                        {{ cell.session.pk }}
+                        {{ user.pk }}
+                        {{ cell.session.max_participants }}
+                    </span>
+                    <div class="starcontainer">
+                    </div>
+
+                    {% endif %}
+                </div>
+                <div class="description">
+                    {% if user.is_authenticated %}
+                    <noscript>You must enable javascript to sign up to </noscript>
+                    {% endif  %}
+                    {{cell.session.programitem.name}}</div>
+                {% if perms.program.change_item %}
+                <div class="edit_program" title="edit item">
+                    {# <a href="{% url "admin:program_item_change" cell.session.programitem.id %}">&#xf044;</a> #}
+                </div>
+                {% endif %}
+
+            </div>
+
+            </div>
+            {% endif %}
+        </td>
+        {% endif %}
+        {% endfor cell %}
+    </tr>
+    {% endfor hour %}
+</table>
+{% endfor day %}
+
+{% endblock content %}
+

@@ -1,0 +1,41 @@
+<html>
+<head></head>
+<body>
+
+{% for key, myItem in g_list.items %}
+	<div>
+	<h1>{{myItem.programitem.name}}</h1>
+	<table>
+	<tr><td>Starts at:</td><td>{{myItem.programitem.start_time}}</td></tr>
+	<tr><td>Ends at:</td><td>{{myItem.programitem.end_time}}</td></tr>
+	<tr><td>Organisers:</td><td>{% for organiser in myItem.programitem.organisers.all %} {{organiser}},{% endfor %}</td></tr>
+	<tr><td>Description:</td><td>{{myItem.programitem.description}}</td></tr>
+	<tr><td>Max Participants:</td><td>{{myItem.programitem.max_participants}}</td></tr>
+	<tr><td>Will Show:</td><td>{{myItem.will_show}}</td></tr>
+	</table>
+
+	<table>
+	<tr><td colspan = "3">{{myItem.programitem.name}}</td></tr>
+	<tr><td>#</td><td>name</td><td>priority</td></tr>	
+	{% for signup in myItem.signups %}
+		<tr {% if forloop.counter0 < myItem.programitem.max_participants %} class = "ledig" {% endif %}>
+		<td>{{ forloop.counter }}</td>
+		<td>{% if forloop.counter > myItem.will_show %}({{ signup.participant }}){% else %}{{signup.participant}}{% endif %}</td>
+		<td>{{ signup.priority }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endfor %}
+	
+
+{% endblock %}
+
+{% block footer %}
+	<b><a href = "/liste/">index</a></b> | 
+	{% for item in programitems %}
+	<a href = "/liste/{{item.id}}/">{{item.name}}</a> | 
+	{% endfor %}
+{% endblock %}
+
+</body>
+</html>

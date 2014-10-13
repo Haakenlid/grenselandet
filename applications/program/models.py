@@ -4,6 +4,8 @@ from datetime import timedelta
 from applications.conventions.models import Convention
 from applications.tickets.models import Ticket
 
+from django.utils.translation import ugettext_lazy as _
+
 
 def next_convention():
     return Convention.objects.next().pk or None
@@ -15,6 +17,23 @@ def next_convention_start_time():
         return convention.start_time
     else:
         return None
+
+
+class ItemType(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.CharField(blank=True, max_length=1000)
+    color = models.CharField(
+        max_length=7, default="#FFF", help_text="html colour")
+    ordering = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+    def css_class(self):
+        return "program_" + self.name.lower().replace(" ", "")
+
+    class Meta:
+        ordering = ["ordering", "name", ]
 
 
 class Participant(models.Model):
@@ -78,6 +97,7 @@ class Location(models.Model):
     max_capacity = models.IntegerField(
         blank=True, null=True,
     )
+    ordering = models.IntegerField(default=0)
     convention = models.ForeignKey(
         Convention,
         related_name='event',
@@ -87,10 +107,8 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
-    # def save(self):
-    #     if not self.convention:
-    #         self.convention = Convention.objects.next()
-    #     self.super().save()
+    class Meta:
+        ordering = ["ordering", "name", ]
 
 
 class ProgramItem(models.Model):
@@ -118,11 +136,8 @@ class ProgramItem(models.Model):
     description = models.TextField(
         help_text='Description of the event',
     )
-    itemtype = models.CharField(
-        max_length=20,
-        choices=PROGRAM_TYPES,
-        default=PROGRAM_TYPES[0][0],
-    )
+    item_type = models.ForeignKey(ItemType)
+
     language = models.CharField(
         max_length=2,
         choices=LANGUAGES,
@@ -139,54 +154,135 @@ class ProgramItem(models.Model):
         Location,
         blank=True,
     )
+
     organisers = models.ManyToManyField(
-        Participant,
-        blank=True,
-        related_name='organized_by',
-    )
-    participants = models.ManyToManyField(
-        Participant,
-        blank=True,
-        through='Signup',
-    )
-    max_participants = models.IntegerField(
-        blank=True, null=True,
+        User,
+        related_name='organised_by',
     )
 
-    @property
-    def end_time(self):
-        return self.start_time + timedelta(
-            minutes=self.duration,
-        )
+    max_participants = models.IntegerField(
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return self.name
 
-    # def save(self):
-    #     if not self.convention:
-    #         self.convention = Convention.objects.next()
-    #     if not self.start_time:
-    #         self.start_time = self.convention.start_time
-    #     self.super().save()
+    def make_session(self):
+        session = ProgramSession(
+            programitem=self,
+            location=self.location.first(),
+            start_time=self.start_time,
+        )
+        session.save()
+
+    def migrate_organisers(self):
+        for o in self.organisers.all():
+            u = o.user
+            self.organizers.add(u)
+            for s in self.programsession_set.all():
+                signup, new = Signup.objects.get_or_create(
+                    participant=u,
+                    session=s,
+                )
+                signup.status = Signup.GAME_MASTER
+                signup.save()
 
 
-class Signup(models.Model):
+class ProgramSession(models.Model):
     programitem = models.ForeignKey(
         ProgramItem,
     )
-    participant = models.ForeignKey(
-        Participant,
+    location = models.ForeignKey(
+        Location,
     )
-    signup_time = models.DateField(
-        auto_now=True,
+    start_time = models.DateTimeField(
+        default=next_convention_start_time
     )
-    priority = models.IntegerField(
-        default=0,
+    participants = models.ManyToManyField(
+        User,
+        blank=True,
+        through='Signup',
     )
 
+    @property
+    def max_participants(self):
+        return self.programitem.max_participants
+
+    @property
+    def duration(self):
+        return self.programitem.duration
+
+    @property
+    def end_time(self):
+        return self.start_time + timedelta(
+            minutes=self.programitem.duration,
+        )
+
     def __str__(self):
-        return '{item} -> {person} ({priority})'.format(
+        return '{item}: {time} {location}'.format(
             item=self.programitem,
+            time=self.start_time,
+            location=self.location,
+        )
+
+    def game_masters(self):
+        return self.signup_set.filter(status=Signup.GAME_MASTER).count()
+
+    def assigned_participants(self):
+        return self.signup_set.exclude(status=Signup.NOT_ASSIGNED).order_by('-status', '-priority')
+
+    def participants_signed_up(self):
+        return self.signup_set.exclude(priority=0).count()
+
+    def pixelheight(self):
+        return int(self.duration / 2 - 1)
+
+
+class Signup(models.Model):
+    GAME_MASTER = 1
+    PARTICIPANT = 2
+    NOT_ASSIGNED = 0
+
+    STATUS_CHOICES = (
+        (GAME_MASTER, _('Game Master'),),
+        (PARTICIPANT, _('Player'),),
+        (NOT_ASSIGNED, _('Not assigned'),),
+    )
+
+    class Meta:
+        unique_together = (
+            ("session", "participant",),
+        )
+        ordering = [
+            "-status",
+            "-ordering",
+            "-priority",
+        ]
+
+    session = models.ForeignKey(ProgramSession)
+    participant = models.ForeignKey(User)
+    updated = models.DateTimeField(auto_now=True)
+    priority = models.IntegerField(
+        default=0,
+        help_text="chosen by the user",
+    )
+    status = models.IntegerField(
+        default=NOT_ASSIGNED,
+        choices=STATUS_CHOICES,
+    )
+    ordering = models.IntegerField(
+        default=0,
+        help_text="Order on the list. To be calculated by an algorithm.",
+    )
+
+    def choice_number(self):
+        return self.participant.signup_set.filter(priority__gt=self.priority).count() + 1
+
+    def __str__(self):
+        return '{item}: {status} {person} ({priority})'.format(
+            item=self.session,
+            status=self.get_status_display(),
             person=self.participant,
             priority=self.priority,
         )

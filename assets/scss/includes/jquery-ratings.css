@@ -1,0 +1,71 @@
+div.star:hover {
+
+}
+
+div.starcontainer{
+    white-space: nowrap;
+}
+
+span.data {
+  display: none;
+}
+
+.jquery-ratings-organiser,
+.jquery-ratings-star {
+  font-size: 14px;
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  width: 15px;
+  margin: 1px;
+  display: inline-table;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.jquery-ratings-organiser:before {
+  content: "\f005";
+}
+
+.jquery-ratings-organiser:hover {
+
+}
+
+.jquery-ratings-star:hover {
+  cursor: pointer;
+}
+
+.jquery-ratings-spin {
+  -moz-animation: spin 1.5s infinite linear;
+  -o-animation: spin 1.5s infinite linear;
+  -webkit-animation: spin 1.5s infinite linear;
+  animation: spin 1.5s infinite linear;
+}
+
+
+.jquery-hover-full,
+.jquery-ratings-full {
+}
+
+.jquery-ratings-star:before {
+  //text-shadow: rgba(0, 0, 0, 0.35) 0px -1px 1px;  
+  content: "\f004";
+  color: rgba(0, 0, 0, .2);
+}
+
+.jquery-ratings-organiser:before,
+.jquery-ratings-full:before {
+  text-shadow: none;  
+  color: black;
+}
+
+.jquery-hover-full:before {
+  text-shadow: none;
+  content: "\f004";
+  color: white;
+}
+
+.jquery-ratings-spin:before {
+  content: "\f021";
+}
+

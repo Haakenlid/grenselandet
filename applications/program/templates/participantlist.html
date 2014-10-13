@@ -1,0 +1,32 @@
+{% extends "program-template.html" %}
+
+{% block title %}Fordeling av spill{% endblock %}
+
+{% block content %}
+<a href="{% url 'program_sessionlist' %}">List of games</a> | <a href="{% url 'program_participantlist' %}">List of players</a>
+
+
+<table class="overview">
+	<caption>List of participants and assigned games</caption>
+	<tr>
+		<th>Name</th>
+		<th>#1</th>
+		<th>#2</th>
+		<th>#3</th>
+		<th>#4</th>
+	</tr>
+	{% for myUser in users %}
+	<tr>
+		<td>{{ myUser.get_full_name }}</td>
+		{% for game in myUser.assigned_games %}
+			<td>{{ game.session }} ({% if game.importance = 2 %}GM{% else %}{{game.choice_number }}{% endif %})</td>
+		{% endfor game %}
+	</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}
+
+{% block footer %}
+<a href="{% url 'program_sessionlist' %}">List of games</a> | <a href="{% url 'program_participantlist' %}">List of players</a>
+{% endblock %}

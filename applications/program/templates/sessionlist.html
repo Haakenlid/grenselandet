@@ -1,0 +1,33 @@
+{% extends "program-template.html" %}
+
+{% block title %}Fordeling av deltagere{% endblock %}
+
+{% block content %}<a href="{% url 'program_sessionlist' %}">List of games</a> | <a href="{% url 'program_participantlist' %}">List of players</a>
+
+{% for mySession in sessions %}
+	<table class="overview">
+	<caption>{{mySession.programitem.name}} {{mySession.programitem.start_time}}</caption>
+	<tr><th>Location:</th><td>{{mySession.location.name}}</td></tr>
+	<tr><th>Starts at:</th><td>{{mySession.start_time}}</td></tr>
+	<tr><th>Ends at:</th><td>{{mySession.end_time}}</td></tr>
+	<tr><th>Organisers:</th><td>{% for organiser in mySession.programitem.organisers.all %} {{organiser}},{% endfor %}</td></tr>
+	<tr><th>Description:</th><td>{{mySession.programitem.description}}</td></tr>
+	{% if mySession.max_participants > 0 %}<tr><th>Max Participants:</th><td>{{mySession.max_participants}}</td></tr> {% endif %}
+	</table>
+
+	<table class="overview">
+	<tr><th>#</th><th>name</th><th>choice#</th></tr>
+	{% for signup in mySession.assigned_participants %}
+		<tr>
+		<td>{{ forloop.counter }}</td>
+		<td>{{ signup.participant }}</td>
+		<td>{% if signup.importance = 2 %}GM{% else %}{{ signup.choice_number}}{% endif %}</td>
+		</tr>
+	{% endfor %}
+	</table>
+{% endfor %}
+
+{% endblock %}
+
+{% block footer %}<a href="{% url 'program_sessionlist' %}">List of games</a> | <a href="{% url 'program_participantlist' %}">List of players</a>
+{% endblock %}

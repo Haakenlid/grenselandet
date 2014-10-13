@@ -40,6 +40,11 @@ class Convention(models.Model):
     def __str__(self):
         return self.name
 
+    def dates(self):
+        days = (self.end_time.date() - self.start_time.date()).days + 1
+        dates = [self.start_time.replace(hour=0, minute=0) + timezone.timedelta(days=x) for x in range(days)]
+        return dates
+
     def ticket_sales_has_started(self):
         return timezone.now() > self.ticket_sales_opens
 
@@ -53,4 +58,3 @@ class Convention(models.Model):
             start=formats.date_format(self.start_time, 'SHORT_DATE_FORMAT'),
             end=formats.date_format(self.end_time, 'SHORT_DATE_FORMAT'),
         )
-

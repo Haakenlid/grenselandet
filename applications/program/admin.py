@@ -1,10 +1,13 @@
 from django.contrib import admin
-from .models import Participant, Location, ProgramItem, Signup
+from .models import Participant, Location, ProgramItem, Signup, ProgramSession, ItemType
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.admin import SimpleListFilter
 
 from django.db.models import Max
+
+from django.utils.safestring import mark_safe
+from django.core.urlresolvers import reverse
 
 
 class nonzero_filter(SimpleListFilter):
@@ -53,7 +56,7 @@ class signed_up_filter(SimpleListFilter):
         provided in the query string and retrievable via
         `self.value()`.
         """
-        queryset = queryset.annotate(number_of_signups=Max("signup__priority"))
+        queryset = queryset.annotate(number_of_signups=Max('signup__priority'))
 
         if self.value() == 'yes':
             return queryset.exclude(number_of_signups=0)
@@ -61,6 +64,29 @@ class signed_up_filter(SimpleListFilter):
             return queryset.filter(number_of_signups=0)
 
 
+class SignupInline(admin.TabularInline):
+    model = ProgramSession.participants.through
+    fields = ('participant', 'status', 'priority', 'ordering')
+    readonly_fields = ('participant',)
+
+    # formset = MyFormSet
+    extra = 0
+
+
+class SessionInline(admin.TabularInline):
+    model = ProgramSession
+
+    def admin_link(self, instance):
+        url = reverse('admin:%s_%s_change' % (
+            instance._meta.app_label, instance._meta.module_name), args=[instance.pk]
+        )
+        return mark_safe(('<a href="{url}">' + instance.__str__() + '</a>').format(url=url))
+
+    extra = 0
+    readonly_fields = ('admin_link', 'participants_signed_up', 'game_masters')
+
+
+@admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
 
     def signups(obj):
@@ -73,37 +99,134 @@ class ParticipantAdmin(admin.ModelAdmin):
     list_filter = (signed_up_filter,)
 
 
+@admin.register(ProgramItem)
 class ProgramItemAdmin(admin.ModelAdmin):
 
-    def signups(obj):
-        return obj.signup_set.filter(priority__gt=0).count()
+    # def signups(obj):
+    #     return obj.signup_set.filter(priority__gt=0).count()
 
-    def pri1(obj):
-        return obj.signup_set.filter(priority=1).count()
+    # def pri1(obj):
+    #     return obj.signup_set.filter(priority=1).count()
 
-    def pri2(obj):
-        return obj.signup_set.filter(priority=2).count()
+    # def pri2(obj):
+    #     return obj.signup_set.filter(priority=2).count()
 
-    def pri3(obj):
-        return obj.signup_set.filter(priority=3).count()
+    # def pri3(obj):
+    #     return obj.signup_set.filter(priority=3).count()
 
-    list_display = ("name", "language", "start_time", "duration", "end_time", "max_participants", signups, pri1, pri2, pri3)
-    list_editable = ("max_participants", "start_time", "duration",)
-    filter_horizontal = ("organisers",)
+    save_as = True
+    list_display = ('name', 'description', 'item_type', 'duration', 'max_participants', 'sessions')
+    search_fields = ['name', 'description']
+    inlines = [SessionInline, ]
+    filter_horizontal = ('organisers',)
+    save_on_top = True
+    fieldsets = (
+        (None,
+         {
+             'fields': (
+                 'name',
+                 'description',
+                 ('item_type', 'max_participants', 'duration',),
+             )
+         }
+         ),
+        ('Organisers',
+         {
+             'classes': ('collapse',),
+             'fields': ('organisers',),
+         }
+         ),
+    )
+
+    def sessions(self, instance):
+        return len(instance.programsession_set.all())
 
 
+@admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "description", "max_capacity", "convention")
-    list_editable = ("name", "description", "max_capacity",)
+    list_display = ('id', 'ordering', 'name', 'description', 'max_capacity', 'convention')
+    list_editable = ('ordering', 'name', 'description', 'max_capacity',)
 
 
+class Priority_filter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = ('Has signed up')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'hearts'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return (
+            ('Yes', ('Signed up')),
+            ('No', ('Not signed up')),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value (either '80s' or '90s')
+        # to decide how to filter the queryset.
+        if self.value() == 'Yes':
+            return queryset.exclude(priority=0, status=Signup.NOT_ASSIGNED)
+        if self.value() == 'No':
+            return queryset.filter(priority=0, status=Signup.NOT_ASSIGNED)
+
+
+@admin.register(Signup)
 class SignupAdmin(admin.ModelAdmin):
-    list_display = ("id", "participant", "programitem", "priority")
-    list_editable = ("programitem", "priority",)
-    list_filter = ("programitem", nonzero_filter)
+    search_fields = ('session__programitem__name', 'participant__first_name',
+                     'participant__last_name',)
+    list_filter = ('status', Priority_filter,)
+    list_display = ('id', 'participant', 'session', 'priority', 'status', 'updated',)
+    list_editable = ('priority', 'status',)
+    fields = (('participant', 'session',), ('priority', 'status', 'updated',))
+    readonly_fields = ('updated', )
+    save_as = True
 
 
-admin.site.register(Participant, ParticipantAdmin)
-admin.site.register(Location, LocationAdmin)
-admin.site.register(ProgramItem, ProgramItemAdmin)
-admin.site.register(Signup, SignupAdmin)
+@admin.register(ProgramSession)
+class SessionAdmin(admin.ModelAdmin):
+    # __metaclass__ = ForeignKeyLinksMetaclass
+
+    fields = ('programitem',
+              ('location',
+               'start_time',
+               # 'end_time',
+               ),
+              )
+
+    list_display = (
+        'programitem',
+        'location',
+        'start_time',
+        'end_time',
+        'game_masters',
+        'max_participants',
+        'participants_signed_up',
+        # 'average_priority',
+    )
+
+    #list_editable = ('location','start_time',)
+    list_filter = ('programitem__item_type',)
+
+    save_on_top = True
+    search_fields = ('programitem__name',)
+    readonly_fields = ['end_time']
+
+    inlines = [SignupInline, ]
+
+
+@admin.register(ItemType)
+class ItemTypeAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'description', 'color')
