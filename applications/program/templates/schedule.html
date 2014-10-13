@@ -29,7 +29,7 @@
         <p>You have been registered as a volunteer at Grenselandet. Please choose which times you could be available for working.</p>
     {% endif %}
 {% else %}
-    <p>Please <a href="{%url 'login'%}">log in</a> to sign up for program items</p>
+    <p>If you have a ticket for Grenselandet, we have sent instructions on how to sign up for programitems.</p>
 {% endif %}
 {% endif %}
 {% for day in schedule %}
@@ -62,11 +62,11 @@
             title="{{cell.session.programitem.name}} - {{cell.session.programitem.itemtype.name}}&#10;&#10;{{cell.session.programitem.description}}">
 
                 <div class="rating">
-                    {% if cell.signup.status = 2 %}
+                    {% if cell.signup.status = GAME_MASTER %}
                     <span class="data">99</span>
                     <div class="starcontainer">
                         <div class="jquery-ratings-organiser"
-                        title="You are a game master"></div>
+                        title="You are a game master"> GM</div>
                     </div>
                     {% else %}
                     <span class="data">

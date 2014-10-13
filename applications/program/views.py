@@ -101,6 +101,7 @@ def schedule(request):
     context = {
         "registration_open": registration_open,
         "volunteer": volunteer,
+        "GAME_MASTER": Signup.GAME_MASTER,
         "blocklength": int(blocklength.total_seconds() / 60),
         "schedule": schedule,
     }
