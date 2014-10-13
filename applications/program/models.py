@@ -8,7 +8,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def next_convention():
-    return Convention.objects.next().pk or None
+    convention = Convention.objects.next()
+    if convention:
+        return convention.pk
+    else:
+        return None
 
 
 def next_convention_start_time():
