@@ -63,21 +63,19 @@
 
                 <div class="rating">
                     {% if cell.signup.status = GAME_MASTER %}
-                    <span class="data">99</span>
-                    <div class="starcontainer">
-                        <div class="jquery-ratings-organiser"
-                        title="You are a game master"> GM</div>
-                    </div>
+                        <span class="data">99</span>
+                        <div class="starcontainer">
+                            <div class="jquery-ratings-organiser"
+                            title="You are a game master"></div>
+                        </div>
                     {% else %}
-                    <span class="data">
-                        {{ cell.signup.priority }}
-                        {{ cell.session.pk }}
-                        {{ user.pk }}
-                        {{ cell.session.max_participants }}
-                    </span>
-                    <div class="starcontainer">
-                    </div>
-
+                        <span class="data">
+                            {{ cell.signup.priority }}
+                            {{ cell.session.pk }}
+                            {{ user.pk }}
+                            {{ cell.session.max_participants }}
+                        </span>
+                        <div class="starcontainer"></div>
                     {% endif %}
                 </div>
                 <div class="description">
@@ -87,7 +85,7 @@
                     {{cell.session.programitem.name}}</div>
                 {% if perms.program.change_item %}
                 <div class="edit_program" title="edit item">
-                    {# <a href="{% url "admin:program_item_change" cell.session.programitem.id %}">&#xf044;</a> #}
+                    <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">&#xf044;</a>
                 </div>
                 {% endif %}
 
