@@ -68,7 +68,7 @@ class TicketCreateView(CreateView):
     model = Ticket
     form_class = TicketForm
     template_name = 'ticket-create.html'
-    next_url_label = 'ticket-payment'
+    next_url_label = 'hashid-schedule'
 
     def dispatch(self, request, *args, **kwargs):
         slug = self.kwargs.get('ticket_type_slug')
@@ -85,12 +85,18 @@ class TicketCreateView(CreateView):
             ticket_type=self.ticket_type,
             convention=self.ticket_type.ticket_pool.convention,
             paymill_live=settings.PAYMILL_LIVE,
-            )
+        )
         return context
+
+    def get_next_url(self):
+        return reverse(
+            'hashid-schedule',
+            args=[self.object.hashid]
+        )
 
     def form_valid(self, form):
         self.object = form.save(ticket_type=self.ticket_type)
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect(self.get_next_url())
 
 
 class TicketDetailView(TemplateView):
@@ -137,7 +143,6 @@ class TicketPayView(TicketDetailView):
             return HttpResponseRedirect(self.ticket.get_absolute_url())
 
         return super().render_to_response(context)
-
 
     def post(self, *args, **kwargs):
         """ Process payment from PayMill """
@@ -210,7 +215,3 @@ class TicketReceiptView(TicketDetailView):
 
     """ Show receipt data for ticket """
     template_name = 'ticket-receipt.html'
-
-
-class PayMillTestView(TicketPayView):
-    template_name = 'paymill-test.html'

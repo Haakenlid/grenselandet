@@ -52,10 +52,13 @@ class Participant(User):
         )
 
         if is_new:
+            username = participant.email.split('@')[0]
+            while Participant.objects.filter(username=username):
+                username = username + "2"
             new_password = User.objects.make_random_password()
             participant.first_name = first_name
             participant.last_name = last_name
-            participant.username = participant.email.split('@')[0]
+            participant.username = username
             participant.set_password(new_password)
             participant.save()
 
@@ -73,7 +76,7 @@ class ItemType(models.Model):
     stars = models.PositiveSmallIntegerField(
         help_text=_('Max stars that participants can give during signup.'),
         default=4,
-        )
+    )
     color = models.CharField(
         max_length=7, default="#FFF", help_text="html colour")
     ordering = models.IntegerField(default=0)
