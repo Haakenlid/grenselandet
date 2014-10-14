@@ -176,11 +176,9 @@ class ProgramItem(models.Model):
 
     def migrate_organisers(self):
         for o in self.organisers.all():
-            u = o.user
-            self.organizers.add(u)
             for s in self.programsession_set.all():
                 signup, new = Signup.objects.get_or_create(
-                    participant=u,
+                    participant=o,
                     session=s,
                 )
                 signup.status = Signup.GAME_MASTER

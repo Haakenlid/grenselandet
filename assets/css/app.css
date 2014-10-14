@@ -3766,7 +3766,7 @@ table.schedule {
     height: inherit; }
   table.schedule .location, table.schedule .time {
     text-align: center;
-    background: #BBB;
+    background: #DDD;
     padding: 0 2px;
     font-size: 80%; }
 
@@ -3801,16 +3801,13 @@ td:nth-of-type(even) .program_larp, td:nth-of-type(even) .program_freeform {
 td:nth-of-type(odd) .program_larp, td:nth-of-type(odd) .program_freeform {
   background: #d78129; }
 td .program_meal {
-  background: #666666; }
+  background: #999999; }
 td .program_social {
-  background: #4d4d4d; }
+  background: #666666; }
 
 .description {
   font-size: 80%;
   word-wrap: break-word; }
-
-.program_social {
-  background-color: #f44; }
 
 .sessionwrapper {
   padding: 2px;

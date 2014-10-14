@@ -1,6 +1,6 @@
 $larp-color: $primary-color;
-$social-color: darken($secondary-color, 10%);
-$meal-color: $secondary-color;
+$social-color: $secondary-color;
+$meal-color: lighten($secondary-color, 20%);
 
 table.schedule {
   width: 100%;
@@ -26,7 +26,7 @@ table.schedule {
   }
   .location, .time {
     text-align: center;
-    background: #BBB;
+    background: #DDD;
     padding: 0 2px;
     font-size: 80%;
   }
@@ -84,10 +84,6 @@ td{
 .description {
   font-size: 80%;
   word-wrap: break-word;
-}
-
-.program_social {
-  background-color: #f44;
 }
 
 .sessionwrapper {
