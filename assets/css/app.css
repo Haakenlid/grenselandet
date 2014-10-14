@@ -2327,6 +2327,82 @@ label.error {
   .panel.radius {
     border-radius: 5px; }
 
+/* Tooltips */
+.has-tip {
+  border-bottom: inherit;
+  cursor: pointer;
+  font-weight: bold;
+  color: #333333; }
+  .has-tip:hover, .has-tip:focus {
+    border-bottom: inherit;
+    color: inherit; }
+  .has-tip.tip-left, .has-tip.tip-right {
+    float: none !important; }
+
+.tooltip {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  font-weight: normal;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  padding: 0.75rem;
+  max-width: 500px;
+  left: 50%;
+  width: 100%;
+  color: white;
+  background: #333333; }
+  .tooltip > .nub {
+    display: block;
+    left: 5px;
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: solid 5px;
+    border-color: transparent transparent #333333 transparent;
+    top: -10px;
+    pointer-events: none; }
+    .tooltip > .nub.rtl {
+      left: auto;
+      right: 5px; }
+  .tooltip.radius {
+    border-radius: 5px; }
+  .tooltip.round {
+    border-radius: 1000px; }
+    .tooltip.round > .nub {
+      left: 2rem; }
+  .tooltip.opened {
+    color: inherit !important;
+    border-bottom: inherit !important; }
+
+.tap-to-close {
+  display: block;
+  font-size: 0.625rem;
+  color: #777777;
+  font-weight: normal; }
+
+@media only screen and (min-width: 40.063em) {
+  .tooltip > .nub {
+    border-color: transparent transparent #333333 transparent;
+    top: -10px; }
+  .tooltip.tip-top > .nub {
+    border-color: #333333 transparent transparent transparent;
+    top: auto;
+    bottom: -10px; }
+  .tooltip.tip-left, .tooltip.tip-right {
+    float: none !important; }
+  .tooltip.tip-left > .nub {
+    border-color: transparent transparent transparent #333333;
+    right: -10px;
+    left: auto;
+    top: 50%;
+    margin-top: -5px; }
+  .tooltip.tip-right > .nub {
+    border-color: transparent #333333 transparent transparent;
+    right: auto;
+    left: -10px;
+    top: 50%;
+    margin-top: -5px; } }
 meta.foundation-mq-topbar {
   font-family: "/only screen and (min-width:40.063em)/";
   width: 40.063em; }
@@ -3681,14 +3757,16 @@ table.schedule {
   table.schedule .time {
     width: 100px; }
   table.schedule td {
+    border: 1px dotted #ddd;
     background: white;
     padding: 0px;
     margin: 0px;
-    height: 21px; }
+    height: 30px;
+    box-sizing: border-box; }
   table.schedule .location, table.schedule .time {
     text-align: center;
     background: #BBB;
-    padding: 4px;
+    padding: 2px;
     font-size: 80%; }
 
 .wrapper_fix {
@@ -3704,7 +3782,6 @@ table.schedule {
   /* Opera/IE 8+ */
   overflow: hidden;
   width: 100%;
-  background: white;
   z-index: 1;
   position: absolute;
   top: 0;
@@ -3713,18 +3790,16 @@ table.schedule {
   .program_item > div {
     margin: 3px 2px; }
 
+td:nth-of-type(even) .program_item {
+  background: #d78f29; }
+td:nth-of-type(odd) .program_item {
+  background: #d78129; }
+td .program_item:hover {
+  background: #db9a3e; }
+
 .description {
   font-size: 80%;
   word-wrap: break-word; }
-
-.program_blackboxlarp, .program_blackboxchamberlarp {
-  background-color: #666; }
-
-.program_freeform {
-  background-color: #77b; }
-
-.program_larp, .program_chamberlarp, .program_fullscenographychamberlarp, .program_studiochamberlarp {
-  background-color: #ea2; }
 
 .program_social {
   background-color: #f44; }
@@ -3732,21 +3807,22 @@ table.schedule {
 .program_work {
   background-color: #d22; }
 
-div.sessionwrapper {
+.sessionwrapper {
   padding: 2px;
   height: 100%; }
-div.edit_program {
+
+.edit_program {
   font-size: 14px;
+  font-family: "foundation-icons";
   font-weight: normal;
   font-style: normal;
-  width: 15px;
   position: absolute;
-  bottom: 0px;
-  right: 0px; }
-  div.edit_program a {
+  bottom: 2px;
+  right: 5px; }
+  .edit_program a {
     color: rgba(0, 0, 0, 0.3);
     text-decoration: none; }
-    div.edit_program a:hover {
+    .edit_program a:hover {
       color: black; }
 
 table.tbl_program {
@@ -3775,7 +3851,7 @@ span.data {
   display: none; }
 
 .jquery-ratings-organiser, .jquery-ratings-star {
-  font-size: 14px;
+  font-size: 17px;
   font-family: "foundation-icons";
   font-weight: normal;
   font-style: normal;
@@ -3792,10 +3868,10 @@ span.data {
   cursor: pointer; }
 
 .jquery-ratings-spin {
-  -moz-animation: spin 1.5s infinite linear;
-  -o-animation: spin 1.5s infinite linear;
-  -webkit-animation: spin 1.5s infinite linear;
-  animation: spin 1.5s infinite linear; }
+  -moz-animation: spin 1.0s infinite linear;
+  -o-animation: spin 1.0s infinite linear;
+  -webkit-animation: spin 1.0s infinite linear;
+  animation: spin 1.0s infinite linear; }
 
 @-webkit-keyframes spin {
   0% {
@@ -3825,6 +3901,9 @@ span.data {
   text-shadow: none;
   content: "\f159";
   color: white; }
+
+.jquery-hover-null:before {
+  content: "\f217"; }
 
 .jquery-ratings-spin:before {
   content: "\f16b"; }

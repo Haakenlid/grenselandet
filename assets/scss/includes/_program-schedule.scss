@@ -12,15 +12,17 @@ table.schedule {
     width: 100px;
   }
   td {
+    border: 1px dotted #ddd;
     background: white;
     padding: 0px;
     margin: 0px;
-    height: 21px;
+    height: 30px;
+    box-sizing: border-box;
   }
   .location, .time {
     text-align: center;
     background: #BBB;
-    padding: 4px;
+    padding: 2px;
     font-size: 80%;
   }
 }
@@ -39,7 +41,6 @@ table.schedule {
   overflow: hidden;
   width: 100%;
   //border: 1px solid black;
-  background: white;
   z-index: 1;
   position: absolute;
   top: 0;
@@ -50,22 +51,40 @@ table.schedule {
   }
 }
 
+td {
+  &:nth-of-type(even) {
+    .program_item {
+      background: $primary-color;
+    }
+  }
+  &:nth-of-type(odd) {
+    .program_item {
+      background: adjust-hue($primary-color, -5);
+    }
+  }
+  .program_item {
+    &:hover {
+      background: lighten($primary-color, 5%);
+    }
+  }
+}
+
 .description {
   font-size: 80%;
   word-wrap: break-word;
 }
 
-.program_blackboxlarp, .program_blackboxchamberlarp {
-  background-color: #666;
-}
+// .program_blackboxlarp, .program_blackboxchamberlarp {
+//   background-color: #666;
+// }
 
-.program_freeform {
-  background-color: #77b;
-}
+// .program_freeform {
+//   background-color: #77b;
+// }
 
-.program_larp, .program_chamberlarp, .program_fullscenographychamberlarp, .program_studiochamberlarp {
-  background-color: #ea2;
-}
+// .program_larp, .program_chamberlarp, .program_fullscenographychamberlarp, .program_studiochamberlarp {
+//   background-color: #ea2;
+// }
 
 .program_social {
   background-color: #f44;
@@ -75,26 +94,25 @@ table.schedule {
   background-color: #d22;
 }
 
-div {
-  &.sessionwrapper {
-    padding: 2px;
-    height: 100%;
-  }
-  &.edit_program {
-    font-size: 14px;
-    // font-family: FontAwesome;
-    font-weight: normal;
-    font-style: normal;
-    width: 15px;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    a {
-      color: rgba(0, 0, 0, 0.3);
-      text-decoration: none;
-      &:hover {
-        color: rgba(0, 0, 0, 1);
-      }
+.sessionwrapper {
+  padding: 2px;
+  height: 100%;
+}
+
+.edit_program {
+  font-size: 14px;
+  font-family: "foundation-icons";
+  font-weight: normal;
+  font-style: normal;
+  // width: 1px;
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+  a {
+    color: rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    &:hover {
+      color: rgba(0, 0, 0, 1);
     }
   }
 }

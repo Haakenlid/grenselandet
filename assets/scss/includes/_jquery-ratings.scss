@@ -10,7 +10,7 @@ span.data {
 }
 
 .jquery-ratings-organiser, .jquery-ratings-star {
-  font-size: 14px;
+  font-size: 17px;
   font-family: "foundation-icons";
   font-weight: normal;
   font-style: normal;
@@ -33,10 +33,10 @@ span.data {
 }
 
 .jquery-ratings-spin {
-  -moz-animation: spin 1.5s infinite linear;
-  -o-animation: spin 1.5s infinite linear;
-  -webkit-animation: spin 1.5s infinite linear;
-  animation: spin 1.5s infinite linear;
+  -moz-animation: spin 1.0s infinite linear;
+  -o-animation: spin 1.0s infinite linear;
+  -webkit-animation: spin 1.0s infinite linear;
+  animation: spin 1.0s infinite linear;
 }
 
 @-webkit-keyframes spin {
@@ -60,7 +60,6 @@ span.data {
   }
 }
 
-.jquery-hover-full!, .jquery-ratings-full! {}
 
 .jquery-ratings-star:before {
   //text-shadow: rgba(0, 0, 0, 0.35) 0px -1px 1px;
@@ -77,6 +76,10 @@ span.data {
   text-shadow: none;
   content: "\f159";
   color: white;
+}
+
+.jquery-hover-null:before {
+  content: "\f217";
 }
 
 .jquery-ratings-spin:before {

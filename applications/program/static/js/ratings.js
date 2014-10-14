@@ -6,24 +6,23 @@ $(document).ready(function() {
     var starContainer = $("div.starcontainer", this);
     var dataSpan = $("span.data", this);
     var values = dataSpan.text().match(/\d+/g);
-    if (values.length == 4) {
+    if (values.length == 2) {
       var priority = parseInt(values[0]);
-      var item_id = parseInt(values[1]);
-      var user_id = parseInt(values[2]);
-      var multistar = (values[3]==0)?1:MAX_STARS;
+      var signup_pk = parseInt(values[1]);
+      var multistar = (values[2]==0)?1:MAX_STARS;
       var callback = function(data){
         setTimeout( function(){
           $("div", starContainer).removeClass(
             'jquery-ratings-spin').hide( 1,
             function(){$(this).show()});
-          }, 500);
+          }, 1000);
       }
 
       var changeRating = function(event, data){
         dataSpan.text(data.rating);
         $("div", starContainer).addClass('jquery-ratings-spin')
         Dajaxice.applications.program.change_rating(callback,
-          {'user_pk':user_id, 'programitem_pk':item_id,
+          {'signup_pk':signup_pk,
           'newrating':data.rating})
         $("table.info").trigger("update");
 
@@ -129,7 +128,7 @@ jQuery.fn.ratings = function(stars, firstRating) {
         //Highlight selected stars.
         if (this.rating == 1 && containerElement.rating == 1 && starsCollection.length > 1){
           myRating = 0;
-          starsCollection[0].removeClass('jquery-ratings-full');
+          starsCollection[0].addClass('jquery-hover-null');
         } else {
           myRating = this.rating;
         }
@@ -144,16 +143,18 @@ jQuery.fn.ratings = function(stars, firstRating) {
         }
       });
 
-      container.mouseleave(function() {
-        //Highlight selected stars.
+      star.mouseleave(function() {
+        //Unhighlight selected stars.
         for(var index = 0; index < containerElement.rating; index++) {
           starsCollection[index].addClass('jquery-ratings-full');
           starsCollection[index].removeClass('jquery-hover-full');
+          starsCollection[index].removeClass('jquery-hover-null');
         }
         //Unhighlight unselected stars.
         for(var index = containerElement.rating; index < stars ; index++) {
           starsCollection[index].removeClass('jquery-ratings-full');
           starsCollection[index].removeClass('jquery-hover-full');
+          starsCollection[index].removeClass('jquery-hover-null');
         }
       });
     }

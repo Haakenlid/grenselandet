@@ -142,9 +142,9 @@ class Ticket(models.Model):
     comments = models.TextField(blank='True')
 
     def __str__(self):
-        return '{name}: {ticket_type}'.format(
+        return '{name}'.format(
             name=self.get_full_name(),
-            ticket_type=self.ticket_type,
+            # ticket_type=self.ticket_type,
         )
 
     def pay(self, **kwargs):
@@ -324,8 +324,8 @@ class TicketType(models.Model):
 
     def __str__(self):
         """ Return ticket name and price. """
-        return '{tickettype} {con} ({price} {currency})'.format(
-            con=self.ticket_pool.convention,
+        return '{tickettype} ({price} {currency})'.format(
+            # con=self.ticket_pool.convention,
             tickettype=self.name,
             price=self.price,
             currency=self.currency,

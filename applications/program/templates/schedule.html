@@ -3,8 +3,6 @@
 {% load staticfiles %}
 {% load sekizai_tags %}
 
-
-
 {% block title %}Program Schedule{% endblock title %}
 
 {% block content %}
@@ -12,25 +10,13 @@
 {% dajaxice_js_import %}
 <script src="{{ STATIC_URL }}js/ratings.js"></script>
 {% endaddtoblock %}
-{% if not registration_open %}
-<h1>Registration is closed</h2>
-<a href="/program/games/">See which games you have been assigned</a>
+{% if participant %}
+    <h1>Program preferences for {{ participant }}</h1>
+    <p>Please tell us what you would most like to play at Grenselandet 2014.</p>
+    <p>The signup closes at {{ convention.program_signup_closes }}</p>
 {% else %}
-<h1>Sign up for the Program</h1>
-{% if user.is_authenticated %}
-    <p>Please choose which events you want to attend. You can sign up for as many events that you want. A few days before Grenselandet we will distribute the spots in all the games. You will receive an email with with games you have been assigned to.</p>
-    <p>We will make sure no-one is assigned to play more than one game at a time, and that you will not be assigned to two sessions of the same game.</p>
-    <h2>Game masters</h2>
-    <p>If you are assigned as a game master in a game, you will not be assigned as a player in any game that happens at that time. Feel free to put priorities in those games anyway, in case there are any program changes.</p>
-    <h2>Meals</h2>
-    <p>There will be common meals served at Grenselandet. Please sign up for the meals you want to take part in. The food will be cheap and vegeterian. There are also several restaurants nearby Grenselandet if you want to eat something else</p>
-    {% if volunteer %}
-        <h2>Volunteers</h2>
-        <p>You have been registered as a volunteer at Grenselandet. Please choose which times you could be available for working.</p>
-    {% endif %}
-{% else %}
+    <h1>Program Schedule</h1>
     <p>If you have a ticket for Grenselandet, we have sent instructions on how to sign up for programitems.</p>
-{% endif %}
 {% endif %}
 {% for day in schedule %}
 <table class="schedule">
@@ -58,8 +44,11 @@
         <td class="timeslot">
             {% if cell %}
             <div class = "wrapper_fix">
-            <div class = "program_item {{ cell.session.programitem.item_type.css_class }}" style="height:{{ cell.session.pixelheight }}px"
-            title="{{cell.session.programitem.name}} - {{cell.session.programitem.itemtype.name}}&#10;&#10;{{cell.session.programitem.description}}">
+            <div data-tooltip aria-haspopup="true" class="has-tip program_item {{ cell.session.programitem.item_type.css_class }}" style="height:{{ cell.session.pixelheight }}px"
+            title="{{cell.session.programitem.name}} - {{cell.session.programitem.item_type.name}}
+            Gamemasters:{% for gm in cell.gamemasters %} {{ gm.participant.get_full_name }}, {% endfor %}
+
+            {{cell.session.programitem.description}}">
 
                 <div class="rating">
                     {% if cell.signup.status = GAME_MASTER %}
@@ -71,9 +60,7 @@
                     {% else %}
                         <span class="data">
                             {{ cell.signup.priority }}
-                            {{ cell.session.pk }}
-                            {{ user.pk }}
-                            {{ cell.session.max_participants }}
+                            {{ cell.signup.pk }}
                         </span>
                         <div class="starcontainer"></div>
                     {% endif %}
@@ -83,9 +70,11 @@
                     <noscript>You must enable javascript to sign up to </noscript>
                     {% endif  %}
                     {{cell.session.programitem.name}}</div>
-                {% if perms.program.change_item %}
+                <div class="gamemasters">
+                </div>
+                {% if perms.program.change_programitem %}
                 <div class="edit_program" title="edit item">
-                    <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">edit</a>
+                    <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">&#xf194;</a>
                 </div>
                 {% endif %}
 
@@ -99,7 +88,10 @@
     </tr>
     {% endfor hour %}
 </table>
+<hr>
 {% endfor day %}
-
+{% if participant %}
+{% include '_program_info.html' %}
+{% endif %}
 {% endblock content %}
 

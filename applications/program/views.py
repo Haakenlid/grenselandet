@@ -2,13 +2,15 @@
 
 from django.shortcuts import render
 # from django.http import Http404, HttpResponseRedirect, HttpResponse
-# from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.utils import timezone
 from datetime import time
 from django.db.models import Min
+from django.shortcuts import get_object_or_404
 # import random
 from .models import *
 from applications.conventions.models import Convention
+from applications.tickets.models import Ticket
 # from program.signupdistribution import fordeling
 # from django.contrib.auth.decorators import permission_required
 # from django.contrib.auth.models import Group
@@ -16,24 +18,39 @@ from applications.conventions.models import Convention
 from django.contrib.admin.views.decorators import staff_member_required
 
 
+def hashid_schedule(request, hashid):
+    ticket = get_object_or_404(Ticket, hashid=hashid)
+    try:
+        participant = Participant.objects.get(email=ticket.email)
+    except (ObjectDoesNotExist,):
+        participant = Participant.create(ticket)
+    return schedule_for_user(request, participant)
+
 def schedule(request):
+    user = request.user
+    if user.is_authenticated():
+        participant = Participant.objects.get(pk=user.pk)
+    else:
+        participant = None
+    return schedule_for_user(request, participant)
+
+
+def schedule_for_user(request, participant):
     registration_open = True
     volunteer = False
     convention = Convention.objects.first()
     if timezone.now() > convention.program_signup_opens:
-        # registration_open = False
-        pass
+        registration_open = True
 
     # sessions = ProgramSession.objects.exclude(programitem__itemtype__name="Work")
     sessions = ProgramSession.objects.all()
-    u = request.user
-    if u.is_authenticated():
-        # if u.groups.filter(name__icontains="Volunteers"):
+    if participant:
+        # if participant.groups.filter(name__icontains="Volunteers"):
         #     sessions = ProgramSession.objects.all()
         #     volunteer = True
         updatelist = []
-        for s in sessions.exclude(participants=u):
-            updatelist += [Signup(session=s, participant=u)]
+        for s in sessions.exclude(participants=participant):
+            updatelist += [Signup(session=s, participant=participant)]
 
         if updatelist:
             Signup.objects.bulk_create(updatelist)
@@ -73,14 +90,15 @@ def schedule(request):
                     newitem = events.filter(location=room)[0]
                     if newitem.end_time > last_hour:
                         last_hour = newitem.end_time
-                    if u.is_authenticated() and registration_open:
-                        s = Signup.objects.get(session=newitem, participant=u)
+                    if participant and registration_open:
+                        s = Signup.objects.get(session=newitem, participant=participant)
                     else:
                         s = None
 
                     hour += [{
                         "session": newitem,
                         "signup": s,
+                        "gamemasters": newitem.game_masters(),
                     }]
                 else:
                     hour += [None]  # empty cell
@@ -100,7 +118,9 @@ def schedule(request):
 
     context = {
         "registration_open": registration_open,
+        "convention": convention,
         "volunteer": volunteer,
+        "participant": participant,
         "GAME_MASTER": Signup.GAME_MASTER,
         "blocklength": int(blocklength.total_seconds() / 60),
         "schedule": schedule,

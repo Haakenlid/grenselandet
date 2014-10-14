@@ -1307,14 +1307,14 @@ $h6-font-size: 1rem;
 // 33. Tooltips
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// $include-html-tooltip-classes: $include-html-classes;
+$include-html-tooltip-classes: $include-html-classes;
 
-// $has-tip-border-bottom: dotted 1px #ccc;
+$has-tip-border-bottom: inherit;
 // $has-tip-font-weight: $font-weight-bold;
 // $has-tip-font-color: #333;
-// $has-tip-border-bottom-hover: dotted 1px scale-color($primary-color, $lightness: -55%);
-// $has-tip-font-color-hover: $primary-color;
-// $has-tip-cursor-type: help;
+$has-tip-border-bottom-hover: inherit;
+$has-tip-font-color-hover: inherit;
+$has-tip-cursor-type: pointer;
 
 // $tooltip-padding: rem-calc(12);
 // $tooltip-bg: #333;
@@ -1326,10 +1326,10 @@ $h6-font-size: 1rem;
 // $tooltip-close-font-weight: $font-weight-normal;
 // $tooltip-close-font-color: #777;
 // $tooltip-font-size-sml: rem-calc(14);
-// $tooltip-radius: $global-radius;
+$tooltip-radius: $global-radius;
 // $tooltip-rounded: $global-rounded;
-// $tooltip-pip-size: 5px;
-// $tooltip-max-width: 300px;
+$tooltip-pip-size: 5px;
+$tooltip-max-width: 500px;
 
 // 34. Top Bar
 // - - - - - - - - - - - - - - - - - - - - - - - - -
