@@ -358,7 +358,7 @@ def _get_latest_source(source_folder):
     else:
         env.run('git clone {github_url} {source_folder}'.format(github_url=REPO_URL, source_folder=source_folder))
     current_commit = local('git log -n 1 --format=%H', capture=True)
-    # env.run('cd {source_folder} && git reset --hard {commit}'.format(source_folder=source_folder, commit=current_commit))
+    env.run('cd {source_folder} && git reset --hard {commit}'.format(source_folder=source_folder, commit=current_commit))
 
 
 def _create_virtualenv(venv_folder, global_venv_folder):
