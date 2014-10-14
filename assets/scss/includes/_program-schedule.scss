@@ -144,3 +144,14 @@ td {
 tr.ledig td {
   background-color: yellow;
 }
+
+.tooltip {
+  h1,h2,h3,h4 {
+    color: $primary-color;
+  }
+  p {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+}

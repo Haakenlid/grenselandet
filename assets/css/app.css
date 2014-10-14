@@ -3844,6 +3844,13 @@ td.common {
 tr.ledig td {
   background-color: yellow; }
 
+.tooltip h1, .tooltip h2, .tooltip h3, .tooltip h4 {
+  color: #d78f29; }
+.tooltip p {
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.5; }
+
 div.starcontainer {
   white-space: nowrap; }
 

@@ -45,10 +45,13 @@
             {% if cell %}
             <div class = "wrapper_fix">
             <div data-tooltip aria-haspopup="true" class="has-tip program_item {{ cell.session.programitem.item_type.css_class }}" style="height:{{ cell.session.pixelheight }}px"
-            title="{{cell.session.programitem.name}} - {{cell.session.programitem.item_type.name}}
-            Gamemasters:{% for gm in cell.gamemasters %} {{ gm.participant.get_full_name }}, {% endfor %}
-
-            {{cell.session.programitem.description}}">
+            title="
+            <h3>{{ cell.session.programitem.name }}</h3>
+            {% if cell.gamemasters %}
+              <p>Gamemasters:{% for gm in cell.gamemasters %} {{ gm.participant.get_full_name }}, {% endfor %}</p>
+            {% endif %}
+            {{ cell.session.programitem.description|linebreaks }}"
+            >
 
                 <div class="rating">
                     {% if cell.signup.status = GAME_MASTER %}
