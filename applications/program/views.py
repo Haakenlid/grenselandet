@@ -17,6 +17,13 @@ from applications.tickets.models import Ticket
 
 from django.contrib.admin.views.decorators import staff_member_required
 
+BLOCK_LENGTH = 30  # minutes
+PIXELS_PER_BLOCK = 20
+
+
+def pixelheight(duration):
+    return int(duration / BLOCK_LENGTH * PIXELS_PER_BLOCK)
+
 
 def hashid_schedule(request, hashid):
     ticket = get_object_or_404(Ticket, hashid=hashid)
@@ -25,6 +32,7 @@ def hashid_schedule(request, hashid):
     except (ObjectDoesNotExist,):
         participant = Participant.create(ticket)
     return schedule_for_user(request, participant)
+
 
 def schedule(request):
     user = request.user
@@ -56,7 +64,7 @@ def schedule_for_user(request, participant):
             Signup.objects.bulk_create(updatelist)
 
     dates = convention.dates()
-    blocklength = timedelta(minutes=60)
+    blocklength = timedelta(minutes=30)
     schedule = []
 
     for day in dates:
@@ -87,18 +95,22 @@ def schedule_for_user(request, participant):
 
             for room in day_rooms:
                 if room in eventlocations:
-                    newitem = events.filter(location=room)[0]
-                    if newitem.end_time > last_hour:
-                        last_hour = newitem.end_time
+                    session = events.filter(location=room)[0]
+                    if session.end_time > last_hour:
+                        last_hour = session.end_time
                     if participant and registration_open:
-                        s = Signup.objects.get(session=newitem, participant=participant)
+                        s = Signup.objects.get(session=session, participant=participant)
                     else:
                         s = None
 
+                    stars = session.programitem.item_type.stars
+
                     hour += [{
-                        "session": newitem,
+                        "session": session,
+                        "stars": stars,
                         "signup": s,
-                        "gamemasters": newitem.game_masters(),
+                        "gamemasters": session.game_masters(),
+                        "height": pixelheight(session.duration),
                     }]
                 else:
                     hour += [None]  # empty cell
@@ -122,6 +134,7 @@ def schedule_for_user(request, participant):
         "volunteer": volunteer,
         "participant": participant,
         "GAME_MASTER": Signup.GAME_MASTER,
+        "PIXELS_PER_BLOCK": PIXELS_PER_BLOCK,
         "blocklength": int(blocklength.total_seconds() / 60),
         "schedule": schedule,
     }

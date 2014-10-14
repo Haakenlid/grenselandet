@@ -3747,6 +3747,8 @@ small.error {
 
 table.schedule {
   width: 100%;
+  box-sizing: border-box;
+  line-height: 1;
   table-layout: fixed; }
   table.schedule caption {
     font-weight: bold;
@@ -3761,12 +3763,11 @@ table.schedule {
     background: white;
     padding: 0px;
     margin: 0px;
-    height: 30px;
-    box-sizing: border-box; }
+    height: inherit; }
   table.schedule .location, table.schedule .time {
     text-align: center;
     background: #BBB;
-    padding: 2px;
+    padding: 0 2px;
     font-size: 80%; }
 
 .wrapper_fix {
@@ -3782,20 +3783,27 @@ table.schedule {
   /* Opera/IE 8+ */
   overflow: hidden;
   width: 100%;
+  color: #FFF;
+  font-weight: normal;
   z-index: 1;
   position: absolute;
   top: 0;
   left: 0;
   cursor: help; }
+  .program_item:hover {
+    color: #FFF;
+    font-weight: bold; }
   .program_item > div {
     margin: 3px 2px; }
 
-td:nth-of-type(even) .program_item {
+td:nth-of-type(even) .program_larp, td:nth-of-type(even) .program_freeform {
   background: #d78f29; }
-td:nth-of-type(odd) .program_item {
+td:nth-of-type(odd) .program_larp, td:nth-of-type(odd) .program_freeform {
   background: #d78129; }
-td .program_item:hover {
-  background: #db9a3e; }
+td .program_meal {
+  background: #666666; }
+td .program_social {
+  background: #4d4d4d; }
 
 .description {
   font-size: 80%;
@@ -3803,9 +3811,6 @@ td .program_item:hover {
 
 .program_social {
   background-color: #f44; }
-
-.program_work {
-  background-color: #d22; }
 
 .sessionwrapper {
   padding: 2px;
@@ -3823,7 +3828,7 @@ td .program_item:hover {
     color: rgba(0, 0, 0, 0.3);
     text-decoration: none; }
     .edit_program a:hover {
-      color: black; }
+      color: #FFF; }
 
 table.tbl_program {
   font-size: 70%; }

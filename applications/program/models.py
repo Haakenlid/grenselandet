@@ -70,6 +70,10 @@ class Participant(User):
 class ItemType(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(blank=True, max_length=1000)
+    stars = models.PositiveSmallIntegerField(
+        help_text=_('Max stars that participants can give during signup.'),
+        default=4,
+        )
     color = models.CharField(
         max_length=7, default="#FFF", help_text="html colour")
     ordering = models.IntegerField(default=0)
@@ -151,6 +155,7 @@ class ProgramItem(models.Model):
     organisers = models.ManyToManyField(
         Participant,
         related_name='organised_by',
+        blank=True,
     )
 
     max_participants = models.IntegerField(
@@ -233,18 +238,17 @@ class ProgramSession(models.Model):
     def participants_signed_up(self):
         return self.signup_set.exclude(priority=0).count()
 
-    def pixelheight(self):
-        return int(self.duration / 2 - 1)
-
 
 class Signup(models.Model):
     GAME_MASTER = 1
     PARTICIPANT = 2
+    GAME_HOST = 3
     NOT_ASSIGNED = 0
 
     STATUS_CHOICES = (
         (GAME_MASTER, _('Game Master'),),
-        (PARTICIPANT, _('Player'),),
+        (GAME_HOST, _('Game Host'),),
+        (PARTICIPANT, _('Participant'),),
         (NOT_ASSIGNED, _('Not assigned'),),
     )
 

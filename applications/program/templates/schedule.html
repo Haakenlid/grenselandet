@@ -34,17 +34,17 @@
         {% endfor room %}
     </tr>
     {% for hour in day.timetable %}
-    <tr>
+    <tr style="height: {{ PIXELS_PER_BLOCK }}px;">
         {% for cell in hour %}
         {% if forloop.first %}
-        <td class="time">
+        <td class="time" >
             {{cell.0| date:"H:i"}}&ndash;{{cell.1| date:"H:i"}}
         </td>
         {% else %}
         <td class="timeslot">
             {% if cell %}
             <div class = "wrapper_fix">
-            <div data-tooltip aria-haspopup="true" class="has-tip program_item {{ cell.session.programitem.item_type.css_class }}" style="height:{{ cell.session.pixelheight }}px"
+            <div data-tooltip aria-haspopup="true" class="has-tip program_item {{ cell.session.programitem.item_type.css_class }}" style="height: {{ cell.height }}px;"
             title="
             <h3>{{ cell.session.programitem.name }}</h3>
             {% if cell.gamemasters %}
@@ -54,16 +54,25 @@
             >
 
                 <div class="rating">
-                    {% if cell.signup.status = GAME_MASTER %}
+                    {% if cell.signup.status = cell.signup.GAME_MASTER %}
                         <span class="data">99</span>
                         <div class="starcontainer">
                             <div class="jquery-ratings-organiser"
-                            title="You are a game master"> GM</div>
+                            title="You are a game master"><strong> GM</strong></div>
                         </div>
+                    {% elif cell.signup.status = cell.signup.HOST %}
+                        <span class="data">99</span>
+                        <div class="starcontainer">
+                            <div class="jquery-ratings-organiser"
+                            title="You are a game host"><strong> Game Host</strong></div>
+                        </div>
+
+
                     {% else %}
                         <span class="data">
                             {{ cell.signup.priority }}
                             {{ cell.signup.pk }}
+                            {{ cell.stars }}
                         </span>
                         <div class="starcontainer"></div>
                     {% endif %}

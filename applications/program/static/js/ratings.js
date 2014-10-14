@@ -1,15 +1,14 @@
 $(document).ready(function() {
-  MAX_STARS = 4;
   myRatings = $('div.rating');
   $.each(myRatings, function(){
     var myCell = this;
     var starContainer = $("div.starcontainer", this);
     var dataSpan = $("span.data", this);
     var values = dataSpan.text().match(/\d+/g);
-    if (values.length == 2) {
+    if (values.length == 3) {
       var priority = parseInt(values[0]);
       var signup_pk = parseInt(values[1]);
-      var multistar = (values[2]==0)?1:MAX_STARS;
+      var multistar = parseInt(values[2]);
       var callback = function(data){
         setTimeout( function(){
           $("div", starContainer).removeClass(

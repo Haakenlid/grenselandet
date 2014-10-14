@@ -1,5 +1,11 @@
+$larp-color: $primary-color;
+$social-color: darken($secondary-color, 10%);
+$meal-color: $secondary-color;
+
 table.schedule {
   width: 100%;
+  box-sizing: border-box;
+  line-height: 1;
   table-layout: fixed;
   caption {
     font-weight: bold;
@@ -16,13 +22,12 @@ table.schedule {
     background: white;
     padding: 0px;
     margin: 0px;
-    height: 30px;
-    box-sizing: border-box;
+    height: inherit;
   }
   .location, .time {
     text-align: center;
     background: #BBB;
-    padding: 2px;
+    padding: 0 2px;
     font-size: 80%;
   }
 }
@@ -40,32 +45,39 @@ table.schedule {
   /* Opera/IE 8+ */
   overflow: hidden;
   width: 100%;
+  color: #FFF;
+  font-weight:normal;
   //border: 1px solid black;
   z-index: 1;
   position: absolute;
   top: 0;
   left: 0;
   cursor: help;
+  &:hover {
+    color: #FFF;
+    font-weight: bold;
+  }
   > div {
     margin: 3px 2px;
   }
 }
 
-td {
+td{
   &:nth-of-type(even) {
-    .program_item {
-      background: $primary-color;
+    .program_larp, .program_freeform {
+      background: $larp-color;
     }
   }
   &:nth-of-type(odd) {
-    .program_item {
-      background: adjust-hue($primary-color, -5);
+    .program_larp, .program_freeform {
+      background: adjust-hue($larp-color, -5);
     }
   }
-  .program_item {
-    &:hover {
-      background: lighten($primary-color, 5%);
-    }
+  .program_meal {
+    background: $meal-color;
+  }
+  .program_social {
+    background: $social-color;
   }
 }
 
@@ -74,24 +86,8 @@ td {
   word-wrap: break-word;
 }
 
-// .program_blackboxlarp, .program_blackboxchamberlarp {
-//   background-color: #666;
-// }
-
-// .program_freeform {
-//   background-color: #77b;
-// }
-
-// .program_larp, .program_chamberlarp, .program_fullscenographychamberlarp, .program_studiochamberlarp {
-//   background-color: #ea2;
-// }
-
 .program_social {
   background-color: #f44;
-}
-
-.program_work {
-  background-color: #d22;
 }
 
 .sessionwrapper {
@@ -112,7 +108,7 @@ td {
     color: rgba(0, 0, 0, 0.3);
     text-decoration: none;
     &:hover {
-      color: rgba(0, 0, 0, 1);
+      color: #FFF;
     }
   }
 }
