@@ -15,7 +15,7 @@ table.schedule {
     font-size: 150%;
   }
   .time {
-    width: 100px;
+    width: 50px;
   }
   td {
     border: 1px dotted #ddd;
@@ -25,6 +25,7 @@ table.schedule {
     height: inherit;
   }
   .location, .time {
+    border-color: #FFF;
     text-align: center;
     background: #DDD;
     padding: 0 2px;

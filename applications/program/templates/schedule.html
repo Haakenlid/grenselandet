@@ -38,7 +38,7 @@
         {% for cell in hour %}
         {% if forloop.first %}
         <td class="time" >
-            {{cell.0| date:"H:i"}}&ndash;{{cell.1| date:"H:i"}}
+            {{cell.0| date:"H:i"}}
         </td>
         {% else %}
         <td class="timeslot">
