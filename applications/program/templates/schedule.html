@@ -44,7 +44,7 @@
         <td class="timeslot">
             {% if cell %}
             <div class = "wrapper_fix">
-            <div data-tooltip aria-haspopup="true" class="has-tip tip-top program_item {{ cell.session.programitem.item_type.css_class }}" style="height: {{ cell.height }}px;"
+            <div data-tooltip aria-haspopup="true" class="has-tip program_item {{ cell.session.programitem.item_type.css_class }}" style="height: {{ cell.height }}px;"
             title="
             <h3>{{ cell.session.programitem.name }}</h3>
             {% if cell.gamemasters %}
