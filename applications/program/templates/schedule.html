@@ -54,13 +54,13 @@
             >
 
                 <div class="rating">
-                    {% if cell.signup.status = cell.signup.GAME_MASTER %}
+                    {% if cell.signup.status = GAME_MASTER %}
                         <span class="data">99</span>
                         <div class="starcontainer">
                             <div class="jquery-ratings-organiser"
                             title="You are a game master"><strong> GM</strong></div>
                         </div>
-                    {% elif cell.signup.status = cell.signup.HOST %}
+                    {% elif cell.signup.status = HOST %}
                         <span class="data">99</span>
                         <div class="starcontainer">
                             <div class="jquery-ratings-organiser"

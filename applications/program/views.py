@@ -134,6 +134,7 @@ def schedule_for_user(request, participant):
         "volunteer": volunteer,
         "participant": participant,
         "GAME_MASTER": Signup.GAME_MASTER,
+        "HOST": Signup.GAME_HOST,
         "PIXELS_PER_BLOCK": PIXELS_PER_BLOCK,
         "blocklength": int(blocklength.total_seconds() / 60),
         "schedule": schedule,
