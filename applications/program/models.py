@@ -263,6 +263,10 @@ class Signup(models.Model):
             "-priority",
         ]
 
+    def validate_unique(self, *args, **kwargs):
+        Signup.objects.filter(session=self.session, participant=self.participant).delete()
+        super().validate_unique(*args, **kwargs)
+
     session = models.ForeignKey(ProgramSession)
     participant = models.ForeignKey(Participant)
     updated = models.DateTimeField(auto_now=True)
