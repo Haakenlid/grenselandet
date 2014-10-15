@@ -1,6 +1,7 @@
 $larp-color: $primary-color;
 $social-color: $secondary-color;
 $meal-color: lighten($secondary-color, 20%);
+$nothing-color: red;
 
 table.schedule {
   width: 100%;
@@ -80,6 +81,9 @@ td{
   .program_social {
     background: $social-color;
   }
+  .program_nothing {
+    background: $nothing-color;
+  }
 }
 
 .description {
@@ -92,15 +96,12 @@ td{
   height: 100%;
 }
 
-.edit_program {
+.players, .edit_program {
   font-size: 14px;
-  font-family: "foundation-icons";
   font-weight: normal;
   font-style: normal;
-  // width: 1px;
   position: absolute;
   bottom: 2px;
-  right: 5px;
   a {
     color: rgba(0, 0, 0, 0.3);
     text-decoration: none;
@@ -108,6 +109,20 @@ td{
       color: #FFF;
     }
   }
+}
+
+.players {
+  right: 25px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.3);
+  &:hover {
+    color: #FFF;
+  }
+}
+
+.edit_program {
+  right: 5px;
+  font-family: "foundation-icons";
 }
 
 table.tbl_program {

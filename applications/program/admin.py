@@ -193,6 +193,13 @@ class SignupAdmin(admin.ModelAdmin):
     save_as = True
 
 
+def gamemasters(session):
+    return session.signup_set.filter(status=Signup.GAME_MASTER).count()
+
+def players(session):
+    return session.signup_set.exclude(status=Signup.NOT_ASSIGNED).count()
+
+
 @admin.register(ProgramSession)
 class SessionAdmin(admin.ModelAdmin):
     # __metaclass__ = ForeignKeyLinksMetaclass
@@ -209,7 +216,8 @@ class SessionAdmin(admin.ModelAdmin):
         'location',
         'start_time',
         'end_time',
-        'game_masters_count',
+        gamemasters,
+        players,
         'max_participants',
         'participants_signed_up',
         # 'average_priority',

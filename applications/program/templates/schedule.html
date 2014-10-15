@@ -78,20 +78,26 @@
                     {% endif %}
                 </div>
                 <div class="description">
-                    {% if user.is_authenticated %}
                     <noscript>You must enable javascript to sign up to </noscript>
-                    {% endif  %}
                     {{cell.session.programitem.name}}</div>
-                <div class="gamemasters">
-                </div>
+
                 {% if perms.program.change_programitem %}
-                <div class="edit_program" title="edit item">
-                    <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">&#xf194;</a>
-                </div>
+                    {% with cell.session.players as players %}
+                        <div data-tooltip aria-haspopup="true" class="has-tip tip-top players" title="
+                        <h3>Players: {{ players.count }} of {{ cell.session.max_participants }}</h3>
+                        <p>
+                        {% for player in players %}
+                        {{ player.ordering }} {{ player.participant }} {{ player.status }} {{ player.priority }}</br>
+                        {% endfor %}</p>">
+                            {{ players.count }}
+                        </div>
+                    {% endwith %}
+                    <div class="edit_program" title="edit item">
+                        <a href="{% url "admin:program_programitem_change" cell.session.programitem.id %}">&#xf194;</a>
+                    </div>
                 {% endif %}
 
             </div>
-
             </div>
             {% endif %}
         </td>

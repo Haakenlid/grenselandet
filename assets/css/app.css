@@ -3805,6 +3805,8 @@ td .program_meal {
   background: #999999; }
 td .program_social {
   background: #666666; }
+td .program_nothing {
+  background: red; }
 
 .description {
   font-size: 80%;
@@ -3814,19 +3816,28 @@ td .program_social {
   padding: 2px;
   height: 100%; }
 
-.edit_program {
+.players, .edit_program {
   font-size: 14px;
-  font-family: "foundation-icons";
   font-weight: normal;
   font-style: normal;
   position: absolute;
-  bottom: 2px;
-  right: 5px; }
-  .edit_program a {
+  bottom: 2px; }
+  .players a, .edit_program a {
     color: rgba(0, 0, 0, 0.3);
     text-decoration: none; }
-    .edit_program a:hover {
+    .players a:hover, .edit_program a:hover {
       color: #FFF; }
+
+.players {
+  right: 25px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.3); }
+  .players:hover {
+    color: #FFF; }
+
+.edit_program {
+  right: 5px;
+  font-family: "foundation-icons"; }
 
 table.tbl_program {
   font-size: 70%; }

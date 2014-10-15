@@ -5,6 +5,7 @@ from applications.conventions.models import Convention
 from applications.tickets.models import Ticket
 
 from django.utils.translation import ugettext_lazy as _
+from django.utils import formats
 
 
 def next_convention():
@@ -78,7 +79,7 @@ class Participant(User):
             if new and session.programitem.item_type.stars == 4:
                 signup.priority = 4
                 signup.save()
-                print (signup)
+                print(signup)
 
 
 class ItemType(models.Model):
@@ -215,6 +216,10 @@ class ProgramSession(models.Model):
         through='Signup',
     )
 
+    def players(self):
+        players = self.signup_set.exclude(status=Signup.NOT_ASSIGNED).order_by('ordering').prefetch_related('participant')
+        return players
+
     @property
     def max_participants(self):
         return self.programitem.max_participants
@@ -232,7 +237,7 @@ class ProgramSession(models.Model):
     def __str__(self):
         return '{item}: {time} {location}'.format(
             item=self.programitem,
-            time=self.start_time,
+            time=formats.date_format(self.start_time, 'SHORT_DATETIME_FORMAT'),
             location=self.location,
         )
 
