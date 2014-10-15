@@ -26,7 +26,6 @@ $(document).ready(function() {
         $("table.info").trigger("update");
 
       }
-
       $(starContainer).ratings(multistar, priority).bind(
         'ratingchanged', changeRating);
     };
@@ -103,59 +102,61 @@ jQuery.fn.ratings = function(stars, firstRating) {
       //add the star to the container
       container.append(star);
       starsCollection.push(star);
-      newTitles();
 
-
-      //hook up the click event
-      star.click(function() {
-        //When clicked, fire the 'ratingchanged' event handler.  Pass the rating through as the data argument.
-        var newRating = (this.rating==1 && containerElement.rating==1)? 0 : this.rating
-
-        elements.triggerHandler("ratingchanged", {rating: newRating});
-        containerElement.rating = newRating;
+      if (registration_closed == false){
         newTitles();
-        if (newRating == 0 && starsCollection.length > 1){
-          starsCollection[0].removeClass('jquery-hover-full');
-            //starsCollection[0].removeClass('jquery-ratings-full');
-          } else if (newRating == 1){
-            //starsCollection[0].addClass('jquery-hover-full');
+
+        //hook up the click event
+        star.click(function() {
+          //When clicked, fire the 'ratingchanged' event handler.  Pass the rating through as the data argument.
+          var newRating = (this.rating==1 && containerElement.rating==1)? 0 : this.rating
+
+          elements.triggerHandler("ratingchanged", {rating: newRating});
+          containerElement.rating = newRating;
+          newTitles();
+          if (newRating == 0 && starsCollection.length > 1){
+            starsCollection[0].removeClass('jquery-hover-full');
+              //starsCollection[0].removeClass('jquery-ratings-full');
+            } else if (newRating == 1){
+              //starsCollection[0].addClass('jquery-hover-full');
+            }
+
+          });
+
+        star.mouseenter(function() {
+          //Highlight selected stars.
+          if (this.rating == 1 && containerElement.rating == 1 && starsCollection.length > 1){
+            myRating = 0;
+            starsCollection[0].addClass('jquery-hover-null');
+          } else {
+            myRating = this.rating;
           }
 
+          for(var index = 0; index < myRating; index++) {
+            starsCollection[index].addClass('jquery-hover-full');
+          }
+          //Unhighlight unselected stars.
+          for(var index = myRating; index < stars; index++) {
+            starsCollection[index].removeClass('jquery-hover-full');
+            starsCollection[index].removeClass('jquery-ratings-full');
+          }
         });
 
-      star.mouseenter(function() {
-        //Highlight selected stars.
-        if (this.rating == 1 && containerElement.rating == 1 && starsCollection.length > 1){
-          myRating = 0;
-          starsCollection[0].addClass('jquery-hover-null');
-        } else {
-          myRating = this.rating;
-        }
-
-        for(var index = 0; index < myRating; index++) {
-          starsCollection[index].addClass('jquery-hover-full');
-        }
-        //Unhighlight unselected stars.
-        for(var index = myRating; index < stars; index++) {
-          starsCollection[index].removeClass('jquery-hover-full');
-          starsCollection[index].removeClass('jquery-ratings-full');
-        }
-      });
-
-      star.mouseleave(function() {
-        //Unhighlight selected stars.
-        for(var index = 0; index < containerElement.rating; index++) {
-          starsCollection[index].addClass('jquery-ratings-full');
-          starsCollection[index].removeClass('jquery-hover-full');
-          starsCollection[index].removeClass('jquery-hover-null');
-        }
-        //Unhighlight unselected stars.
-        for(var index = containerElement.rating; index < stars ; index++) {
-          starsCollection[index].removeClass('jquery-ratings-full');
-          starsCollection[index].removeClass('jquery-hover-full');
-          starsCollection[index].removeClass('jquery-hover-null');
-        }
-      });
+        star.mouseleave(function() {
+          //Unhighlight selected stars.
+          for(var index = 0; index < containerElement.rating; index++) {
+            starsCollection[index].addClass('jquery-ratings-full');
+            starsCollection[index].removeClass('jquery-hover-full');
+            starsCollection[index].removeClass('jquery-hover-null');
+          }
+          //Unhighlight unselected stars.
+          for(var index = containerElement.rating; index < stars ; index++) {
+            starsCollection[index].removeClass('jquery-ratings-full');
+            starsCollection[index].removeClass('jquery-hover-full');
+            starsCollection[index].removeClass('jquery-hover-null');
+          }
+        });
+      }
     }
   });
 };

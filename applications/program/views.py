@@ -44,11 +44,16 @@ def schedule(request):
 
 
 def schedule_for_user(request, participant):
-    registration_open = True
     volunteer = False
     convention = Convention.objects.first()
     if timezone.now() > convention.program_signup_opens:
         registration_open = True
+    else:
+        registration_open = False
+    if timezone.now() < convention.program_signup_closes:
+        registration_closed = False
+    else:
+        registration_closed = True
 
     # sessions = ProgramSession.objects.exclude(programitem__itemtype__name="Work")
     sessions = ProgramSession.objects.all()
@@ -130,6 +135,7 @@ def schedule_for_user(request, participant):
 
     context = {
         "registration_open": registration_open,
+        "registration_closed": registration_closed,
         "convention": convention,
         "volunteer": volunteer,
         "participant": participant,

@@ -9,11 +9,23 @@
 {% addtoblock 'extrajs' %}
 {% dajaxice_js_import %}
 <script src="{{ STATIC_URL }}js/ratings.js"></script>
+<script type="text/javascript">
+    {% if registration_closed %}
+    var registration_closed = true;
+    {% else %}
+    var registration_closed = false;
+    {% endif %}
+</script>
 {% endaddtoblock %}
 {% if participant %}
     <h1>Program preferences for {{ participant }}</h1>
+    {% if not registration_closed %}
     <p>Please tell us what you would most like to play at Grenselandet 2014. This page might not work equally well in all web browsers. If you are having trouble, please try using Chrome.</p>
     <p>The signup closes at {{ convention.program_signup_closes }}</p>
+    {% else %}
+    <p>Signup for the program is closed.</p>
+    {% endif %}
+
 {% else %}
     <h1>Program Schedule</h1>
     <p>If you have a ticket for Grenselandet, we have sent instructions on how to sign up for programitems.</p>
