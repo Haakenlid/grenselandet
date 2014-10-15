@@ -69,6 +69,17 @@ class Participant(User):
         for ticket in Ticket.objects.all():
             cls.create(ticket)
 
+    def recreate_signups(self):
+        if self.signup_set.count() == 0:
+            print('ingen')
+            return
+        for session in ProgramSession.objects.all():
+            signup, new = Signup.objects.get_or_create(session=session, participant=self)
+            if new and session.programitem.item_type.stars == 4:
+                signup.priority = 4
+                signup.save()
+                print (signup)
+
 
 class ItemType(models.Model):
     name = models.CharField(max_length=50, unique=True)
