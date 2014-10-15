@@ -264,7 +264,12 @@ class Signup(models.Model):
         ]
 
     def validate_unique(self, *args, **kwargs):
-        Signup.objects.filter(session=self.session, participant=self.participant).delete()
+        old = Signup.objects.filter(session=self.session, participant=self.participant)
+        if old.count() == 1:
+            old_signup = old[0]
+            self.pk = old_signup.pk
+            old_signup.delete()
+
         super().validate_unique(*args, **kwargs)
 
     session = models.ForeignKey(ProgramSession)
