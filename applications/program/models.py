@@ -70,8 +70,8 @@ class Participant(User):
             cls.create(ticket)
 
     def recreate_signups(self):
-        if self.signup_set.count() == 0:
-            print('ingen')
+        if not self.signup_set.count() >= 2:
+            print(self, 'ingen')
             return
         for session in ProgramSession.objects.all():
             signup, new = Signup.objects.get_or_create(session=session, participant=self)
