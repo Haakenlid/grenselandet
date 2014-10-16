@@ -271,14 +271,16 @@ class ProgramSession(models.Model):
 class Signup(models.Model):
     GAME_MASTER = 1
     PARTICIPANT = 2
-    GAME_HOST = 3
+    PREASSIGNED = 3
+    WAITING_LIST = 4
     NOT_ASSIGNED = 0
 
     STATUS_CHOICES = (
         (GAME_MASTER, _('Game Master'),),
-        (GAME_HOST, _('Game Host'),),
+        (PREASSIGNED, _('Preassigned'),),
         (PARTICIPANT, _('Participant'),),
         (NOT_ASSIGNED, _('Not assigned'),),
+        (WAITING_LIST, _('Waiting list'),),
     )
 
     class Meta:

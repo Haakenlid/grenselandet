@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from .models import *
 from applications.conventions.models import Convention
 from applications.tickets.models import Ticket
-# from program.signupdistribution import fordeling
+from .lottery import fordeling
 # from django.contrib.auth.decorators import permission_required
 # from django.contrib.auth.models import Group
 
