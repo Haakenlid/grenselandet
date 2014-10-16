@@ -114,6 +114,7 @@ class ProgramItemAdmin(admin.ModelAdmin):
 
     save_as = True
     list_display = ('name', 'description', 'item_type', 'duration', 'max_participants', 'sessions')
+    list_editable = ('duration', 'max_participants', )
     search_fields = ['name', 'description']
     inlines = [SessionInline, ]
     filter_horizontal = ('organisers',)
