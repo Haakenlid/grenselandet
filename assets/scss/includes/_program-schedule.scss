@@ -2,6 +2,7 @@ $larp-color: $primary-color;
 $social-color: $secondary-color;
 $meal-color: lighten($secondary-color, 20%);
 $nothing-color: red;
+$work-color: $secondary-color;
 
 table.schedule {
   width: 100%;
@@ -83,6 +84,9 @@ td{
   }
   .program_nothing {
     background: $nothing-color;
+  }
+  .program_work {
+    background: $work-color;
   }
 }
 

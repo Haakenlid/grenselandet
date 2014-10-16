@@ -3807,6 +3807,8 @@ td .program_social {
   background: #666666; }
 td .program_nothing {
   background: red; }
+td .program_work {
+  background: #666666; }
 
 .description {
   font-size: 80%;
