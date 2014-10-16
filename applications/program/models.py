@@ -81,6 +81,9 @@ class Participant(User):
                 signup.save()
                 print(signup)
 
+    def assigned_games(self):
+        return self.signup_set.exclude(status=Signup.NOT_ASSIGNED)
+
 
 class ItemType(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -102,13 +105,22 @@ class ItemType(models.Model):
     class Meta:
         ordering = ["ordering", "name", ]
 
+class LocationManager(models.Manager):
+
+    def public(self):
+        return super().exclude(staff_only=True)
+
+    def private(self):
+        return super().all()
 
 class Location(models.Model):
+    objects = LocationManager()
     name = models.CharField(max_length=50)
     description = models.CharField(blank=True, max_length=5000)
     max_capacity = models.IntegerField(
         blank=True, null=True,
     )
+    staff_only = models.BooleanField(default=False)
     ordering = models.IntegerField(default=0)
     convention = models.ForeignKey(
         Convention,

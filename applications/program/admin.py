@@ -142,8 +142,8 @@ class ProgramItemAdmin(admin.ModelAdmin):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ordering', 'name', 'description', 'max_capacity', 'convention')
-    list_editable = ('ordering', 'name', 'description', 'max_capacity',)
+    list_display = ('id', 'ordering', 'name', 'description', 'max_capacity', 'staff_only', 'convention')
+    list_editable = ('ordering', 'name', 'description', 'max_capacity', 'staff_only')
 
 
 class Priority_filter(admin.SimpleListFilter):

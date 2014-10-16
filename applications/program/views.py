@@ -80,7 +80,12 @@ def schedule_for_user(request, participant):
         day_sessions = sessions.filter(
             start_time__gte=daystart,
             start_time__lt=dayend)
-        day_rooms = Location.objects.filter(
+        if request.user.is_staff:
+            locations = Location.objects.private()
+        else:
+            locations = Location.objects.public()
+
+        day_rooms = locations.filter(
             programsession__start_time__gte=daystart,
             programsession__start_time__lt=dayend).distinct()
         blockstart = day_sessions.aggregate(Min('start_time'))["start_time__min"]
@@ -176,7 +181,7 @@ def public_list(request):
 @staff_member_required
 def participantlist(request):
     context = {
-        "users": list(User.objects.all().order_by('first_name', 'last_name'))
+        "participants": list(Participant.objects.all().order_by('first_name', 'last_name').prefetch_related('signup_set'))
     }
 
     return render(request, "participantlist.html", context)
