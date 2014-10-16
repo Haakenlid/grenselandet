@@ -53,6 +53,18 @@ def finn_ledig_plass(participant, dict_of_sessions):
             participant['sessions that overlap'].update(
                 session_dict['sessions that overlap'])  # legger til i settet
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+        # if(settings.DEBUG):
+        #     print(
+        #         session_dict['program session'].programitem,
+        #         my_signup.participant.get_full_name(),
+        #         my_signup.ordering,
+        #         my_signup.get_status_display(),
+        #     )
+=======
+=======
+>>>>>>> a68563c796fe0a2e546ae9414624d58a8046f3cf
         if(settings.DEBUG):
             print(
                 session_dict['program session'].programitem,
@@ -60,6 +72,10 @@ def finn_ledig_plass(participant, dict_of_sessions):
                 my_signup.ordering,
                 my_signup.get_status_display(),
             )
+<<<<<<< HEAD
+>>>>>>> a68563c796fe0a2e546ae9414624d58a8046f3cf
+=======
+>>>>>>> a68563c796fe0a2e546ae9414624d58a8046f3cf
 
         my_signup.save()
         return True
