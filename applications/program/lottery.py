@@ -7,11 +7,17 @@ from django.conf import settings
 
 def fordeling():
     session_queryset = ProgramSession.objects.filter(programitem__max_participants__gt=0)
+    print('resetting game masters')
     reset_gamemasters()  # set priority to 0
+    print('resetting assignments')
     reset_assignments()  # unassign participants and extra signups.
+    print('initilising participants')
     list_of_participants = initialise_participants(session_queryset)
+    print('initilising sessions')
     dict_of_sessions = initialise_sessions(session_queryset)
+    print('assigning spots')
     assign_participants(list_of_participants, dict_of_sessions)
+    print('creating lists')
     update_sessions(dict_of_sessions)
 
 
@@ -26,7 +32,7 @@ def finn_ledig_plass(participant, dict_of_sessions):
             finn_ledig_plass(participant, dict_of_sessions)  # ser om det er ledig på neste i bunken.
         else:
             if session_dict['program session'] in participant['sessions that overlap']:
-                session_dict['assumed noshows'].append(my_signup)  # havner på ekstraliste
+                session_dict['waiting list'].append(my_signup)  # havner på ekstraliste
                 finn_ledig_plass(participant, dict_of_sessions)  # ser om det er ledig på neste i bunken.
             else:
                 if session_dict['full'] == False:  # ledig plass
@@ -99,16 +105,16 @@ def initialise_sessions(session_queryset):
     dict_of_sessions = {}
     for my_session in session_queryset:
 
-        overlaps = set(session.same_time_sessions())
+        overlaps = set(my_session.same_time_sessions())
         # sibling_sessions = set(my_session.programitem.programsession_set.all())
         # TODO: Legge inn muligheten for at man bare blir tildelt ett spill, hvis det spilles flere ganger.
-        sibling_sessions = set([session, ])
+        sibling_sessions = set([my_session, ])
 
         session_dict = {
             'program session': my_session,
             'assigned gamemasters': [],
             'assigned signups': [],
-            # 'assumed noshows': [],
+            'waiting list': [],
             # 'estimated participant number': 0,
             'max participants': my_session.programitem.max_participants,
             'full': False,
@@ -118,9 +124,9 @@ def initialise_sessions(session_queryset):
 
         dict_of_sessions[my_session.id] = session_dict
 
-    for key, my_session in dict_of_sessions.items():
-        for other_session in my_session['sessions that overlap']:
-            dict_of_sessions[other_session.id]['sessions that overlap'].union(set(my_session))
+    # for key, my_session in dict_of_sessions.items()
+    #     for other_session in my_session['sessions that overlap']:
+    #         dict_of_sessions[other_session.id]['sessions that overlap']
 
     return dict_of_sessions
 
@@ -142,7 +148,7 @@ def update_sessions(dict_of_sessions):
             my_session['assigned signups'])  # så mange som trolig dukker opp
         # print(my_session['program session'], my_session['assigned signups'])
         my_session['assigned signups'] = my_session['assigned signups'] + \
-            my_session['assumed noshows']  # legger ekstrafolk til i slutten
+            my_session['waiting list']  # legger ekstrafolk til i slutten
 
 
 def reset_assignments():

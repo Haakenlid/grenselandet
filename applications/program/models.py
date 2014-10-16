@@ -94,7 +94,6 @@ class Participant(User):
             ).exclude(
                 status=Signup.NOT_ASSIGNED, priority=0,
             ).count()
-
             if signups == 0:
                 signup, new = Signup.objects.get_or_create(participant=self, session=session)
                 signup.priority = 1
