@@ -1,4 +1,4 @@
-{% extends "program-template.html" %}
+{% extends "program-admin.html" %}
 
 {% block title %}Fordeling av spill{% endblock %}
 
@@ -6,8 +6,4 @@
 
 <h1>Reshuffle complete</h1>
 
-{% endblock %}
-
-{% block footer %}
-<a href="{% url 'program_reshuffle' %}">Reshuffle game assignments</a> | <a href="{% url 'program_sessionlist' %}">List of games</a> | <a href="{% url 'program_participantlist' %}">List of players</a>
 {% endblock %}
