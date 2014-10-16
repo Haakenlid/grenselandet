@@ -1,3 +1,4 @@
+import statistics
 from django.contrib.auth.models import User, Group
 from django.db import models
 from datetime import timedelta
@@ -89,12 +90,11 @@ class Participant(User):
         no_signups = ProgramSession.objects.filter(programitem__item_type__name__icontains='no signup')
         for session in no_signups:
             signups = Signup.objects.filter(
-                priority__gt=0,
-                participant=self,
-                session=session.same_time_sessions(),
-                ).count()
+                participant=self, session=session.same_time_sessions(),
+            ).exclude(
+                status=Signup.NOT_ASSIGNED, priority=0,
+            ).count()
 
-            print(self, session, signups)
             if signups == 0:
                 signup, new = Signup.objects.get_or_create(participant=self, session=session)
                 signup.priority = 1
@@ -102,6 +102,7 @@ class Participant(User):
                 signup.save()
             else:
                 Signup.objects.filter(participant=self, session=session).delete()
+
 
 class ItemType(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -213,15 +214,7 @@ class ProgramItem(models.Model):
     def __str__(self):
         return self.name
 
-    def make_session(self):
-        session = ProgramSession(
-            programitem=self,
-            location=self.location.first(),
-            start_time=self.start_time,
-        )
-        session.save()
-
-    def migrate_organisers(self):
+    def assign_organisers_as_game_masters(self):
         for o in self.organisers.all():
             for s in self.programsession_set.all():
                 signup, new = Signup.objects.get_or_create(
@@ -251,6 +244,16 @@ class ProgramSession(models.Model):
         blank=True,
         through='Signup',
     )
+    popularity = models.FloatField(
+        default=0.0,
+    )
+
+    def calculate_popularity(self):
+        signups = Signup.objects.filter(session=self).order_by('-priority')[0:self.max_participants]
+        if signups:
+            return statistics.mean(signups.values_list('priority', flat=True))
+        else:
+            return 0.0
 
     def same_time_sessions(self):
         sessions = ProgramSession.objects.exclude(

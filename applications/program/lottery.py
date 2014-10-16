@@ -84,7 +84,6 @@ def initialise_participants(session_queryset):
                 participant.signup_set.filter(
                     session__in=session_queryset,
                 ).order_by(
-                    '-status',  # TODO: Er muligens ikke riktig.
                     '-priority',
                     '-session__programitem__max_participants',
                     '?',
@@ -99,21 +98,18 @@ def initialise_participants(session_queryset):
 def initialise_sessions(session_queryset):
     dict_of_sessions = {}
     for my_session in session_queryset:
-        starts_before_end = session_queryset.filter(
-            start_time__lt=my_session.end_time
-        )
-        overlaps = set(
-            [s for s in starts_before_end if s.end_time > my_session.start_time]
-        )
-        sibling_sessions = set(
-            my_session.programitem.programsession_set.all()
-        )
+
+        overlaps = set(session.same_time_sessions())
+        # sibling_sessions = set(my_session.programitem.programsession_set.all())
+        # TODO: Legge inn muligheten for at man bare blir tildelt ett spill, hvis det spilles flere ganger.
+        sibling_sessions = set([session, ])
 
         session_dict = {
             'program session': my_session,
+            'assigned gamemasters': [],
             'assigned signups': [],
-            'assumed noshows': [],
-            'estimated participant number': 0,
+            # 'assumed noshows': [],
+            # 'estimated participant number': 0,
             'max participants': my_session.programitem.max_participants,
             'full': False,
             'sessions that overlap': overlaps,
