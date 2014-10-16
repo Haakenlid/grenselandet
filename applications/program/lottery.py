@@ -144,7 +144,7 @@ def update_sessions(dict_of_sessions):
         my_session = dict_of_sessions[session_id]
         my_session['estimated participant number'] = len(
             my_session['assigned signups'])  # så mange som trolig dukker opp
-        print(my_session['program session'], my_session['assigned signups'])
+        # print(my_session['program session'], my_session['assigned signups'])
         my_session['assigned signups'] = my_session['assigned signups'] + \
             my_session['assumed noshows']  # legger ekstrafolk til i slutten
 
@@ -162,7 +162,7 @@ def reset_assignments():
             ]
 
     if updatelist:
-        print('lager gatelangs', len(updatelist))
+        # print('lager gatelangs', len(updatelist))
         Signup.objects.bulk_create(updatelist)
 
 
