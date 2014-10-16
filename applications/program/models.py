@@ -84,6 +84,24 @@ class Participant(User):
     def assigned_games(self):
         return self.signup_set.exclude(status=Signup.NOT_ASSIGNED)
 
+    def not_signed_up(self):
+        """ Mark participant as not signed up """
+        no_signups = ProgramSession.objects.filter(programitem__item_type__name__icontains='no signup')
+        for session in no_signups:
+            signups = Signup.objects.filter(
+                priority__gt=0,
+                participant=self,
+                session=session.same_time_sessions(),
+                ).count()
+
+            print(self, session, signups)
+            if signups == 0:
+                signup, new = Signup.objects.get_or_create(participant=self, session=session)
+                signup.priority = 1
+                signup.status = Signup.PREASSIGNED
+                signup.save()
+            else:
+                Signup.objects.filter(participant=self, session=session).delete()
 
 class ItemType(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -105,6 +123,7 @@ class ItemType(models.Model):
     class Meta:
         ordering = ["ordering", "name", ]
 
+
 class LocationManager(models.Manager):
 
     def public(self):
@@ -112,6 +131,7 @@ class LocationManager(models.Manager):
 
     def private(self):
         return super().all()
+
 
 class Location(models.Model):
     objects = LocationManager()
@@ -222,14 +242,26 @@ class ProgramSession(models.Model):
     start_time = models.DateTimeField(
         default=next_convention_start_time
     )
+    end_time = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
     participants = models.ManyToManyField(
         Participant,
         blank=True,
         through='Signup',
     )
 
+    def same_time_sessions(self):
+        sessions = ProgramSession.objects.exclude(
+            id=self.id).exclude(
+            start_time__gte=self.end_time).exclude(
+            end_time__lte=self.start_time)
+        return sessions
+
     def players(self):
-        players = self.signup_set.exclude(status=Signup.NOT_ASSIGNED).order_by('ordering').prefetch_related('participant')
+        players = self.signup_set.exclude(status=Signup.NOT_ASSIGNED).order_by(
+            'ordering').prefetch_related('participant')
         return players
 
     @property
@@ -240,11 +272,11 @@ class ProgramSession(models.Model):
     def duration(self):
         return self.programitem.duration
 
-    @property
-    def end_time(self):
-        return self.start_time + timedelta(
+    def save(self):
+        self.end_time = self.start_time + timedelta(
             minutes=self.programitem.duration,
         )
+        return super().save()
 
     def __str__(self):
         return '{item}: {time} {location}'.format(
