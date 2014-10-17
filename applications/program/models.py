@@ -248,21 +248,27 @@ class ProgramSession(models.Model):
     )
 
     def calculate_popularity(self):
-        signups = Signup.objects.filter(session=self).order_by('-priority')[0:self.max_participants]
-        if signups:
-            return statistics.mean(signups.values_list('priority', flat=True))
+        # signups = self.signup_set.order_by('-priority')[0:self.max_participants]
+        # if signups:
+        #     return statistics.mean(signups.values_list('priority', flat=True))
+        signups = self.signup_set.filter(priority__gt=self.programitem.item_type.stars/2).count()
+        if self.max_participants:
+            return signups/self.max_participants
+        elif self.signup_set.count():
+            return signups/self.signup_set.count()
         else:
-            return 0.0
+            return 0
 
     def same_time_sessions(self):
         sessions = ProgramSession.objects.exclude(
-            id=self.id).exclude(
             start_time__gte=self.end_time).exclude(
             end_time__lte=self.start_time)
         return sessions
 
     def players(self):
-        players = self.signup_set.exclude(status=Signup.NOT_ASSIGNED).order_by(
+        players = self.signup_set.exclude(status__in=(
+            Signup.NOT_ASSIGNED, Signup.WAITING_LIST)
+        ).order_by(
             'ordering').prefetch_related('participant')
         return players
 
@@ -278,6 +284,7 @@ class ProgramSession(models.Model):
         self.end_time = self.start_time + timedelta(
             minutes=self.programitem.duration,
         )
+        self.popularity = self.calculate_popularity()
         return super().save()
 
     def __str__(self):
@@ -306,12 +313,14 @@ class Signup(models.Model):
     GAME_MASTER = 1
     PARTICIPANT = 2
     PREASSIGNED = 3
-    WAITING_LIST = 4
+    VOLUNTEER = 4
+    WAITING_LIST = 5
     NOT_ASSIGNED = 0
 
     STATUS_CHOICES = (
         (GAME_MASTER, _('Game Master'),),
         (PREASSIGNED, _('Preassigned'),),
+        (VOLUNTEER, _('Volunteer'),),
         (PARTICIPANT, _('Participant'),),
         (NOT_ASSIGNED, _('Not assigned'),),
         (WAITING_LIST, _('Waiting list'),),

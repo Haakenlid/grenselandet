@@ -92,7 +92,7 @@
                         <h3>Players: {{ players.count }} of {{ cell.session.max_participants }}</h3>
                         <p>
                         {% for player in players %}
-                        {{ player.ordering }} {{ player.participant }} {{ player.status }} {{ player.priority }}</br>
+                        {{ player.ordering }} {{ player.participant }} {{ player.priority }}</br>
                         {% endfor %}</p>">
                             {{ players.count }}
                         </div>
