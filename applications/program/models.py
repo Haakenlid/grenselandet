@@ -85,8 +85,8 @@ class Participant(User):
             ).count()
             if signups == 0:
                 signup, new = Signup.objects.get_or_create(participant=self, session=session)
-                signup.priority = 1
-                signup.status = Signup.PREASSIGNED
+                signup.priority = 0
+                signup.status = Signup.VOLUNTEER
                 signup.save()
             else:
                 Signup.objects.filter(participant=self, session=session).delete()
