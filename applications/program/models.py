@@ -73,24 +73,29 @@ class Participant(User):
 
     def assigned_games(self):
         meals = ProgramItem.objects.filter(item_type__name__icontains='meal')
-        return self.signup_set.exclude(status__in=[Signup.NOT_ASSIGNED, Signup.WAITING_LIST]).exclude(session__programitem=meals)
+        return self.signup_set.exclude(
+            status__in=[
+                Signup.NOT_ASSIGNED,
+                Signup.WAITING_LIST]).exclude(
+            session__programitem=meals)
 
     def check_missing_signup(self):
         """ Mark participant as not signed up """
         no_signups = ProgramSession.objects.filter(programitem__item_type__name__icontains='no signup')
         for session in no_signups:
+            # session.signup_set.all().delete()
             signups = Signup.objects.filter(
                 participant=self, session=session.same_time_sessions(),
             ).exclude(
                 status=Signup.NOT_ASSIGNED, priority=0,
             ).count()
             if signups == 0:
-                signup, new = Signup.objects.get_or_create(participant=self, session=session)
-                signup.priority = 0
-                signup.status = Signup.VOLUNTEER
+                signup = Signup(
+                    participant=self,
+                    session=session,
+                    status=Signup.VOLUNTEER,
+                )
                 signup.save()
-            else:
-                Signup.objects.filter(participant=self, session=session).delete()
 
 
 class ItemType(models.Model):
@@ -241,11 +246,11 @@ class ProgramSession(models.Model):
         # signups = self.signup_set.order_by('-priority')[0:self.max_participants]
         # if signups:
         #     return statistics.mean(signups.values_list('priority', flat=True))
-        signups = self.signup_set.filter(priority__gt=self.programitem.item_type.stars/2).count()
+        signups = self.signup_set.filter(priority__gt=self.programitem.item_type.stars / 2).count()
         if self.max_participants:
-            return signups/self.max_participants
+            return signups / self.max_participants
         elif self.signup_set.count():
-            return signups/self.signup_set.count()
+            return signups / self.signup_set.count()
         else:
             return 0
 

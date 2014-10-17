@@ -131,11 +131,13 @@ def update_sessions(dict_of_sessions):
 
 
 def reset_assignments():
+    no_signups = ProgramSession.objects.filter(programitem__item_type__name__icontains='no signup')
+    nothing = ProgramSession.objects.filter(programitem__item_type__name='NOTHING')
+    Signup.objects.filter(session=no_signups).delete()
     Signup.objects.filter(status=Signup.NOT_ASSIGNED, priority=0).delete()
     Signup.objects.all().update(ordering=0)
     Signup.objects.filter(status__in=[Signup.PARTICIPANT, Signup.WAITING_LIST]).update(status=Signup.NOT_ASSIGNED)
     updatelist = []
-    nothing = ProgramSession.objects.filter(programitem__item_type__name='NOTHING')
     for p in Participant.objects.all():
         for s in nothing.exclude(participants=p):
             updatelist += [
