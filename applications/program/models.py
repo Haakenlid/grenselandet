@@ -77,7 +77,7 @@ class Participant(User):
             status__in=[
                 Signup.NOT_ASSIGNED,
                 Signup.WAITING_LIST]).exclude(
-            session__programitem=meals)
+            session__programitem=meals).order_by('session__start_time')
 
     def check_missing_signup(self):
         """ Mark participant as not signed up """

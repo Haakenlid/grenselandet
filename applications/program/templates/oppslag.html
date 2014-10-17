@@ -8,7 +8,7 @@
         <p>{{ p.description }}</p>
         </br>Participants:
             {% for n in p.players %}
-            </br> {{ n.participant }}
+            </br>{{ n.ordering }} {{ n.participant }}
             {% endfor %}
         {% endfor %}
     </body>
