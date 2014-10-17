@@ -157,9 +157,8 @@ def schedule_for_user(request, participant):
 # @staff_member_required
 def reshuffle(request):
     fordeling(Convention.objects.first())  # fordeler plasser
-    return HttpResponseRedirect(
-        reverse('program-sessionlist')
-        )
+    return HttpResponseRedirect(reverse('program-schedule'))
+
 
 @staff_member_required
 def sessionlist(request):
@@ -182,8 +181,10 @@ def public_list(request):
 @staff_member_required
 def participantlist(request):
     context = {
-        "participants": list(Participant.objects.all().order_by('first_name', 'last_name').prefetch_related('signup_set'))
-    }
+        "participants": list(
+            Participant.objects.all().order_by(
+                'first_name',
+                'last_name').prefetch_related('signup_set'))}
 
     return render(request, "participantlist.html", context)
 

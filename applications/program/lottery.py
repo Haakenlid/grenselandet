@@ -94,7 +94,7 @@ def assign_to_session(signup, participant, session_dict):
         signup.ordering = len(session.participant_list) + 1
 
     if signup.status == Signup.NOT_ASSIGNED:
-        if len(session.participant_list) >= session.max_participants:
+        if signup.ordering > session.max_participants:
             signup.status = Signup.WAITING_LIST
         else:
             signup.status = Signup.PARTICIPANT
