@@ -283,10 +283,9 @@ class ProgramSession(models.Model):
         return super().save()
 
     def __str__(self):
-        return '{item}: {time} {location}'.format(
-            item=self.programitem,
-            time=formats.date_format(self.start_time, 'SHORT_DATETIME_FORMAT'),
-            location=self.location,
+        return '{item}, {time}'.format(
+            item=self.programitem.name,
+            time=self.start_time.strftime("%a %H:%M"),
         )
 
     def game_masters(self):

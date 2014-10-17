@@ -1,11 +1,11 @@
 <html><head></head>
     <body>
         {% for p in sessions %}
-        <p>tit:{{p.programitem.name}}
+        <p>Tit:{{p.programitem.name}}
         </br>Max: {{p.max_participants}}
         </br>Time: {{p.start_time|date:"D H:i"}}&ndash;{{p.end_time|date:"D H:i"}}
         </br>Location: {{p.location}}
-        <p>{{ p.description }}</p>
+        <p>{{ p.programitem.description }}</p>
         </br>Participants:
             {% for n in p.players %}
             </br>{{ n.ordering }} {{ n.participant }}
