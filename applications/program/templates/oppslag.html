@@ -1,16 +1,23 @@
 <html><head></head>
     <body>
         {% for p in sessions %}
-        <p>Tit:{{p.programitem.name}}
+        <p><strong>Tit:{{p.programitem.name}}</strong>
         </br>Max: {{p.max_participants}}
         </br>Time: {{p.start_time|date:"D H:i"}}&ndash;{{p.end_time|date:"D H:i"}}
         </br>Location: {{p.location}}
-        <p>{{ p.programitem.description }}</p>
+        {{ p.programitem.description|linebreaks }}
         </br>Participants:
             {% for n in p.players %}
             </br>{{ n.ordering }} {{ n.participant }}
             {% endfor %}
-        <hr>
+        --</br>
+        {% endfor %}
+        {% for participant in participants %}
+            <strong>{{ participant.get_full_name }}</strong></br>
+            {% for game in participant.assigned_games %}
+                {% if game.status = game.GAME_MASTER %}GM{% endif %} {{ game.session }}</br>
+            {% endfor game %}
+            --</br>
         {% endfor %}
     </body>
 </html>

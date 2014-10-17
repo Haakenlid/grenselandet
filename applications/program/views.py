@@ -198,6 +198,9 @@ def blekke(request):
 
 
 def program_oppslag(request):
-    sessions = ProgramSession.objects.filter(programitem__max_participants__gte=1, programitem__item_type__stars=4).order_by("start_time")
+    sessions = ProgramSession.objects.filter(
+        programitem__max_participants__gte=1,
+        programitem__item_type__stars=4).order_by("start_time").prefetch_related('participants')
+    participants = Participant.objects.order_by('first_name', 'last_name').prefetch_related('signup_set')
 
-    return render(request, "oppslag.html", {"sessions": sessions})
+    return render(request, "oppslag.html", {"participants": participants, "sessions": sessions})

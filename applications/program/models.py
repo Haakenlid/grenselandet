@@ -72,12 +72,11 @@ class Participant(User):
             cls.create(ticket)
 
     def assigned_games(self):
-        meals = ProgramItem.objects.filter(item_type__name__icontains='meal')
         return self.signup_set.exclude(
             status__in=[
                 Signup.NOT_ASSIGNED,
-                Signup.WAITING_LIST]).exclude(
-            session__programitem=meals).order_by('session__start_time')
+                Signup.WAITING_LIST]).filter(
+            session__programitem__item_type__stars=4).order_by('session__start_time')
 
     def check_missing_signup(self):
         """ Mark participant as not signed up """
