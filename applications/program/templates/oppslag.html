@@ -10,7 +10,7 @@
             {% for n in p.players %}
             </br>{{ n.ordering }} {{ n.participant }}
             {% endfor %}
-        --</br>
+        </br>--
         {% endfor %}
         {% for participant in participants %}
             <strong>{{ participant.get_full_name }}</strong></br>
