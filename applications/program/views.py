@@ -160,7 +160,6 @@ def reshuffle(request):
     return HttpResponseRedirect(reverse('program-schedule'))
 
 
-@staff_member_required
 def sessionlist(request):
     context = {
         "sessions": ProgramSession.objects.all()
@@ -178,7 +177,6 @@ def public_list(request):
     return render(request, "open_list.html", context)
 
 
-@staff_member_required
 def participantlist(request):
     context = {
         "participants": list(
