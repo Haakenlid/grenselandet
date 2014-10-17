@@ -197,6 +197,7 @@ class SignupAdmin(admin.ModelAdmin):
 def gamemasters(session):
     return session.signup_set.filter(status=Signup.GAME_MASTER).count()
 
+
 def players(session):
     return session.signup_set.exclude(status=Signup.NOT_ASSIGNED).count()
 
@@ -216,15 +217,13 @@ class SessionAdmin(admin.ModelAdmin):
         'programitem',
         'location',
         'start_time',
-        'end_time',
         gamemasters,
         players,
-        'max_participants',
+        'popularity',
         'participants_signed_up',
-        # 'average_priority',
     )
 
-    #list_editable = ('location','start_time',)
+    list_editable = ('location', 'start_time',)
     list_filter = ('programitem__item_type',)
 
     save_on_top = True

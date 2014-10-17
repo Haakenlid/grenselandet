@@ -33,6 +33,7 @@ def print_sessions(session_dict):
 def initialise_participants(session_queryset):
     list_of_participants = []
     for participant in Participant.objects.all():
+        participant.check_missing_signup()
         participant.priority = 0
         participant.signups_remaining = participant.signup_set.filter(
             session__in=session_queryset,

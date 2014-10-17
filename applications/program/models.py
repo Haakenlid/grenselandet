@@ -71,21 +71,10 @@ class Participant(User):
         for ticket in Ticket.objects.all():
             cls.create(ticket)
 
-    def recreate_signups(self):
-        if not self.signup_set.count() >= 2:
-            print(self, 'ingen')
-            return
-        for session in ProgramSession.objects.all():
-            signup, new = Signup.objects.get_or_create(session=session, participant=self)
-            if new and session.programitem.item_type.stars == 4:
-                signup.priority = 4
-                signup.save()
-                print(signup)
-
     def assigned_games(self):
-        return self.signup_set.exclude(status=Signup.NOT_ASSIGNED)
+        return self.signup_set.exclude(status_in=[Signup.NOT_ASSIGNED, Signup.WAITING_LIST])
 
-    def not_signed_up(self):
+    def check_missing_signup(self):
         """ Mark participant as not signed up """
         no_signups = ProgramSession.objects.filter(programitem__item_type__name__icontains='no signup')
         for session in no_signups:
