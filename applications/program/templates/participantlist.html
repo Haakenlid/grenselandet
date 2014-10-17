@@ -13,7 +13,7 @@
 	</tr>
 	{% for participant in participants %}
 	<tr>
-		<td>{{ participant.get_full_name }}</td>
+		<td class="name">{{ participant.get_full_name }}</td>
 		{% for game in participant.assigned_games %}
 			<td>{{ game.session.programitem.name }} {% if game.status = game.GAME_MASTER %}(GM){% endif %}</td>
 		{% endfor game %}

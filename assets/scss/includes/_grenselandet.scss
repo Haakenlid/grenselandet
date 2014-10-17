@@ -118,3 +118,17 @@ small.error {
   }
 
 }
+
+.overview {
+  .name {
+    font-weight: bolder;
+  }
+  td{
+    padding: 5px 0;
+  }
+  tr{
+    &:nth-child(even){
+      background: #EEE;
+    }
+  }
+}

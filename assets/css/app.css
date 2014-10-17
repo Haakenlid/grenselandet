@@ -3745,6 +3745,13 @@ small.error {
 .ticket-panel td, .ticket-panel th {
   font-size: smaller; }
 
+.overview .name {
+  font-weight: bolder; }
+.overview td {
+  padding: 5px 0; }
+.overview tr:nth-child(even) {
+  background: #EEE; }
+
 table.schedule {
   width: 100%;
   box-sizing: border-box;
