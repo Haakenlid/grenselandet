@@ -155,7 +155,7 @@ def schedule_for_user(request, participant):
 
 @staff_member_required
 def reshuffle(request):
-    fordeling(convention=Convention.objects.first())  # fordeler plasser
+    fordeling(Convention.objects.first())  # fordeler plasser
     return HttpResponseRedirect(reverse('program-sessionlist'))
 
 @staff_member_required
