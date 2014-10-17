@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-# from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.http import HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import time
 from django.db.models import Min
