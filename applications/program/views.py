@@ -200,8 +200,6 @@ def blekke(request):
 
 
 def program_oppslag(request):
-    programitems = Item.objects.filter(max_participants__gte=1).order_by("start_time")
-    for p in programitems:
-        setattr(p, "list", p.attends_set.exclude(place_on_list=0).order_by('place_on_list'))
+    sessions = ProgramSession.objects.filter(programitem__max_participants__gte=1).order_by("start_time")
 
-    return render(request, "oppslag.html", {"programitems": programitems})
+    return render(request, "oppslag.html", {"sessions": sessions})
