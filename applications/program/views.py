@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import time
+from django.core.urlresolvers import reverse
 from django.db.models import Min
 from django.shortcuts import get_object_or_404
 # import random
@@ -153,10 +154,12 @@ def schedule_for_user(request, participant):
     return render(request, "schedule.html", context)
 
 
-@staff_member_required
+# @staff_member_required
 def reshuffle(request):
     fordeling(Convention.objects.first())  # fordeler plasser
-    return HttpResponseRedirect(reverse('program-sessionlist'))
+    return HttpResponseRedirect(
+        reverse('program-sessionlist')
+        )
 
 @staff_member_required
 def sessionlist(request):

@@ -3,7 +3,7 @@
 from applications.program.models import ProgramSession, Participant, Signup
 from applications.conventions.models import Convention
 import random
-from django.conf import settings
+# from django.conf import settings
 import logging
 logger = logging.getLogger('debug')
 
