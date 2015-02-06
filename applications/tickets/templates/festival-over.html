@@ -1,0 +1,15 @@
+{% extends "base-template.html" %}
+{% block title %}Welcome back next time!{% endblock title %}
+{% block content %}
+  <div class="small-12 columns">
+    <h1>{{ convention }} is over for this time</h1>
+  </div>
+  <div class="medium-12 columns">
+    {{ convention.description|linebreaks }}
+    <hr>
+    <p>
+      There's no tickets available at this time.
+    </p>
+  </div>
+
+{% endblock %}
