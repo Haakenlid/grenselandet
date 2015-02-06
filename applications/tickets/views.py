@@ -48,7 +48,13 @@ class DateCheckMixin(object):
 class ClosedView(TemplateView):
 
     """ Main view when ticket sales is closed. """
-    template_name = 'signup-closed.html'
+    template_name = 'festival-over.html'
+    convention = Convention.objects.latest('end_time')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(convention=self.convention)
+        return context
 
 
 class TicketStartView(TemplateView):
@@ -62,6 +68,12 @@ class TicketStartView(TemplateView):
         context.update(ticket_types=ticket_types)
         context.update(convention=self.convention)
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.convention is None:
+            return ClosedView.as_view()(request, *args, **kwargs)
+        else:
+            return super().dispatch(request, *args, **kwargs)
 
 
 class TicketCreateView(CreateView):

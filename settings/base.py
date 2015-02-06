@@ -18,7 +18,10 @@ def env_var(keyname):
     # To avoid commiting passwords and usernames to git and GitHub,
     # these settings are saved as environmental variables in a file called postactivate.
     # Postactivate is sourced when the virtual environment is activated.
-    return os.environ.get('DJANGO_{keyname}'.format(keyname=keyname.upper().replace(' ', '_')))
+    variable = os.environ.get('DJANGO_{keyname}'.format(keyname=keyname.upper().replace(' ', '_')))
+    if not variable:
+        raise NotImplementedError('Environmental variable {key} not set!'.format(key=keyname))
+    return variable
 
 
 def join_path(*paths):
